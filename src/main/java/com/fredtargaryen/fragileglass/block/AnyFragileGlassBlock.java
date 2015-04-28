@@ -1,8 +1,11 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.tileentity.TileEntityGlass;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -30,12 +33,13 @@ public abstract class AnyFragileGlassBlock extends Block implements ITileEntityP
     }
 
     /**
-     * Return true if a player with Silk Touch can harvest this block directly, and not its normal drops.
+     * Return true from this function if the player with silk touch can harvest this block directly, and not its normal drops.
+     * @param player The player doing the harvesting
+     * @return True if the block can be directly harvested using silk touch
      */
-    @Override
-    protected boolean canSilkHarvest()
+    public boolean canSilkHarvest(World world, BlockPos pos, IBlockState state, EntityPlayer player)
     {
-        return true;
+        return false;
     }
 
     /**
@@ -46,9 +50,7 @@ public abstract class AnyFragileGlassBlock extends Block implements ITileEntityP
     @Override
     public boolean isOpaqueCube(){return false;}
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean renderAsNormalBlock()
+    public boolean isFullCube()
     {
         return false;
     }

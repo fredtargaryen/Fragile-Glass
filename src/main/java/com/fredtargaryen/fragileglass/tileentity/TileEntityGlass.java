@@ -1,31 +1,34 @@
 package com.fredtargaryen.fragileglass.tileentity;
 
 import com.fredtargaryen.fragileglass.DataReference;
-import com.fredtargaryen.fragileglass.block.AnyFragileGlassBlock;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntitySmallFireball;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityGlass extends TileEntity
+public class TileEntityGlass extends TileEntity implements IUpdatePlayerListBox
 {
     public TileEntityGlass(){super();}
 
     @Override
-    public void updateEntity()
+    public void update()
     {
         if(!this.worldObj.isRemote)
         {
+            BlockPos pos = new BlockPos(this.pos);
             //Get all entities near enough to break it if fast enough
-            AnyFragileGlassBlock myBlock = (AnyFragileGlassBlock) this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
-            AxisAlignedBB normAABB = myBlock.getCollisionBoundingBoxFromPool(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+            IBlockState myBlockState = this.worldObj.getBlockState(pos);
+            AxisAlignedBB normAABB = myBlockState.getBlock().getCollisionBoundingBox(this.worldObj, pos, myBlockState);
             AxisAlignedBB checkAABB = normAABB.expand(DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE);
             List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, checkAABB);
             List<Entity> validEnts = new ArrayList<Entity>();
@@ -60,7 +63,7 @@ public class TileEntityGlass extends TileEntity
                         || (nextEnt.posZ > normAABB.maxZ && mz < -1 * DataReference.MINIMUM_ENTITY_SPEED))
                     {
                         //breaks it
-                        this.worldObj.func_147480_a(this.xCoord, this.yCoord, this.zCoord, false);
+                        this.worldObj.destroyBlock(pos, false);
                         stop = true;
                     }
                     count++;
