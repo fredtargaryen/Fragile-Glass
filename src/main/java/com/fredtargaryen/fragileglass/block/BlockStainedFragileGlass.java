@@ -22,76 +22,63 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
 {
     public static final PropertyEnum COLOR = PropertyEnum.create("color", EnumDyeColor.class);
 
-    public BlockStainedFragileGlass()
-    {
+    public BlockStainedFragileGlass() {
         super();
         this.setDefaultState(this.blockState.getBaseState().withProperty(COLOR, EnumDyeColor.WHITE));
     }
 
     /**
-     * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
-     */
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
-    {
-        EnumDyeColor[] aenumdyecolor = EnumDyeColor.values();
-        int i = aenumdyecolor.length;
-
-        for (int j = 0; j < i; ++j)
-        {
-            EnumDyeColor enumdyecolor = aenumdyecolor[j];
-            list.add(new ItemStack(itemIn, 1, enumdyecolor.getMetadata()));
-        }
-    }
-
-    /**
      * Convert the given metadata into a BlockState for this Block
      */
-    public IBlockState getStateFromMeta(int meta)
-    {
+    public IBlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
     }
 
     /**
      * Convert the BlockState into the correct metadata value
      */
-    public int getMetaFromState(IBlockState state)
-    {
-        return ((EnumDyeColor)state.getValue(COLOR)).getMetadata();
+    public int getMetaFromState(IBlockState state) {
+        return ((EnumDyeColor) state.getValue(COLOR)).getMetadata();
     }
 
-    protected BlockState createBlockState()
-    {
-        return new BlockState(this, new IProperty[] {COLOR});
+    protected BlockState createBlockState() {
+        return new BlockState(this, new IProperty[]{COLOR});
     }
 
     /**
      * Get the MapColor for this Block and the given BlockState
      */
-    public MapColor getMapColor(IBlockState state)
-    {
-        return ((EnumDyeColor)state.getValue(COLOR)).getMapColor();
+    public MapColor getMapColor(IBlockState state) {
+        return ((EnumDyeColor) state.getValue(COLOR)).getMapColor();
     }
 
     @SideOnly(Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
-    {
+    public EnumWorldBlockLayer getBlockLayer() {
         return EnumWorldBlockLayer.TRANSLUCENT;
     }
 
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-    {
-        if (!worldIn.isRemote)
-        {
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+        if (!worldIn.isRemote) {
             BlockBeacon.updateColorAsync(worldIn, pos);
         }
     }
 
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
-    {
-        if (!worldIn.isRemote)
-        {
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        if (!worldIn.isRemote) {
             BlockBeacon.updateColorAsync(worldIn, pos);
+        }
+    }
+
+    // create a list of the subBlocks available for this block, i.e. one for each colour
+    //  - used to populate items for the creative inventory
+    // - the "metadata" value of the block is set to the colours metadata
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
+    {
+        for (EnumDyeColor colour : EnumDyeColor.values())
+        {
+            list.add(new ItemStack(itemIn, 1, colour.getMetadata()));
         }
     }
 }

@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.block;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
@@ -31,5 +32,11 @@ public class BlockFragileGlass extends AnyFragileGlassBlock
     public boolean shouldSideBeRendered(IBlockAccess w, BlockPos pos, EnumFacing side)
     {
         return w.getBlockState(pos) instanceof BlockFragileGlass ? false : super.shouldSideBeRendered(w, pos, side);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public EnumWorldBlockLayer getBlockLayer()
+    {
+        return EnumWorldBlockLayer.CUTOUT_MIPPED;
     }
 }

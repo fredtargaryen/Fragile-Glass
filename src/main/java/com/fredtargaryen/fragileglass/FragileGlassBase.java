@@ -1,16 +1,18 @@
 /**TO DO
- * Add the jsons
- * Decide re. items
+ * Blocks don't have the right models yet
  * Glass should break before ents hit it, so they don't lose speed - can't do much about this
  */
 
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
+import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragileGlass;
+import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragilePane;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityGlass;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -18,6 +20,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
 public class FragileGlassBase
@@ -58,9 +61,10 @@ public class FragileGlassBase
     	//Register blocks
     	GameRegistry.registerBlock(fragileGlass, fragileGlass.getUnlocalizedName().substring(5));
     	GameRegistry.registerBlock(fragilePane, fragilePane.getUnlocalizedName().substring(5));
-        GameRegistry.registerBlock(stainedFragileGlass, stainedFragileGlass.getUnlocalizedName().substring(5));
-        GameRegistry.registerBlock(stainedFragilePane, stainedFragilePane.getUnlocalizedName().substring(5));
+        GameRegistry.registerBlock(stainedFragileGlass, ItemBlockStainedFragileGlass.class, stainedFragileGlass.getUnlocalizedName().substring(5));
+        GameRegistry.registerBlock(stainedFragilePane, ItemBlockStainedFragilePane.class, stainedFragilePane.getUnlocalizedName().substring(5));
     	GameRegistry.registerBlock(sugarBlock, sugarBlock.getUnlocalizedName().substring(5));
+        OreDictionary.registerOre("blockSugar", new ItemStack(sugarBlock, 1, 1));
     }
         
     @Mod.EventHandler

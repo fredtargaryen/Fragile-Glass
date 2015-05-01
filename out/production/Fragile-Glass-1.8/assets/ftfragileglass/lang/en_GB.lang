@@ -1,0 +1,46 @@
+tile.ftfragileglass.name=Fragile Glass
+tile.ftfragilepane.name=Fragile Glass Pane
+
+
+/STAINED FRAGILE GLASS
+tile.ftstainedfragileglass.name=Stained Fragile Glass
+tile.ftstainedfragileglass.black.name=Black Stained Fragile Glass
+tile.ftstainedfragileglass.red.name=Red Stained Fragile Glass
+tile.ftstainedfragileglass.green.name=Green Stained Fragile Glass
+tile.ftstainedfragileglass.brown.name=Brown Stained Fragile Glass
+tile.ftstainedfragileglass.blue.name=Blue Stained Fragile Glass
+tile.ftstainedfragileglass.purple.name=Purple Stained Fragile Glass
+tile.ftstainedfragileglass.cyan.name=Cyan Stained Fragile Glass
+tile.ftstainedfragileglass.silver.name=Light Grey Stained Fragile Glass
+tile.ftstainedfragileglass.gray.name=Grey Stained Fragile Glass
+tile.ftstainedfragileglass.pink.name=Pink Stained Fragile Glass
+tile.ftstainedfragileglass.lime.name=Lime Stained Fragile Glass
+tile.ftstainedfragileglass.yellow.name=Yellow Stained Fragile Glass
+tile.ftstainedfragileglass.light_blue.name=Light Blue Stained Fragile Glass
+tile.ftstainedfragileglass.magenta.name=Magenta Stained Fragile Glass
+tile.ftstainedfragileglass.orange.name=Orange Stained Fragile Glass
+tile.ftstainedfragileglass.white.name=White Stained Fragile Glass
+
+
+/STAINED FRAGILE GLASS PANE
+tile.ftstainedfragilepane.name=Stained Fragile Glass Pane
+tile.ftstainedfragilepane.black.name=Black Stained Fragile Glass Pane
+tile.ftstainedfragilepane.red.name=Red Stained Fragile Glass Pane
+tile.ftstainedfragilepane.green.name=Green Stained Fragile Glass Pane
+tile.ftstainedfragilepane.brown.name=Brown Stained Fragile Glass Pane
+tile.ftstainedfragilepane.blue.name=Blue Stained Fragile Glass Pane
+tile.ftstainedfragilepane.purple.name=Purple Stained Fragile Glass Pane
+tile.ftstainedfragilepane.cyan.name=Cyan Stained Fragile Glass Pane
+tile.ftstainedfragilepane.silver.name=Light Grey Stained Fragile Glass Pane
+tile.ftstainedfragilepane.gray.name=Grey Stained Fragile Glass Pane
+tile.ftstainedfragilepane.pink.name=Pink Stained Fragile Glass Pane
+tile.ftstainedfragilepane.lime.name=Lime Stained Fragile Glass Pane
+tile.ftstainedfragilepane.yellow.name=Yellow Stained Fragile Glass Pane
+tile.ftstainedfragilepane.light_blue.name=Light Blue Stained Fragile Glass Pane
+tile.ftstainedfragilepane.magenta.name=Magenta Stained Fragile Glass Pane
+tile.ftstainedfragilepane.orange.name=Orange Stained Fragile Glass Pane
+tile.ftstainedfragilepane.white.name=White Stained Fragile Glass Pane
+
+
+/OTHER BLOCKS
+tile.ftsugarblock.name=Sugar Block
