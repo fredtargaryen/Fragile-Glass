@@ -1,5 +1,6 @@
 /**TO DO
- * Blocks don't have the right models yet
+ * No inventory icons
+ * Panes ain't linkin'
  * Glass should break before ents hit it, so they don't lose speed - can't do much about this
  */
 
@@ -11,9 +12,11 @@ import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragilePane;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityGlass;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
+import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -62,7 +65,9 @@ public class FragileGlassBase
     	GameRegistry.registerBlock(fragileGlass, fragileGlass.getUnlocalizedName().substring(5));
     	GameRegistry.registerBlock(fragilePane, fragilePane.getUnlocalizedName().substring(5));
         GameRegistry.registerBlock(stainedFragileGlass, ItemBlockStainedFragileGlass.class, stainedFragileGlass.getUnlocalizedName().substring(5));
+        ModelLoader.setCustomStateMapper(stainedFragileGlass, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass").build());
         GameRegistry.registerBlock(stainedFragilePane, ItemBlockStainedFragilePane.class, stainedFragilePane.getUnlocalizedName().substring(5));
+        ModelLoader.setCustomStateMapper(stainedFragilePane, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass_pane").build());
     	GameRegistry.registerBlock(sugarBlock, sugarBlock.getUnlocalizedName().substring(5));
         OreDictionary.registerOre("blockSugar", new ItemStack(sugarBlock, 1, 1));
     }
@@ -88,6 +93,7 @@ public class FragileGlassBase
         GameRegistry.registerTileEntity(TileEntityGlass.class, "glassTE");
 
     	proxy.registerRenderers();
+        proxy.registerModels();
     }
         
     @Mod.EventHandler

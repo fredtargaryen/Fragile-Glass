@@ -15,7 +15,6 @@
         "east=true,north=false,south=true,west=true": { "model": "glass_pane_nse", "y": 90 },
         "east=false,north=true,south=true,west=true": { "model": "glass_pane_nse", "y": 180 },
         "east=true,north=true,south=false,west=true": { "model": "glass_pane_nse", "y": 270 },
-        "east=true,north=true,south=true,west=true": { "model": "glass_pane_nsew" },
-        "inventory": { "model": "glass_pane" }
+        "east=true,north=true,south=true,west=true": { "model": "glass_pane_nsew" }
     }
 }
