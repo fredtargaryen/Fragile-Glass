@@ -1,8 +1,4 @@
 /**
- * TO DO
- * Stained Glass blocks are just white
- * Stained Glass Panes are just white
- * "...#inventory not found"s
  * Glass should break before ents hit it, so they don't lose speed - can't do much about this
  */
 

@@ -18,11 +18,6 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public void registerTickHandlers()
-    {
-    }
-
-    @Override
     public void registerModels()
     {
         //Describes how some blocks should look in the inventory

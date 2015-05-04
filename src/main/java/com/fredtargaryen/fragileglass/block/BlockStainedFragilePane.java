@@ -53,6 +53,7 @@ public class BlockStainedFragilePane extends BlockFragilePane
      *
      * @param collidingEntity the Entity colliding with this Block
      */
+    @Override
     public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List list, Entity collidingEntity)
     {
         boolean flag = this.canPaneConnectTo(worldIn, pos, EnumFacing.NORTH);
@@ -102,11 +103,13 @@ public class BlockStainedFragilePane extends BlockFragilePane
     /**
      * Sets the block's bounds for rendering it as an item
      */
+    @Override
     public void setBlockBoundsForItemRender()
     {
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     }
 
+    @Override
     public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
     {
         float f = 0.4375F;
@@ -156,23 +159,16 @@ public class BlockStainedFragilePane extends BlockFragilePane
     }
 
     /**
-     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
-     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
-     */
-    protected ItemStack createStackedBlock(int p_149644_1_)
-    {
-        return null;
-    }
-
-    /**
      * Convert the given metadata into a BlockState for this Block
      */
+    @Override
     public IBlockState getStateFromMeta(int meta)
     {
         return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
     }
 
     @SideOnly(Side.CLIENT)
+    @Override
     public EnumWorldBlockLayer getBlockLayer()
     {
         return EnumWorldBlockLayer.TRANSLUCENT;
@@ -181,16 +177,19 @@ public class BlockStainedFragilePane extends BlockFragilePane
     /**
      * Convert the BlockState into the correct metadata value
      */
+    @Override
     public int getMetaFromState(IBlockState state)
     {
         return ((EnumDyeColor)state.getValue(COLOR)).getMetadata();
     }
 
+    @Override
     protected BlockState createBlockState()
     {
         return new BlockState(this, new IProperty[] {NORTH, EAST, WEST, SOUTH, COLOR});
     }
 
+    @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
     {
         if (!worldIn.isRemote)
@@ -199,6 +198,7 @@ public class BlockStainedFragilePane extends BlockFragilePane
         }
     }
 
+    @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
     {
         if (!worldIn.isRemote)
@@ -207,6 +207,7 @@ public class BlockStainedFragilePane extends BlockFragilePane
         }
     }
 
+    @Override
     public boolean canPaneConnectToBlock(Block blockIn)
     {
         return blockIn.isFullBlock()

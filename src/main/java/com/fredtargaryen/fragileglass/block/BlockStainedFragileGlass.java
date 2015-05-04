@@ -30,6 +30,7 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
     /**
      * Convert the given metadata into a BlockState for this Block
      */
+    @Override
     public IBlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
     }
@@ -37,10 +38,12 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
     /**
      * Convert the BlockState into the correct metadata value
      */
+    @Override
     public int getMetaFromState(IBlockState state) {
         return ((EnumDyeColor) state.getValue(COLOR)).getMetadata();
     }
 
+    @Override
     protected BlockState createBlockState() {
         return new BlockState(this, new IProperty[]{COLOR});
     }
@@ -48,21 +51,25 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
     /**
      * Get the MapColor for this Block and the given BlockState
      */
+    @Override
     public MapColor getMapColor(IBlockState state) {
         return ((EnumDyeColor) state.getValue(COLOR)).getMapColor();
     }
 
     @SideOnly(Side.CLIENT)
+    @Override
     public EnumWorldBlockLayer getBlockLayer() {
         return EnumWorldBlockLayer.TRANSLUCENT;
     }
 
+    @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         if (!worldIn.isRemote) {
             BlockBeacon.updateColorAsync(worldIn, pos);
         }
     }
 
+    @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         if (!worldIn.isRemote) {
             BlockBeacon.updateColorAsync(worldIn, pos);
@@ -73,6 +80,7 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
     @SideOnly(Side.CLIENT)
+    @Override
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
     {
         EnumDyeColor[] aenumdyecolor = EnumDyeColor.values();

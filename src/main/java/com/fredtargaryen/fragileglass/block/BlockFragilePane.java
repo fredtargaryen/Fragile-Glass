@@ -15,7 +15,6 @@ import net.minecraft.block.BlockPane;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
@@ -23,7 +22,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class BlockFragilePane extends AnyFragileGlassBlock
+public class BlockFragilePane extends AnyFragileBlock
 {
     public static final PropertyBool NORTH = PropertyBool.create("north");
     public static final PropertyBool EAST = PropertyBool.create("east");
@@ -32,7 +31,7 @@ public class BlockFragilePane extends AnyFragileGlassBlock
 
 	public BlockFragilePane()
 	{
-		super();
+		super(false);
         this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, Boolean.valueOf(false)).withProperty(EAST, Boolean.valueOf(false)).withProperty(SOUTH, Boolean.valueOf(false)).withProperty(WEST, Boolean.valueOf(false)));
 		this.setCreativeTab(CreativeTabs.tabDecorations);
 	}
@@ -41,6 +40,7 @@ public class BlockFragilePane extends AnyFragileGlassBlock
      * Get the actual Block state of this Block at the given position. This applies properties not visible in the
      * metadata, such as fence connections.
      */
+    @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
         return state.withProperty(NORTH, canPaneConnectTo(worldIn, pos, EnumFacing.NORTH))
@@ -50,20 +50,10 @@ public class BlockFragilePane extends AnyFragileGlassBlock
     }
 
     @SideOnly(Side.CLIENT)
+    @Override
     public EnumWorldBlockLayer getBlockLayer()
     {
         return EnumWorldBlockLayer.CUTOUT_MIPPED;
-    }
-
-    /**
-     * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
-     * coordinates.  Args: blockAccess, x, y, z, side
-     */
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess w, BlockPos pos, EnumFacing side)
-    {
-        return w.getBlockState(pos).getBlock() instanceof BlockFragilePane ? false : super.shouldSideBeRendered(w, pos, side);
     }
 
     /**
@@ -71,6 +61,7 @@ public class BlockFragilePane extends AnyFragileGlassBlock
      *
      * @param collidingEntity the Entity colliding with this Block
      */
+    @Override
     public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List list, Entity collidingEntity)
     {
         boolean flag = this.canPaneConnectTo(worldIn, pos, EnumFacing.NORTH);
@@ -120,11 +111,13 @@ public class BlockFragilePane extends AnyFragileGlassBlock
     /**
      * Sets the block's bounds for rendering it as an item
      */
+    @Override
     public void setBlockBoundsForItemRender()
     {
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     }
 
+    @Override
     public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
     {
         float f = 0.4375F;
@@ -186,16 +179,6 @@ public class BlockFragilePane extends AnyFragileGlassBlock
                 || blockIn instanceof BlockPane;
     }
 
-    /**
-     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
-     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
-     */
-    @Override
-    protected ItemStack createStackedBlock(IBlockState state)
-    {
-        return null;
-    }
-
     public boolean canPaneConnectTo(IBlockAccess world, BlockPos pos, EnumFacing dir)
     {
         BlockPos off = pos.offset(dir);
@@ -205,14 +188,15 @@ public class BlockFragilePane extends AnyFragileGlassBlock
     /**
      * Convert the BlockState into the correct metadata value
      */
+    @Override
     public int getMetaFromState(IBlockState state)
     {
         return 0;
     }
 
+    @Override
     protected BlockState createBlockState()
     {
         return new BlockState(this, new IProperty[] {NORTH, EAST, WEST, SOUTH});
     }
-
 }

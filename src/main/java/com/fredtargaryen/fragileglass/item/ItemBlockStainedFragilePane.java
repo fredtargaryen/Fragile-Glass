@@ -16,8 +16,15 @@ public class ItemBlockStainedFragilePane extends ItemBlock
      * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
      * different names based on their damage or NBT.
      */
+    @Override
     public String getUnlocalizedName(ItemStack stack)
     {
         return super.getUnlocalizedName() + "." + EnumDyeColor.byMetadata(stack.getMetadata()).getUnlocalizedName();
+    }
+
+    @Override
+    public int getMetadata(int damage)
+    {
+        return damage;
     }
 }
