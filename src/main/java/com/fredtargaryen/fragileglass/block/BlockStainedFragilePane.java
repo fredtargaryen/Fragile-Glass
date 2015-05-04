@@ -1,10 +1,14 @@
 package com.fredtargaryen.fragileglass.block;
 
+import com.fredtargaryen.fragileglass.FragileGlassBase;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockBeacon;
+import net.minecraft.block.BlockPane;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -157,7 +161,7 @@ public class BlockStainedFragilePane extends BlockFragilePane
      */
     protected ItemStack createStackedBlock(int p_149644_1_)
     {
-        return new ItemStack(Item.getItemFromBlock(this), 1, p_149644_1_);
+        return null;
     }
 
     /**
@@ -201,5 +205,18 @@ public class BlockStainedFragilePane extends BlockFragilePane
         {
             BlockBeacon.updateColorAsync(worldIn, pos);
         }
+    }
+
+    public boolean canPaneConnectToBlock(Block blockIn)
+    {
+        return blockIn.isFullBlock()
+                || blockIn == this
+                || blockIn == Blocks.glass
+                || blockIn == FragileGlassBase.fragileGlass
+                || blockIn == FragileGlassBase.fragilePane
+                || blockIn == Blocks.stained_glass
+                || blockIn == FragileGlassBase.stainedFragileGlass
+                || blockIn == Blocks.stained_glass_pane
+                || blockIn instanceof BlockPane;
     }
 }

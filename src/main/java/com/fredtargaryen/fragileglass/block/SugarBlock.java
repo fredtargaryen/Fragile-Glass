@@ -9,6 +9,6 @@ public class SugarBlock extends Block
 	public SugarBlock()
 	{
 		super(Material.wood);
-		setCreativeTab(CreativeTabs.tabMisc);
+		setCreativeTab(CreativeTabs.tabBlock);
 	}
 }

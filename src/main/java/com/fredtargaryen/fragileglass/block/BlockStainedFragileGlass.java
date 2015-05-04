@@ -69,16 +69,19 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
         }
     }
 
-    // create a list of the subBlocks available for this block, i.e. one for each colour
-    //  - used to populate items for the creative inventory
-    // - the "metadata" value of the block is set to the colours metadata
-    @Override
+    /**
+     * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
+     */
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
     {
-        for (EnumDyeColor colour : EnumDyeColor.values())
+        EnumDyeColor[] aenumdyecolor = EnumDyeColor.values();
+        int i = aenumdyecolor.length;
+
+        for (int j = 0; j < i; ++j)
         {
-            list.add(new ItemStack(itemIn, 1, colour.getMetadata()));
+            EnumDyeColor enumdyecolor = aenumdyecolor[j];
+            list.add(new ItemStack(itemIn, 1, enumdyecolor.getMetadata()));
         }
     }
 }

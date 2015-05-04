@@ -1,5 +1,6 @@
 package com.fredtargaryen.fragileglass.block;
 
+import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockState;
@@ -172,29 +173,34 @@ public class BlockFragilePane extends AnyFragileGlassBlock
         this.setBlockBounds(f, 0.0F, f2, f1, 1.0F, f3);
     }
 
-    public final boolean canPaneConnectToBlock(Block p_150098_1_)
+    public boolean canPaneConnectToBlock(Block blockIn)
     {
-        return p_150098_1_ == this
-                || p_150098_1_ == Blocks.glass
-                || p_150098_1_ == Blocks.stained_glass
-                || p_150098_1_ == Blocks.stained_glass_pane
-                || p_150098_1_ instanceof BlockPane
-                || p_150098_1_ instanceof AnyFragileGlassBlock;
+        return blockIn.isFullBlock()
+                || blockIn == this
+                || blockIn == Blocks.glass
+                || blockIn == FragileGlassBase.fragileGlass
+                || blockIn == Blocks.stained_glass
+                || blockIn == FragileGlassBase.stainedFragileGlass
+                || blockIn == Blocks.stained_glass_pane
+                || blockIn == FragileGlassBase.stainedFragilePane
+                || blockIn instanceof BlockPane;
     }
 
     /**
      * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
      * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
      */
-    protected ItemStack createStackedBlock(int p_149644_1_)
+    @Override
+    protected ItemStack createStackedBlock(IBlockState state)
     {
-        return new ItemStack(Item.getItemFromBlock(this), 1, p_149644_1_);
+        return null;
     }
 
     public boolean canPaneConnectTo(IBlockAccess world, BlockPos pos, EnumFacing dir)
     {
-        return this.canPaneConnectToBlock(world.getBlockState(pos).getBlock()) ||
-                world.isSideSolid(pos, dir.getOpposite(), false);
+        BlockPos off = pos.offset(dir);
+        Block block = world.getBlockState(off).getBlock();
+        return canPaneConnectToBlock(block) || block.isSideSolid(world, off, dir.getOpposite());
     }
     /**
      * Convert the BlockState into the correct metadata value
