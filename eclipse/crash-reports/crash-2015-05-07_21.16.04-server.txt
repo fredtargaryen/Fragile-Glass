@@ -1,0 +1,257 @@
+---- Minecraft Crash Report ----
+// Quite honestly, I wouldn't worry myself about that.
+
+Time: 07/05/15 21:16
+Description: Watching Server
+
+java.lang.Error
+	at java.lang.ThreadLocal.get(ThreadLocal.java:143)
+	at org.apache.logging.log4j.spi.DefaultThreadContextStack.getDepth(DefaultThreadContextStack.java:80)
+	at org.apache.logging.log4j.ThreadContext.getDepth(ThreadContext.java:241)
+	at org.apache.logging.log4j.core.impl.Log4jLogEvent.<init>(Log4jLogEvent.java:90)
+	at org.apache.logging.log4j.core.impl.DefaultLogEventFactory.createEvent(DefaultLogEventFactory.java:49)
+	at org.apache.logging.log4j.core.config.LoggerConfig.log(LoggerConfig.java:365)
+	at org.apache.logging.log4j.core.Logger.log(Logger.java:110)
+	at org.apache.logging.log4j.spi.AbstractLogger.log(AbstractLogger.java:1417)
+	at net.minecraftforge.fml.relauncher.FMLRelaunchLog.log(FMLRelaunchLog.java:60)
+	at net.minecraftforge.fml.common.FMLLog.log(FMLLog.java:25)
+	at net.minecraftforge.fml.common.LoadController.sendEventToModContainer(LoadController.java:207)
+	at net.minecraftforge.fml.common.LoadController.propogateStateMessage(LoadController.java:187)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at com.google.common.eventbus.EventSubscriber.handleEvent(EventSubscriber.java:74)
+	at com.google.common.eventbus.SynchronizedEventSubscriber.handleEvent(SynchronizedEventSubscriber.java:47)
+	at com.google.common.eventbus.EventBus.dispatch(EventBus.java:322)
+	at com.google.common.eventbus.EventBus.dispatchQueuedEvents(EventBus.java:304)
+	at com.google.common.eventbus.EventBus.post(EventBus.java:275)
+	at net.minecraftforge.fml.common.LoadController.distributeStateMessage(LoadController.java:118)
+	at net.minecraftforge.fml.common.Loader.serverStarted(Loader.java:751)
+	at net.minecraftforge.fml.common.FMLCommonHandler.handleServerStarted(FMLCommonHandler.java:324)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:502)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at java.lang.ThreadLocal.get(ThreadLocal.java:143)
+	at org.apache.logging.log4j.spi.DefaultThreadContextStack.getDepth(DefaultThreadContextStack.java:80)
+	at org.apache.logging.log4j.ThreadContext.getDepth(ThreadContext.java:241)
+	at org.apache.logging.log4j.core.impl.Log4jLogEvent.<init>(Log4jLogEvent.java:90)
+	at org.apache.logging.log4j.core.impl.DefaultLogEventFactory.createEvent(DefaultLogEventFactory.java:49)
+	at org.apache.logging.log4j.core.config.LoggerConfig.log(LoggerConfig.java:365)
+	at org.apache.logging.log4j.core.Logger.log(Logger.java:110)
+	at org.apache.logging.log4j.spi.AbstractLogger.log(AbstractLogger.java:1417)
+	at net.minecraftforge.fml.relauncher.FMLRelaunchLog.log(FMLRelaunchLog.java:60)
+	at net.minecraftforge.fml.common.FMLLog.log(FMLLog.java:25)
+	at net.minecraftforge.fml.common.LoadController.sendEventToModContainer(LoadController.java:207)
+	at net.minecraftforge.fml.common.LoadController.propogateStateMessage(LoadController.java:187)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at com.google.common.eventbus.EventSubscriber.handleEvent(EventSubscriber.java:74)
+	at com.google.common.eventbus.SynchronizedEventSubscriber.handleEvent(SynchronizedEventSubscriber.java:47)
+	at com.google.common.eventbus.EventBus.dispatch(EventBus.java:322)
+	at com.google.common.eventbus.EventBus.dispatchQueuedEvents(EventBus.java:304)
+	at com.google.common.eventbus.EventBus.post(EventBus.java:275)
+	at net.minecraftforge.fml.common.LoadController.distributeStateMessage(LoadController.java:118)
+	at net.minecraftforge.fml.common.Loader.serverStarted(Loader.java:751)
+	at net.minecraftforge.fml.common.FMLCommonHandler.handleServerStarted(FMLCommonHandler.java:324)
+
+-- Thread Dump --
+Details:
+	Threads: "Server Watchdog" Id=38 RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:446)
+	at net.minecraft.server.dedicated.ServerHangWatchdog.run(ServerHangWatchdog.java:46)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Netty Server IO #0" Id=33 RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+	-  locked io.netty.channel.nio.SelectedSelectionKeySet@c3cbc2
+	-  locked java.util.Collections$UnmodifiableSet@5331429e
+	-  locked sun.nio.ch.WindowsSelectorImpl@157ce7bc
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+	at io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:596)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:306)
+	...
+
+
+"D3D Screen Updater" Id=29 WAITING on java.lang.Object@3b51f2a9
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.Object@3b51f2a9
+	at sun.java2d.d3d.D3DScreenUpdateManager.run(D3DScreenUpdateManager.java:432)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Server console handler" Id=28 RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:272)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:273)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+	-  locked java.io.BufferedInputStream@11253ac
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:283)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:325)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:177)
+	-  locked java.io.InputStreamReader@5b21d283
+	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+	...
+
+
+"DestroyJavaVM" Id=27 RUNNABLE
+
+
+"Server thread" Id=25 RUNNABLE
+	at java.lang.ThreadLocal.get(ThreadLocal.java:143)
+	at org.apache.logging.log4j.spi.DefaultThreadContextStack.getDepth(DefaultThreadContextStack.java:80)
+	at org.apache.logging.log4j.ThreadContext.getDepth(ThreadContext.java:241)
+	at org.apache.logging.log4j.core.impl.Log4jLogEvent.<init>(Log4jLogEvent.java:90)
+	at org.apache.logging.log4j.core.impl.DefaultLogEventFactory.createEvent(DefaultLogEventFactory.java:49)
+	at org.apache.logging.log4j.core.config.LoggerConfig.log(LoggerConfig.java:365)
+	at org.apache.logging.log4j.core.Logger.log(Logger.java:110)
+	at org.apache.logging.log4j.spi.AbstractLogger.log(AbstractLogger.java:1417)
+	...
+
+
+"TimerQueue" Id=23 TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@37d5e75e
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@37d5e75e
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:226)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2082)
+	at java.util.concurrent.DelayQueue.take(DelayQueue.java:220)
+	at javax.swing.TimerQueue.run(TimerQueue.java:171)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@599c9858
+
+
+"Thread-5" Id=22 WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@3c48e8f5
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@3c48e8f5
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at com.mojang.util.QueueLogAppender.getNextLogEvent(QueueLogAppender.java:77)
+	at net.minecraft.server.gui.MinecraftServerGui$4.run(MinecraftServerGui.java:166)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"AWT-EventQueue-0" Id=20 RUNNABLE (in native)
+	at sun.java2d.d3d.D3DRenderQueue.flushBuffer(Native Method)
+	at sun.java2d.d3d.D3DRenderQueue.flushBuffer(D3DRenderQueue.java:152)
+	at sun.java2d.d3d.D3DRenderQueue.flushNow(D3DRenderQueue.java:137)
+	at sun.java2d.d3d.D3DSurfaceData.swapBuffers(D3DSurfaceData.java:765)
+	at sun.java2d.d3d.D3DGraphicsConfig.flip(D3DGraphicsConfig.java:191)
+	at sun.awt.windows.WComponentPeer.flip(WComponentPeer.java:972)
+	at java.awt.Component$FlipBufferStrategy.flipSubRegion(Component.java:4088)
+	at java.awt.Component$FlipBufferStrategy.showSubRegion(Component.java:4208)
+	...
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@56b64bbe
+
+
+"AWT-Shutdown" Id=21 WAITING on java.lang.Object@5a26d36b
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.Object@5a26d36b
+	at java.lang.Object.wait(Object.java:503)
+	at sun.awt.AWTAutoShutdown.run(AWTAutoShutdown.java:296)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"AWT-Windows" Id=18 RUNNABLE
+	at sun.awt.windows.WToolkit.eventLoop(Native Method)
+	at sun.awt.windows.WToolkit.run(WToolkit.java:308)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Java2D Disposer" Id=16 WAITING on java.lang.ref.ReferenceQueue$Lock@2b02440a
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@2b02440a
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:135)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:151)
+	at sun.java2d.Disposer.run(Disposer.java:145)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Server Infinisleeper" Id=15 TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at net.minecraft.server.dedicated.DedicatedServer$1.run(DedicatedServer.java:73)
+
+
+"Snooper Timer" Id=14 WAITING on java.util.TaskQueue@21c10295
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.util.TaskQueue@21c10295
+	at java.lang.Object.wait(Object.java:503)
+	at java.util.TimerThread.mainLoop(Timer.java:526)
+	at java.util.TimerThread.run(Timer.java:505)
+
+
+"Monitor Ctrl-Break" Id=10 RUNNABLE (in native)
+	at java.net.DualStackPlainSocketImpl.accept0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketAccept(DualStackPlainSocketImpl.java:131)
+	at java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:398)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:199)
+	-  locked java.net.SocksSocketImpl@6909583
+	at java.net.ServerSocket.implAccept(ServerSocket.java:530)
+	at java.net.ServerSocket.accept(ServerSocket.java:498)
+	at com.intellij.rt.execution.application.AppMain$1.run(AppMain.java:85)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Attach Listener" Id=6 RUNNABLE
+
+
+"Signal Dispatcher" Id=5 RUNNABLE
+
+
+"Finalizer" Id=3 WAITING on java.lang.ref.ReferenceQueue$Lock@7e47ced2
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@7e47ced2
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:135)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:151)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+
+"Reference Handler" Id=2 WAITING on java.lang.ref.Reference$Lock@1c5b7dc3
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@1c5b7dc3
+	at java.lang.Object.wait(Object.java:503)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:133)
+
+
+
+Stacktrace:
+	at net.minecraft.server.dedicated.ServerHangWatchdog.run(ServerHangWatchdog.java:67)
+	at java.lang.Thread.run(Thread.java:745)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.8
+	Operating System: Windows 7 (amd64) version 6.1
+	Java Version: 1.7.0_72, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 154352968 bytes (147 MB) / 267493376 bytes (255 MB) up to 949354496 bytes (905 MB)
+	JVM Flags: 1 total; -Xincgc
+	IntCache: cache: 0, tcache: 0, allocated: 13, tallocated: 95
+	FML: MCP v9.10 FML v8.0.37.1334 Minecraft Forge 11.14.1.1334 4 mods loaded, 4 mods active
+	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	FML{8.0.37.1334} [Forge Mod Loader] (forgeSrc-1.8-11.14.1.1334.jar) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	Forge{11.14.1.1334} [Minecraft Forge] (forgeSrc-1.8-11.14.1.1334.jar) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	ftfragileglass{1.8-1.1} [Fragile Glass] (Fragile-Glass-1.8) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	Loaded coremods (and transformers): 
+	Profiler Position: N/A (disabled)
+	Player Count: 0 / 20; []
+	Is Modded: Definitely; Server brand changed to 'fml,forge'
+	Type: Dedicated Server (map_server.txt)

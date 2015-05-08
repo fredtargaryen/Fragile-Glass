@@ -64,10 +64,9 @@ public class FragileGlassBase
     	GameRegistry.registerBlock(fragileGlass, fragileGlass.getUnlocalizedName().substring(5));
     	GameRegistry.registerBlock(fragilePane, fragilePane.getUnlocalizedName().substring(5));
         GameRegistry.registerBlock(stainedFragileGlass, ItemBlockStainedFragileGlass.class, stainedFragileGlass.getUnlocalizedName().substring(5));
-        ModelLoader.setCustomStateMapper(stainedFragileGlass, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass").build());
         GameRegistry.registerBlock(stainedFragilePane, ItemBlockStainedFragilePane.class, stainedFragilePane.getUnlocalizedName().substring(5));
-        ModelLoader.setCustomStateMapper(stainedFragilePane, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass_pane").build());
     	GameRegistry.registerBlock(sugarBlock, sugarBlock.getUnlocalizedName().substring(5));
+        proxy.doStateMappings();
         OreDictionary.registerOre("blockSugar", new ItemStack(sugarBlock, 1, 1));
     }
         
@@ -93,6 +92,7 @@ public class FragileGlassBase
 
     	proxy.registerRenderers();
         proxy.registerModels();
+        System.out.println("Loaded! Don't worry about the 'Model definition not found' errors.");
     }
         
     @Mod.EventHandler

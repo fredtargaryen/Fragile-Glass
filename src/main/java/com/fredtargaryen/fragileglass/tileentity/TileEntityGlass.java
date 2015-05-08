@@ -23,8 +23,8 @@ public class TileEntityGlass extends TileEntity implements IUpdatePlayerListBox
     @Override
     public void update()
     {
-        if(!this.worldObj.isRemote)
-        {
+        //if(!this.worldObj.isRemote)
+        //{
             BlockPos pos = new BlockPos(this.pos);
             //Get all entities near enough to break it if fast enough
             IBlockState myBlockState = this.worldObj.getBlockState(pos);
@@ -69,6 +69,6 @@ public class TileEntityGlass extends TileEntity implements IUpdatePlayerListBox
                     count++;
                 }
             }
-        }
+        //}
     }
 }

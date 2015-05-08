@@ -1,0 +1,245 @@
+---- Minecraft Crash Report ----
+// Daisy, daisy...
+
+Time: 07/05/15 20:07
+Description: Watching Server
+
+java.lang.Error
+	at net.minecraft.block.BlockBush.getCollisionBoundingBox(BlockBush.java:79)
+	at net.minecraft.block.Block.addCollisionBoxesToList(Block.java:492)
+	at net.minecraft.world.World.getCollidingBoundingBoxes(World.java:1352)
+	at net.minecraft.entity.Entity.moveEntity(Entity.java:639)
+	at net.minecraft.entity.EntityLivingBase.moveEntityWithHeading(EntityLivingBase.java:1698)
+	at net.minecraft.entity.EntityLivingBase.onLivingUpdate(EntityLivingBase.java:2025)
+	at net.minecraft.entity.EntityLiving.onLivingUpdate(EntityLiving.java:449)
+	at net.minecraft.entity.EntityAgeable.onLivingUpdate(EntityAgeable.java:173)
+	at net.minecraft.entity.passive.EntityAnimal.onLivingUpdate(EntityAnimal.java:47)
+	at net.minecraft.entity.passive.EntitySheep.onLivingUpdate(EntitySheep.java:101)
+	at net.minecraft.entity.EntityLivingBase.onUpdate(EntityLivingBase.java:1827)
+	at net.minecraft.entity.EntityLiving.onUpdate(EntityLiving.java:273)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:2024)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:758)
+	at net.minecraft.world.World.updateEntity(World.java:1990)
+	at net.minecraft.world.World.updateEntities(World.java:1816)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:587)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:774)
+	at net.minecraft.server.dedicated.DedicatedServer.updateTimeLightAndEntities(DedicatedServer.java:385)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:669)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:540)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at net.minecraft.block.BlockBush.getCollisionBoundingBox(BlockBush.java:79)
+	at net.minecraft.block.Block.addCollisionBoxesToList(Block.java:492)
+	at net.minecraft.world.World.getCollidingBoundingBoxes(World.java:1352)
+	at net.minecraft.entity.Entity.moveEntity(Entity.java:639)
+	at net.minecraft.entity.EntityLivingBase.moveEntityWithHeading(EntityLivingBase.java:1698)
+	at net.minecraft.entity.EntityLivingBase.onLivingUpdate(EntityLivingBase.java:2025)
+	at net.minecraft.entity.EntityLiving.onLivingUpdate(EntityLiving.java:449)
+	at net.minecraft.entity.EntityAgeable.onLivingUpdate(EntityAgeable.java:173)
+	at net.minecraft.entity.passive.EntityAnimal.onLivingUpdate(EntityAnimal.java:47)
+	at net.minecraft.entity.passive.EntitySheep.onLivingUpdate(EntitySheep.java:101)
+	at net.minecraft.entity.EntityLivingBase.onUpdate(EntityLivingBase.java:1827)
+	at net.minecraft.entity.EntityLiving.onUpdate(EntityLiving.java:273)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:2024)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:758)
+	at net.minecraft.world.World.updateEntity(World.java:1990)
+	at net.minecraft.world.World.updateEntities(World.java:1816)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:587)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:774)
+	at net.minecraft.server.dedicated.DedicatedServer.updateTimeLightAndEntities(DedicatedServer.java:385)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:669)
+
+-- Thread Dump --
+Details:
+	Threads: "Server Watchdog" Id=38 RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:446)
+	at net.minecraft.server.dedicated.ServerHangWatchdog.run(ServerHangWatchdog.java:46)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Netty Server IO #0" Id=33 RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+	-  locked io.netty.channel.nio.SelectedSelectionKeySet@510ceea3
+	-  locked java.util.Collections$UnmodifiableSet@7228da38
+	-  locked sun.nio.ch.WindowsSelectorImpl@33ba4add
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+	at io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:596)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:306)
+	...
+
+
+"D3D Screen Updater" Id=28 WAITING on java.lang.Object@b890db3
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.Object@b890db3
+	at sun.java2d.d3d.D3DScreenUpdateManager.run(D3DScreenUpdateManager.java:432)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Server console handler" Id=27 RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:272)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:273)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+	-  locked java.io.BufferedInputStream@52e268af
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:283)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:325)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:177)
+	-  locked java.io.InputStreamReader@500d3886
+	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+	...
+
+
+"DestroyJavaVM" Id=26 RUNNABLE
+
+
+"Server thread" Id=24 RUNNABLE
+	at net.minecraft.block.BlockBush.getCollisionBoundingBox(BlockBush.java:79)
+	at net.minecraft.block.Block.addCollisionBoxesToList(Block.java:492)
+	at net.minecraft.world.World.getCollidingBoundingBoxes(World.java:1352)
+	at net.minecraft.entity.Entity.moveEntity(Entity.java:639)
+	at net.minecraft.entity.EntityLivingBase.moveEntityWithHeading(EntityLivingBase.java:1698)
+	at net.minecraft.entity.EntityLivingBase.onLivingUpdate(EntityLivingBase.java:2025)
+	at net.minecraft.entity.EntityLiving.onLivingUpdate(EntityLiving.java:449)
+	at net.minecraft.entity.EntityAgeable.onLivingUpdate(EntityAgeable.java:173)
+	...
+
+
+"TimerQueue" Id=22 RUNNABLE
+	at javax.swing.Timer.post(Timer.java:611)
+	at javax.swing.TimerQueue.run(TimerQueue.java:181)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 2
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@13fa0e79
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@5cc342e
+
+
+"Thread-5" Id=21 WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@2175bafb
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@2175bafb
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at com.mojang.util.QueueLogAppender.getNextLogEvent(QueueLogAppender.java:77)
+	at net.minecraft.server.gui.MinecraftServerGui$4.run(MinecraftServerGui.java:166)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"AWT-EventQueue-0" Id=20 RUNNABLE (in native)
+	at sun.java2d.d3d.D3DRenderQueue.flushBuffer(Native Method)
+	at sun.java2d.d3d.D3DRenderQueue.flushBuffer(D3DRenderQueue.java:152)
+	at sun.java2d.d3d.D3DRenderQueue.flushNow(D3DRenderQueue.java:137)
+	at sun.java2d.d3d.D3DSurfaceData.swapBuffers(D3DSurfaceData.java:765)
+	at sun.java2d.d3d.D3DGraphicsConfig.flip(D3DGraphicsConfig.java:191)
+	at sun.awt.windows.WComponentPeer.flip(WComponentPeer.java:972)
+	at java.awt.Component$FlipBufferStrategy.flipSubRegion(Component.java:4088)
+	at java.awt.Component$FlipBufferStrategy.showSubRegion(Component.java:4208)
+	...
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@3846c5e6
+
+
+"AWT-Windows" Id=18 RUNNABLE
+	at sun.awt.windows.WToolkit.eventLoop(Native Method)
+	at sun.awt.windows.WToolkit.run(WToolkit.java:308)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"AWT-Shutdown" Id=17 WAITING on java.lang.Object@2e6a9be7
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.Object@2e6a9be7
+	at java.lang.Object.wait(Object.java:503)
+	at sun.awt.AWTAutoShutdown.run(AWTAutoShutdown.java:296)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Java2D Disposer" Id=16 WAITING on java.lang.ref.ReferenceQueue$Lock@5921727f
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@5921727f
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:135)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:151)
+	at sun.java2d.Disposer.run(Disposer.java:145)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Server Infinisleeper" Id=15 TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at net.minecraft.server.dedicated.DedicatedServer$1.run(DedicatedServer.java:73)
+
+
+"Snooper Timer" Id=14 TIMED_WAITING on java.util.TaskQueue@22e41d90
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.util.TaskQueue@22e41d90
+	at java.util.TimerThread.mainLoop(Timer.java:552)
+	at java.util.TimerThread.run(Timer.java:505)
+
+
+"Monitor Ctrl-Break" Id=10 RUNNABLE (in native)
+	at java.net.DualStackPlainSocketImpl.accept0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketAccept(DualStackPlainSocketImpl.java:131)
+	at java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:398)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:199)
+	-  locked java.net.SocksSocketImpl@2e50ead5
+	at java.net.ServerSocket.implAccept(ServerSocket.java:530)
+	at java.net.ServerSocket.accept(ServerSocket.java:498)
+	at com.intellij.rt.execution.application.AppMain$1.run(AppMain.java:85)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+"Attach Listener" Id=6 RUNNABLE
+
+
+"Signal Dispatcher" Id=5 RUNNABLE
+
+
+"Finalizer" Id=3 WAITING on java.lang.ref.ReferenceQueue$Lock@42695db4
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@42695db4
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:135)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:151)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+
+"Reference Handler" Id=2 WAITING on java.lang.ref.Reference$Lock@1386f67c
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@1386f67c
+	at java.lang.Object.wait(Object.java:503)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:133)
+
+
+
+Stacktrace:
+	at net.minecraft.server.dedicated.ServerHangWatchdog.run(ServerHangWatchdog.java:67)
+	at java.lang.Thread.run(Thread.java:745)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.8
+	Operating System: Windows 7 (amd64) version 6.1
+	Java Version: 1.7.0_72, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 197225960 bytes (188 MB) / 318021632 bytes (303 MB) up to 949354496 bytes (905 MB)
+	JVM Flags: 1 total; -Xincgc
+	IntCache: cache: 0, tcache: 0, allocated: 13, tallocated: 95
+	FML: MCP v9.10 FML v8.0.37.1334 Minecraft Forge 11.14.1.1334 4 mods loaded, 4 mods active
+	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	FML{8.0.37.1334} [Forge Mod Loader] (forgeSrc-1.8-11.14.1.1334.jar) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	Forge{11.14.1.1334} [Minecraft Forge] (forgeSrc-1.8-11.14.1.1334.jar) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	ftfragileglass{1.8-1.1} [Fragile Glass] (Fragile-Glass-1.8) Unloaded->Constructed->Pre-initialized->Initialized->Post-initialized->Available->Available->Available->Available
+	Loaded coremods (and transformers): 
+	Profiler Position: N/A (disabled)
+	Player Count: 0 / 20; []
+	Is Modded: Definitely; Server brand changed to 'fml,forge'
+	Type: Dedicated Server (map_server.txt)

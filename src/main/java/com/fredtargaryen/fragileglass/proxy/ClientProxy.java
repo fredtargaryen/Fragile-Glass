@@ -58,4 +58,10 @@ public class ClientProxy extends CommonProxy
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 14, new ModelResourceLocation("red_stained_glass_pane", "inventory"));
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 15, new ModelResourceLocation("black_stained_glass_pane", "inventory"));
     }
+
+    public void doStateMappings()
+    {
+        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragileGlass, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass").build());
+        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragilePane, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass_pane").build());
+    }
 }
