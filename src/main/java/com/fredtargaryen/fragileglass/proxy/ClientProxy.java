@@ -22,7 +22,7 @@ public class ClientProxy extends CommonProxy
     {
         //Describes how some blocks should look in the inventory
         ItemModelMesher m = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-        m.register(Item.getItemFromBlock(FragileGlassBase.sugarBlock), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarblock", "inventory"));
+        m.register(Item.getItemFromBlock(FragileGlassBase.sugarBlock), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarblock"));
         m.register(Item.getItemFromBlock(FragileGlassBase.fragileGlass), 0, new ModelResourceLocation("glass"));
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragileGlass), 0, new ModelResourceLocation("white_stained_glass"));
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragileGlass), 1, new ModelResourceLocation("orange_stained_glass"));
@@ -57,6 +57,7 @@ public class ClientProxy extends CommonProxy
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 13, new ModelResourceLocation("green_stained_glass_pane", "inventory"));
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 14, new ModelResourceLocation("red_stained_glass_pane", "inventory"));
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 15, new ModelResourceLocation("black_stained_glass_pane", "inventory"));
+        m.register(Item.getItemFromBlock(FragileGlassBase.thinIce), 0, new ModelResourceLocation(DataReference.MODID+":ftthinice"));
     }
 
     public void doStateMappings()

@@ -1,7 +1,7 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityGlass;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
     {
         try
         {
-            return new TileEntityGlass();
+            return new TileEntityFragile();
         }
         catch (Exception exception)
         {
@@ -92,7 +92,7 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
             }
         }
 
-        return !this.ignoreSimilarity && block == this ? false : super.shouldSideBeRendered(worldIn, pos, side);
+        return !(!this.ignoreSimilarity && block == this) && super.shouldSideBeRendered(worldIn, pos, side);
     }
 
     /**

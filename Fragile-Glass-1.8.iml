@@ -13,11 +13,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.1.1334/snapshot/20141130/forgeSrc-1.8-11.14.1.1334.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.3.1450/snapshot/20141130/forgeSrc-1.8-11.14.3.1450.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.1.1334/snapshot/20141130/forgeSrc-1.8-11.14.1.1334-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.3.1450/snapshot/20141130/forgeSrc-1.8-11.14.3.1450-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -137,10 +137,14 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-parser-combinators_2.11/1.0.1/f05d7345bf5a58924f2837c6c1f4d73a938e1ff0/scala-parser-combinators_2.11-1.0.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.0.1/f05d7345bf5a58924f2837c6c1f4d73a938e1ff0/scala-parser-combinators_2.11-1.0.1.jar!/" />
         </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <JAVADOC>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.0.1/1078474ef0f67e27e5c53bfbe404c2a99fadaf6f/scala-parser-combinators_2.11-1.0.1-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.0.1/34d013c02d0b73794ba2911552896dd9c00f34c3/scala-parser-combinators_2.11-1.0.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -159,19 +163,27 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-swing_2.11/1.0.1/b1cdd92bd47b1e1837139c1c53020e86bb9112ae/scala-swing_2.11-1.0.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/1.0.1/b1cdd92bd47b1e1837139c1c53020e86bb9112ae/scala-swing_2.11-1.0.1.jar!/" />
         </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <JAVADOC>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/1.0.1/205c7295348ced192a726fcedd0b40cfa45da2ee/scala-swing_2.11-1.0.1-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/1.0.1/d4bda4281db2ec74b105c5acf2326d160b79164e/scala-swing_2.11-1.0.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-xml_2.11/1.0.2/7a80ec00aec122fba7cd4e0d4cdd87ff7e4cb6d0/scala-xml_2.11-1.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.2/820fbca7e524b530fdadc594c39d49a21ea0337e/scala-xml_2.11-1.0.2.jar!/" />
         </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <JAVADOC>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.2/a06d053a9d8ccf4518b0db56c66abea9f47fee7c/scala-xml_2.11-1.0.2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.2/312c3557d1ca0b34820f3b3fc5404a47936ceb26/scala-xml_2.11-1.0.2-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -523,32 +535,6 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.2/820fbca7e524b530fdadc594c39d49a21ea0337e/scala-xml_2.11-1.0.2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.2/a06d053a9d8ccf4518b0db56c66abea9f47fee7c/scala-xml_2.11-1.0.2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.2/312c3557d1ca0b34820f3b3fc5404a47936ceb26/scala-xml_2.11-1.0.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.0.1/f05d7345bf5a58924f2837c6c1f4d73a938e1ff0/scala-parser-combinators_2.11-1.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.0.1/1078474ef0f67e27e5c53bfbe404c2a99fadaf6f/scala-parser-combinators_2.11-1.0.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.0.1/34d013c02d0b73794ba2911552896dd9c00f34c3/scala-parser-combinators_2.11-1.0.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput-platform/2.0.5/7ff832a6eb9ab6a767f1ade2b548092d0fa64795/jinput-platform-2.0.5-natives-linux.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -657,7 +643,7 @@
     <orderEntry type="module-library" exported="" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="file://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.1.1334/start" />
+          <root url="file://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.3.1450/start" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

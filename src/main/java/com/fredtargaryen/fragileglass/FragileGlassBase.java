@@ -1,5 +1,5 @@
 /**
- * Glass should break before ents hit it, so they don't lose speed - can't do much about this
+ * "Physics" still not perfect
  */
 
 package com.fredtargaryen.fragileglass;
@@ -8,13 +8,12 @@ import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragileGlass;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragilePane;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityGlass;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
+import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockColored;
-import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -29,13 +28,21 @@ public class FragileGlassBase
 	// The instance of your mod that Forge uses.
     @Mod.Instance(value = "ftfragileglass")
     public static FragileGlassBase instance;
-    
+
+    //Config vars
+    public static boolean genThinIce;
+    public static int avePatchSize;
+    public static int genChance;
+
+    public static final PatchGen patchGen = new PatchGen();
+
     //Declare all blocks here
     public static Block fragileGlass;
 	public static Block fragilePane;
     public static Block stainedFragileGlass;
     public static Block stainedFragilePane;
 	public static Block sugarBlock;
+    public static Block thinIce;
     
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
@@ -44,6 +51,15 @@ public class FragileGlassBase
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        //CONFIG SETUP
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+        config.load();
+        avePatchSize = config.getInt("avePatchSize", "Worldgen", 5, 4, 10, "Average patch diameter");
+        genChance = config.getInt("genChance", "Worldgen", 3, 2, 5, "1 in x chance of patch appearing");
+        genThinIce = config.getBoolean("genThinIce", "Worldgen", true, "If true, thin ice patches will generate on frozen bodies of water");
+        config.save();
+
+        //BLOCK SETUP
     	fragileGlass = new BlockFragileGlass()
                 .setUnlocalizedName("ftfragileglass")
     			.setStepSound(Block.soundTypeGlass);
@@ -58,7 +74,10 @@ public class FragileGlassBase
                 .setStepSound(Block.soundTypeGlass);
     	sugarBlock = new SugarBlock()
                 .setUnlocalizedName("ftsugarblock")
-                .setStepSound(Block.soundTypeGravel);
+                .setStepSound(Block.soundTypeSand);
+        thinIce = new BlockThinIce()
+                .setUnlocalizedName("ftthinice")
+                .setStepSound(Block.soundTypeGlass);
 
     	//Register blocks
     	GameRegistry.registerBlock(fragileGlass, fragileGlass.getUnlocalizedName().substring(5));
@@ -66,6 +85,7 @@ public class FragileGlassBase
         GameRegistry.registerBlock(stainedFragileGlass, ItemBlockStainedFragileGlass.class, stainedFragileGlass.getUnlocalizedName().substring(5));
         GameRegistry.registerBlock(stainedFragilePane, ItemBlockStainedFragilePane.class, stainedFragilePane.getUnlocalizedName().substring(5));
     	GameRegistry.registerBlock(sugarBlock, sugarBlock.getUnlocalizedName().substring(5));
+        GameRegistry.registerBlock(thinIce, thinIce.getUnlocalizedName().substring(5));
         proxy.doStateMappings();
         OreDictionary.registerOre("blockSugar", new ItemStack(sugarBlock, 1, 1));
     }
@@ -88,7 +108,8 @@ public class FragileGlassBase
                     'x', new ItemStack(stainedFragileGlass, 1, meta));
         }
 
-        GameRegistry.registerTileEntity(TileEntityGlass.class, "glassTE");
+        GameRegistry.registerTileEntity(TileEntityFragile.class, "glassTE");
+        if(genThinIce) GameRegistry.registerWorldGenerator(patchGen, 1);
 
     	proxy.registerRenderers();
         proxy.registerModels();
