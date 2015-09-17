@@ -12,6 +12,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -43,6 +44,7 @@ public class FragileGlassBase
     public static Block stainedFragilePane;
 	public static Block sugarBlock;
     public static Block thinIce;
+    public static Block sugarCauldron;
     
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
@@ -78,6 +80,11 @@ public class FragileGlassBase
         thinIce = new BlockThinIce()
                 .setUnlocalizedName("ftthinice")
                 .setStepSound(Block.soundTypeGlass);
+        sugarCauldron = new BlockSugarCauldron()
+                .setUnlocalizedName("ftsugarcauldron")
+                .setHardness(5.0F)
+                .setResistance(10.0F)
+                .setStepSound(Block.soundTypeMetal);
 
     	//Register blocks
     	GameRegistry.registerBlock(fragileGlass, fragileGlass.getUnlocalizedName().substring(5));
@@ -86,6 +93,8 @@ public class FragileGlassBase
         GameRegistry.registerBlock(stainedFragilePane, ItemBlockStainedFragilePane.class, stainedFragilePane.getUnlocalizedName().substring(5));
     	GameRegistry.registerBlock(sugarBlock, sugarBlock.getUnlocalizedName().substring(5));
         GameRegistry.registerBlock(thinIce, thinIce.getUnlocalizedName().substring(5));
+        GameRegistry.registerBlock(sugarCauldron, sugarCauldron.getUnlocalizedName().substring(5));
+
         proxy.doStateMappings();
         OreDictionary.registerOre("blockSugar", new ItemStack(sugarBlock, 1, 1));
     }
@@ -97,13 +106,13 @@ public class FragileGlassBase
     	GameRegistry.addRecipe(new ItemStack(sugarBlock, 1), "xxx", "xxx", "xxx",
     			'x', Items.sugar);
     	GameRegistry.addShapelessRecipe(new ItemStack(Items.sugar, 9), new ItemStack(sugarBlock));
-    	GameRegistry.addSmelting(sugarBlock, new ItemStack(fragileGlass, 64), 0.1F);
+    	GameRegistry.addShapelessRecipe(new ItemStack(sugarCauldron), Items.sugar, Items.cauldron);
     	GameRegistry.addRecipe(new ItemStack(fragilePane, 16), "xxx", "xxx",
     	        'x', fragileGlass);
         for(int meta = 0; meta < 16; meta++)
         {
             GameRegistry.addRecipe(new ItemStack(stainedFragileGlass, 8, meta), "xxx", "xox", "xxx",
-                    'x', new ItemStack(fragileGlass), 'o', new ItemStack(Items.dye, 1, meta));
+                    'x', new ItemStack(fragileGlass), 'o', new ItemStack(Items.dye, 1, 15 - meta));
             GameRegistry.addRecipe(new ItemStack(stainedFragilePane, 16, meta), "xxx", "xxx",
                     'x', new ItemStack(stainedFragileGlass, 1, meta));
         }
@@ -113,12 +122,5 @@ public class FragileGlassBase
 
     	proxy.registerRenderers();
         proxy.registerModels();
-        System.out.println("Loaded! Don't worry about the 'Model definition not found' errors.");
-    }
-        
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
-    	// Stub Method
     }
 }

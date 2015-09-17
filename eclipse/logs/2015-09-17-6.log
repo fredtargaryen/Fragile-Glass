@@ -1,0 +1,107 @@
+[15:51:31] [Client thread/INFO]: Setting user: Player405
+[15:51:51] [Client thread/INFO]: LWJGL Version: 2.9.1
+[15:52:16] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge, FMLFileResourcePack:Fragile Glass and Thin Ice
+[15:52:21] [Sound Library Loader/INFO]: Starting up SoundSystem...
+[15:52:22] [Thread-9/INFO]: Initializing LWJGL OpenAL
+[15:52:22] [Thread-9/INFO]: (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
+[15:52:24] [Thread-9/INFO]: OpenAL initialized.
+[15:52:24] [Sound Library Loader/INFO]: Sound engine started
+[15:52:52] [Client thread/INFO]: Created: 512x512 textures-atlas
+[15:53:01] [Client thread/INFO]: Reloading ResourceManager: Default, FMLFileResourcePack:Forge Mod Loader, FMLFileResourcePack:Minecraft Forge, FMLFileResourcePack:Fragile Glass and Thin Ice
+[15:53:02] [Client thread/INFO]: SoundSystem shutting down...
+[15:53:02] [Client thread/WARN]: Author: Paul Lamb, www.paulscode.com
+[15:53:02] [Sound Library Loader/INFO]: Starting up SoundSystem...
+[15:53:02] [Thread-11/INFO]: Initializing LWJGL OpenAL
+[15:53:02] [Thread-11/INFO]: (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
+[15:53:03] [Thread-11/INFO]: OpenAL initialized.
+[15:53:03] [Sound Library Loader/INFO]: Sound engine started
+[15:53:25] [Client thread/INFO]: Created: 512x512 textures-atlas
+[15:55:10] [Server thread/INFO]: Starting integrated minecraft server version 1.8
+[15:55:10] [Server thread/INFO]: Generating keypair
+[15:55:12] [Server thread/INFO]: Preparing start region for level 0
+[15:55:13] [Server thread/INFO]: Preparing spawn area: 13%
+[15:55:14] [Server thread/INFO]: Preparing spawn area: 25%
+[15:55:15] [Server thread/INFO]: Preparing spawn area: 40%
+[15:55:16] [Server thread/INFO]: Preparing spawn area: 53%
+[15:55:17] [Server thread/INFO]: Preparing spawn area: 86%
+[15:55:21] [Server thread/INFO]: Changing view distance to 8, from 10
+[15:55:21] [Server thread/WARN]: Can't keep up! Did the system time change, or is the server overloaded? Running 3191ms behind, skipping 63 tick(s)
+[15:55:34] [Server thread/INFO]: Player405[local:E:31a25f81] logged in with entity id 145 at (-1119.9794166378954, 4.0, -1103.5585581340317)
+[15:55:34] [Server thread/INFO]: Player405 joined the game
+[15:55:43] [pool-2-thread-1/WARN]: Couldn't look up profile properties for com.mojang.authlib.GameProfile@3e624b9c[id=600ef575-e50b-3323-b0f1-19e3a176b08b,name=Player405,properties={},legacy=false]
+com.mojang.authlib.exceptions.AuthenticationException: The client has sent too many requests within a certain amount of time
+	at com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService.makeRequest(YggdrasilAuthenticationService.java:65) ~[YggdrasilAuthenticationService.class:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService.fillGameProfile(YggdrasilMinecraftSessionService.java:158) [YggdrasilMinecraftSessionService.class:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1.load(YggdrasilMinecraftSessionService.java:53) [YggdrasilMinecraftSessionService$1.class:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1.load(YggdrasilMinecraftSessionService.java:50) [YggdrasilMinecraftSessionService$1.class:?]
+	at com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3524) [guava-17.0.jar:?]
+	at com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2317) [guava-17.0.jar:?]
+	at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2280) [guava-17.0.jar:?]
+	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2195) [guava-17.0.jar:?]
+	at com.google.common.cache.LocalCache.get(LocalCache.java:3934) [guava-17.0.jar:?]
+	at com.google.common.cache.LocalCache.getOrLoad(LocalCache.java:3938) [guava-17.0.jar:?]
+	at com.google.common.cache.LocalCache$LocalLoadingCache.get(LocalCache.java:4821) [guava-17.0.jar:?]
+	at com.google.common.cache.LocalCache$LocalLoadingCache.getUnchecked(LocalCache.java:4827) [guava-17.0.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService.fillProfileProperties(YggdrasilMinecraftSessionService.java:148) [YggdrasilMinecraftSessionService.class:?]
+	at net.minecraft.client.resources.SkinManager$3.run(SkinManager.java:138) [SkinManager$3.class:?]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471) [?:1.7.0_72]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262) [?:1.7.0_72]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145) [?:1.7.0_72]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615) [?:1.7.0_72]
+	at java.lang.Thread.run(Thread.java:745) [?:1.7.0_72]
+[15:55:44] [Server thread/INFO]: Saving and pausing game...
+[15:55:44] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[15:55:45] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[15:55:45] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[15:55:45] [Server thread/WARN]: Can't keep up! Did the system time change, or is the server overloaded? Running 11309ms behind, skipping 226 tick(s)
+[15:55:56] [Server thread/WARN]: Can't keep up! Did the system time change, or is the server overloaded? Running 5166ms behind, skipping 103 tick(s)
+[15:56:10] [Server thread/WARN]: Can't keep up! Did the system time change, or is the server overloaded? Running 3611ms behind, skipping 72 tick(s)
+[15:56:13] [Server thread/INFO]: Saving and pausing game...
+[15:56:13] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[15:56:14] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[15:56:14] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[15:56:18] [Server thread/INFO]: Changing difficulty to PEACEFUL, from NORMAL
+[15:56:21] [Server thread/INFO]: Player405 has just earned the achievement [Taking Inventory]
+[15:56:21] [Client thread/INFO]: [CHAT] Player405 has just earned the achievement [Taking Inventory]
+[15:56:26] [Server thread/INFO]: Saving and pausing game...
+[15:56:29] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[15:56:30] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[15:56:30] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[15:56:31] [Server thread/WARN]: Can't keep up! Did the system time change, or is the server overloaded? Running 4193ms behind, skipping 83 tick(s)
+[15:56:46] [Server thread/WARN]: Can't keep up! Did the system time change, or is the server overloaded? Running 2388ms behind, skipping 47 tick(s)
+[15:57:52] [Server thread/INFO]: Saving and pausing game...
+[15:57:52] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[15:57:52] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[15:57:52] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[16:01:08] [Server thread/INFO]: [Player405: Set own game mode to Survival Mode]
+[16:01:08] [Client thread/INFO]: [CHAT] Your game mode has been updated
+[16:01:10] [Server thread/INFO]: Saving and pausing game...
+[16:01:10] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[16:01:10] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[16:01:10] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[16:02:44] [Server thread/INFO]: Saving and pausing game...
+[16:02:44] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[16:02:44] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[16:02:44] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[16:03:46] [Client thread/INFO]: [CHAT] Unknown command. Try /help for a list of commands
+[16:03:49] [Server thread/INFO]: [Player405: Set own game mode to Creative Mode]
+[16:03:49] [Client thread/INFO]: [CHAT] Your game mode has been updated
+[16:03:57] [Server thread/INFO]: [Player405: Set own game mode to Creative Mode]
+[16:03:57] [Client thread/INFO]: [CHAT] Your game mode has been updated
+[16:04:01] [Server thread/INFO]: [Player405: Set own game mode to Survival Mode]
+[16:04:01] [Client thread/INFO]: [CHAT] Your game mode has been updated
+[16:05:20] [Server thread/INFO]: Saving and pausing game...
+[16:05:20] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[16:05:20] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[16:05:20] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[16:05:27] [Server thread/INFO]: Stopping server
+[16:05:27] [Server thread/INFO]: Saving players
+[16:05:27] [Server thread/INFO]: Saving worlds
+[16:05:27] [Server thread/INFO]: Saving chunks for level 'New World'/Overworld
+[16:05:27] [Server thread/INFO]: Saving chunks for level 'New World'/Nether
+[16:05:27] [Server thread/INFO]: Saving chunks for level 'New World'/The End
+[16:08:06] [Client thread/INFO]: Stopping!
+[16:08:06] [Client thread/INFO]: SoundSystem shutting down...
+[16:08:06] [Client thread/WARN]: Author: Paul Lamb, www.paulscode.com
+[16:09:53] [Client thread/INFO]: Setting user: Player928
+[16:10:24] [Client thread/INFO]: LWJGL Version: 2.9.1

@@ -23,6 +23,7 @@ public class ClientProxy extends CommonProxy
         //Describes how some blocks should look in the inventory
         ItemModelMesher m = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         m.register(Item.getItemFromBlock(FragileGlassBase.sugarBlock), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarblock"));
+        m.register(Item.getItemFromBlock(FragileGlassBase.sugarCauldron), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarcauldron", "inventory"));
         m.register(Item.getItemFromBlock(FragileGlassBase.fragileGlass), 0, new ModelResourceLocation("glass"));
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragileGlass), 0, new ModelResourceLocation("white_stained_glass"));
         m.register(Item.getItemFromBlock(FragileGlassBase.stainedFragileGlass), 1, new ModelResourceLocation("orange_stained_glass"));
