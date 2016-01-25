@@ -2,10 +2,10 @@ package com.fredtargaryen.fragileglass.proxy;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.client.renderer.block.VanillaOnlyStateMapper;
 import net.minecraft.block.BlockColored;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
@@ -63,7 +63,7 @@ public class ClientProxy extends CommonProxy
 
     public void doStateMappings()
     {
-        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragileGlass, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass").build());
-        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragilePane, (new StateMap.Builder()).setProperty(BlockColored.COLOR).setBuilderSuffix("_stained_glass_pane").build());
+        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragileGlass, (new VanillaOnlyStateMapper.Builder()).withName(BlockColored.COLOR).withSuffix("_stained_glass").build());
+        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragilePane, (new VanillaOnlyStateMapper.Builder()).withName(BlockColored.COLOR).withSuffix("_stained_glass_pane").build());
     }
 }

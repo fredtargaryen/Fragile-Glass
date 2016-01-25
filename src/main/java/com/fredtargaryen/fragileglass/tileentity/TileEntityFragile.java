@@ -7,15 +7,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ITickable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityFragile extends TileEntity implements IUpdatePlayerListBox
+public class TileEntityFragile extends TileEntity implements ITickable
 {
     public TileEntityFragile(){super();}
 

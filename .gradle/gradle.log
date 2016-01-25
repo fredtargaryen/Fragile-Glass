@@ -1,35 +1,16 @@
-****************************
- Powered By MCP:             
- http://modcoderpack.com/    
- Searge, ProfMobius, Fesh0r, 
- R4wk, ZeuX, IngisKahn, bspkrs
- MCP Data version : snapshot_20141130
-****************************
-:compileApiJava UP-TO-DATE
-:processApiResources UP-TO-DATE
-:apiClasses UP-TO-DATE
-:sourceMainJava
-:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.6
-Note: Some input files use unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for details.
-1 warning
+This set of MCP mappings was designed for MC 1.8. Use at your own peril.This set of MCP mappings was designed for MC 1.8. Use at your own peril.
 
-:processResources
-:classes
-:jar
-:compileTestJava UP-TO-DATE
-:processTestResources UP-TO-DATE
-:testClasses UP-TO-DATE
-:test UP-TO-DATE
-:extractMcpData UP-TO-DATE
-:getVersionJson
-:extractUserDev UP-TO-DATE
-:genSrgs SKIPPED
-:reobf
-:assemble
-:check UP-TO-DATE
-:build
+#################################################
+         ForgeGradle 2.1-SNAPSHOT-8267717        
+  https://github.com/MinecraftForge/ForgeGradle  
+#################################################
+               Powered by MCP unknown               
+             http://modcoderpack.com             
+         by: Searge, ProfMobius, Fesh0r,         
+         R4wk, ZeuX, IngisKahn, bspkrs           
+#################################################
+:genIntellijRuns
 
 BUILD SUCCESSFUL
 
-Total time: 3 mins 49.426 secs
+Total time: 1 mins 32.577 secs

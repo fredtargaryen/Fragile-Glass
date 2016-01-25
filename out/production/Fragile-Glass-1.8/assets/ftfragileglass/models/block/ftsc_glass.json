@@ -1,6 +1,0 @@
-{
-  "parent": "ftfragileglass:block/ftsc_empty",
-  "textures": {
-    "water": "blocks/glass"
-  }
-}
