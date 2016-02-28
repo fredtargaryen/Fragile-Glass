@@ -150,6 +150,7 @@ public class BlockSugarCauldron extends Block
     @Override
     public void updateTick(World w, BlockPos pos, IBlockState state, Random r)
     {
+        Block below = w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock();
         int m = (Integer)(state.getValue(STAGE));
         if(m < 2 || m == 6)
         {
@@ -157,7 +158,7 @@ public class BlockSugarCauldron extends Block
         }
         else if(m == 2)
         {
-            if(w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock() == Blocks.lit_furnace)
+            if(below == Blocks.lit_furnace || below == Blocks.fire || below == Blocks.lava)
             {
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 3), 3);
                 w.scheduleUpdate(pos, this, thirdOfCookTime);
@@ -174,7 +175,7 @@ public class BlockSugarCauldron extends Block
         }
         else
         {
-            if(w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock() == Blocks.lit_furnace)
+            if(below == Blocks.lit_furnace || below == Blocks.fire || below == Blocks.lava)
             {
                 ++m;
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, m), 3);

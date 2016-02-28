@@ -1,7 +1,7 @@
 This set of MCP mappings was designed for MC 1.8. Use at your own peril.This set of MCP mappings was designed for MC 1.8. Use at your own peril.
 
 #################################################
-         ForgeGradle 2.1-SNAPSHOT-8267717        
+         ForgeGradle 2.1-SNAPSHOT-75bb646        
   https://github.com/MinecraftForge/ForgeGradle  
 #################################################
                Powered by MCP unknown               
@@ -13,4 +13,4 @@ This set of MCP mappings was designed for MC 1.8. Use at your own peril.This set
 
 BUILD SUCCESSFUL
 
-Total time: 1 mins 32.577 secs
+Total time: 21.426 secs
