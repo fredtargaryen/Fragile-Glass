@@ -68,7 +68,7 @@ public class BlockSugarCauldron extends Block
     @Override
     protected BlockState createBlockState()
     {
-        return new BlockState(this, new IProperty[]{STAGE});
+        return new BlockState(this, STAGE);
     }
 
     @Override
@@ -157,7 +157,8 @@ public class BlockSugarCauldron extends Block
         }
         else if(m == 2)
         {
-            if(w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock() == Blocks.lit_furnace)
+            Block below = w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock();
+            if(below == Blocks.lit_furnace || below == Blocks.fire || below == Blocks.lava)
             {
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 3), 3);
                 w.scheduleUpdate(pos, this, thirdOfCookTime);
@@ -174,7 +175,8 @@ public class BlockSugarCauldron extends Block
         }
         else
         {
-            if(w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock() == Blocks.lit_furnace)
+            Block below = w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock();
+            if(below == Blocks.lit_furnace || below == Blocks.fire || below == Blocks.lava)
             {
                 ++m;
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, m), 3);

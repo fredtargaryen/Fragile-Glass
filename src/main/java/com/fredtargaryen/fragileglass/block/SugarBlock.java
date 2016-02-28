@@ -9,6 +9,6 @@ public class SugarBlock extends BlockFalling
 	public SugarBlock()
 	{
 		super(Material.sand);
-		this.setCreativeTab(CreativeTabs.tabBlock);
+		this.setCreativeTab(CreativeTabs.tabMisc);
 	}
 }
