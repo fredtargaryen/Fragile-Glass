@@ -2,10 +2,11 @@ package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,6 +25,7 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
     {
         super(Material.glass);
         this.ignoreSimilarity = i;
+        this.setStepSound(SoundType.GLASS);
     }
 
     public boolean ignoreSimilarity;
@@ -64,19 +66,20 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean isOpaqueCube(){return false;}
+    public boolean isOpaqueCube(IBlockState state){return false;}
 
     @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side)
     {
         IBlockState iblockstate = worldIn.getBlockState(pos);
+        System.out.println(iblockstate == state);
         Block block = iblockstate.getBlock();
 
         if (this == FragileGlassBase.fragileGlass || this == FragileGlassBase.stainedFragileGlass)
@@ -92,7 +95,7 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
             }
         }
 
-        return !(!this.ignoreSimilarity && block == this) && super.shouldSideBeRendered(worldIn, pos, side);
+        return !(!this.ignoreSimilarity && block == this) && super.shouldSideBeRendered(iblockstate, worldIn, pos, side);
     }
 
     /**

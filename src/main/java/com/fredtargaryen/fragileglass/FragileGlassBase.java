@@ -14,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -64,36 +65,36 @@ public class FragileGlassBase
         //BLOCK SETUP
     	fragileGlass = new BlockFragileGlass()
                 .setUnlocalizedName("ftfragileglass")
-    			.setStepSound(Block.soundTypeGlass);
+                .setRegistryName("fragile_glass");
     	fragilePane = new BlockFragilePane()
     			.setUnlocalizedName("ftfragilepane")
-    			.setStepSound(Block.soundTypeGlass);
+                .setRegistryName("fragile_pane");
         stainedFragileGlass = new BlockStainedFragileGlass()
                 .setUnlocalizedName("ftstainedfragileglass")
-                .setStepSound(Block.soundTypeGlass);
+                .setRegistryName("fragile_glass_stained");
         stainedFragilePane = new BlockStainedFragilePane()
                 .setUnlocalizedName("ftstainedfragilepane")
-                .setStepSound(Block.soundTypeGlass);
+                .setRegistryName("fragile_pane_stained");
     	sugarBlock = new SugarBlock()
                 .setUnlocalizedName("ftsugarblock")
-                .setStepSound(Block.soundTypeSand);
+                .setRegistryName("sugar_block");
         thinIce = new BlockThinIce()
                 .setUnlocalizedName("ftthinice")
-                .setStepSound(Block.soundTypeGlass);
+                .setRegistryName("thin_ice");
         sugarCauldron = new BlockSugarCauldron()
                 .setUnlocalizedName("ftsugarcauldron")
                 .setHardness(5.0F)
                 .setResistance(10.0F)
-                .setStepSound(Block.soundTypeMetal);
+                .setRegistryName("sugar_cauldron");
 
     	//Register blocks
-    	GameRegistry.registerBlock(fragileGlass, fragileGlass.getUnlocalizedName().substring(5));
-    	GameRegistry.registerBlock(fragilePane, fragilePane.getUnlocalizedName().substring(5));
-        GameRegistry.registerBlock(stainedFragileGlass, ItemBlockStainedFragileGlass.class, stainedFragileGlass.getUnlocalizedName().substring(5));
-        GameRegistry.registerBlock(stainedFragilePane, ItemBlockStainedFragilePane.class, stainedFragilePane.getUnlocalizedName().substring(5));
-    	GameRegistry.registerBlock(sugarBlock, sugarBlock.getUnlocalizedName().substring(5));
-        GameRegistry.registerBlock(thinIce, thinIce.getUnlocalizedName().substring(5));
-        GameRegistry.registerBlock(sugarCauldron, sugarCauldron.getUnlocalizedName().substring(5));
+    	GameRegistry.register(fragileGlass, fragileGlass.getRegistryName());
+    	GameRegistry.register(fragilePane, fragilePane.getRegistryName());
+        GameRegistry.register(stainedFragileGlass, stainedFragileGlass.getRegistryName());
+        GameRegistry.register(stainedFragilePane, stainedFragilePane.getRegistryName());
+    	GameRegistry.register(sugarBlock, sugarBlock.getRegistryName());
+        GameRegistry.register(thinIce, thinIce.getRegistryName());
+        GameRegistry.register(sugarCauldron, sugarCauldron.getRegistryName());
 
         proxy.doStateMappings();
         OreDictionary.registerOre("blockSugar", new ItemStack(sugarBlock, 1, 1));

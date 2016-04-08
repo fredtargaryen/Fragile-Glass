@@ -8,8 +8,8 @@ import net.minecraft.entity.item.*;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ITickable;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class TileEntityFragile extends TileEntity implements ITickable
             BlockPos pos = new BlockPos(this.pos);
             //Get all entities near enough to break it if fast enough
             IBlockState myBlockState = this.worldObj.getBlockState(pos);
-            AxisAlignedBB normAABB = myBlockState.getBlock().getCollisionBoundingBox(this.worldObj, pos, myBlockState);
+            AxisAlignedBB normAABB = myBlockState.getBlock().getCollisionBoundingBox(myBlockState, this.worldObj, pos);
             AxisAlignedBB checkAABB = normAABB.expand(DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE);
             List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, checkAABB);
             List<Entity> validEnts = new ArrayList<Entity>();

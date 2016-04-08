@@ -3,15 +3,15 @@ package com.fredtargaryen.fragileglass.block;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.client.particle.EntityMyBubbleFX;
 import com.fredtargaryen.fragileglass.client.particle.EntityMySplashFX;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -51,6 +51,7 @@ public class BlockSugarCauldron extends Block
         super(Material.iron);
         this.setCreativeTab(CreativeTabs.tabTools);
         this.setDefaultState(this.blockState.getBaseState().withProperty(STAGE, 0));
+        this.setStepSound(SoundType.METAL);
     }
 
     @Override
@@ -66,13 +67,13 @@ public class BlockSugarCauldron extends Block
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[]{STAGE});
+        return new BlockStateContainer(this, new IProperty[]{STAGE});
     }
 
     @Override
-    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (w.isRemote)
         {
@@ -100,7 +101,7 @@ public class BlockSugarCauldron extends Block
                         {
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
                         }
-                        w.playSoundEffect((double) pos.getX(), (double) pos.getY(), (double)pos.getZ(), "random.splash", 1.0F, 1.0F);
+                        w.playSound((double) pos.getX(), (double) pos.getY(), (double)pos.getZ(), SoundEvent.soundEventRegistry.getObject(new ResourceLocation("random.splash")), SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                         w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 1), 3);
                     }
                     return true;
@@ -123,7 +124,7 @@ public class BlockSugarCauldron extends Block
                             --newStack.stackSize;
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, newStack);
                         }
-                        w.playSoundEffect((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), "random.splash", 1.0F, 1.0F);
+                        w.playSound((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), SoundEvent.soundEventRegistry.getObject(new ResourceLocation("random.splash")), SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                         w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 2), 3);
                     }
                     return true;
@@ -191,20 +192,11 @@ public class BlockSugarCauldron extends Block
     }
 
     /**
-     * Sets the block's bounds for rendering it as an item
-     */
-    @Override
-    public void setBlockBoundsForItemRender()
-    {
-        this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-    }
-
-    /**
      * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
      * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
      */
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
@@ -214,7 +206,7 @@ public class BlockSugarCauldron extends Block
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(World w, BlockPos pos, IBlockState state, Random r)
+    public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random r)
     {
         int m = (Integer)(state.getValue(STAGE));
         if(m > 2 && m < 6)
@@ -230,7 +222,7 @@ public class BlockSugarCauldron extends Block
             }
             if(shouldBubble)
             {
-                this.spawnEntityFX(new EntityMyBubbleFX(w, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0D, 0.00D, 0.0D));
+                this.spawnEntityFX(new EntityMyBubbleFX(world, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0D, 0.00D, 0.0D));
             }
         }
     }
@@ -268,29 +260,26 @@ public class BlockSugarCauldron extends Block
     @SideOnly(Side.CLIENT)
     private void spawnEntityFX(EntityFX particleFX)
     {
-        if (particleFX.worldObj.isRemote)
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity renderViewEntity = mc.getRenderViewEntity();
+        if (mc != null && renderViewEntity != null && mc.effectRenderer != null)
         {
-            Minecraft mc = Minecraft.getMinecraft();
-            Entity renderViewEntity = mc.getRenderViewEntity();
-            if (mc != null && renderViewEntity != null && mc.effectRenderer != null)
-            {
-                int i = mc.gameSettings.particleSetting;
-                double d6 = renderViewEntity.posX - particleFX.posX;
-                double d7 = renderViewEntity.posY - particleFX.posY;
-                double d8 = renderViewEntity.posZ - particleFX.posZ;
-                double d9 = Math.sqrt(mc.gameSettings.renderDistanceChunks) * 45;
-                if (i <= 1)
-                {
-                    if (d6 * d6 + d7 * d7 + d8 * d8 <= d9 * d9)
-                        Minecraft.getMinecraft().effectRenderer.addEffect(particleFX);
-                }
-            }
+//            int i = mc.gameSettings.particleSetting;
+//            double d6 = renderViewEntity.posX - particleFX.posX;
+//            double d7 = renderViewEntity.posY - particleFX.posY;
+//            double d8 = renderViewEntity.posZ - particleFX.posZ;
+//            double d9 = Math.sqrt(mc.gameSettings.renderDistanceChunks) * 45;
+//            if (i <= 1)
+//            {
+//                if (d6 * d6 + d7 * d7 + d8 * d8 <= d9 * d9)
+                    Minecraft.getMinecraft().effectRenderer.addEffect(particleFX);
+           // }
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
+    public BlockRenderLayer getBlockLayer()
     {
-        return EnumWorldBlockLayer.TRANSLUCENT;
+        return BlockRenderLayer.TRANSLUCENT;
     }
 }

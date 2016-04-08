@@ -4,12 +4,14 @@ import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import net.minecraft.block.BlockIce;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -20,10 +22,11 @@ import java.util.Random;
 
 public class BlockThinIce extends BlockIce implements ITileEntityProvider
 {
+    private static final AxisAlignedBB thinBox = new AxisAlignedBB(0.0F, 0.875F, 0.0F, 1.0F, 1.0F, 1.0F);
+
     public BlockThinIce()
     {
         super();
-        this.minY = 0.875;
         this.lightOpacity = 0;
     }
 
@@ -38,7 +41,7 @@ public class BlockThinIce extends BlockIce implements ITileEntityProvider
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
     {
-        if (worldIn.getLightFor(EnumSkyBlock.BLOCK, pos) > 11 - this.getLightOpacity())
+        if (worldIn.getLightFor(EnumSkyBlock.BLOCK, pos) > 11 - this.getLightOpacity(state, worldIn, pos))
         {
             if (worldIn.provider.doesWaterVaporize())
             {
@@ -47,13 +50,9 @@ public class BlockThinIce extends BlockIce implements ITileEntityProvider
         }
     }
 
-    /**
-     * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
-     * and stop pistons
-     */
-    public int getMobilityFlag()
+    public EnumPushReaction getMobilityFlag(IBlockState state)
     {
-        return 1;
+        return EnumPushReaction.DESTROY;
     }
 
     /**
@@ -78,22 +77,27 @@ public class BlockThinIce extends BlockIce implements ITileEntityProvider
     }
 
     @Override
-    public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+    public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
         return false;
     }
 
-    //Sides of adjacent Ice Blocks never render if true; always render when false
+    //Sides of adjacent Ice Blocks never render if  true; always render when false
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @SideOnly(Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
+    public BlockRenderLayer getBlockLayer()
     {
-        return EnumWorldBlockLayer.TRANSLUCENT;
+        return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        return thinBox;
     }
 }
 

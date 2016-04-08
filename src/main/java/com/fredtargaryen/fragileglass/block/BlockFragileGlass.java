@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.block;
 
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.block.SoundType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,12 +12,13 @@ public class BlockFragileGlass extends AnyFragileBlock
 	{
 		super(false);
 		this.setCreativeTab(CreativeTabs.tabBlock);
+        this.setStepSound(SoundType.GLASS);
 	}
 
     @SideOnly(Side.CLIENT)
     @Override
-    public EnumWorldBlockLayer getBlockLayer()
+    public BlockRenderLayer getBlockLayer()
     {
-        return EnumWorldBlockLayer.CUTOUT_MIPPED;
+        return BlockRenderLayer.CUTOUT_MIPPED;
     }
 }

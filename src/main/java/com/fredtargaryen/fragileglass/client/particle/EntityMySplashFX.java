@@ -18,15 +18,15 @@ public class EntityMySplashFX extends EntitySplashFX
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
-        this.motionY -= (double)this.particleGravity;
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+        this.ySpeed -= (double)this.particleGravity;
+        this.moveEntity(this.xSpeed, this.ySpeed, this.zSpeed);
+        this.xSpeed *= 0.9800000190734863D;
+        this.ySpeed *= 0.9800000190734863D;
+        this.zSpeed *= 0.9800000190734863D;
 
         if (this.particleMaxAge-- <= 0)
         {
-            this.setDead();
+            this.setExpired();
         }
     }
 }

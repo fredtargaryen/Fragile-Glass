@@ -2,9 +2,10 @@ package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
@@ -22,7 +23,7 @@ public class PatchGen implements IWorldGenerator
     }
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         BiomeGenBase b = world.getBiomeGenForCoords(new BlockPos(chunkX, 62, chunkZ));
         if (b.getEnableSnow())
         {
