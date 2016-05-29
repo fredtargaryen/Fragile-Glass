@@ -9,8 +9,8 @@ public class SugarBlock extends BlockFalling
 {
 	public SugarBlock()
 	{
-		super(Material.sand);
-		this.setCreativeTab(CreativeTabs.tabBlock);
-		this.setStepSound(SoundType.SAND);
+		super(Material.SAND);
+		this.setCreativeTab(CreativeTabs.FOOD);
+		this.setSoundType(SoundType.SAND);
 	}
 }

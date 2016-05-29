@@ -1,23 +1,23 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.client.particle.EntityMyBubbleFX;
-import com.fredtargaryen.fragileglass.client.particle.EntityMySplashFX;
+import com.fredtargaryen.fragileglass.client.particle.ParticleMyBubble;
+import com.fredtargaryen.fragileglass.client.particle.ParticleMySplash;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -48,16 +48,10 @@ public class BlockSugarCauldron extends Block
 
     public BlockSugarCauldron()
     {
-        super(Material.iron);
-        this.setCreativeTab(CreativeTabs.tabTools);
+        super(Material.IRON);
+        this.setCreativeTab(CreativeTabs.TOOLS);
         this.setDefaultState(this.blockState.getBaseState().withProperty(STAGE, 0));
-        this.setStepSound(SoundType.METAL);
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(STAGE, meta);
+        this.setSoundType(SoundType.METAL);
     }
 
     @Override
@@ -95,13 +89,13 @@ public class BlockSugarCauldron extends Block
                 }
                 else
                 {
-                    if (itemstack.getItem() == Items.water_bucket)
+                    if (itemstack.getItem() == Items.WATER_BUCKET)
                     {
                         if (!player.capabilities.isCreativeMode)
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
                         }
-                        w.playSound((double) pos.getX(), (double) pos.getY(), (double)pos.getZ(), SoundEvent.soundEventRegistry.getObject(new ResourceLocation("random.splash")), SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                        w.playSound((double) pos.getX(), (double) pos.getY(), (double)pos.getZ(), SoundEvent.REGISTRY.getObject(new ResourceLocation("random.splash")), SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                         w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 1), 3);
                     }
                     return true;
@@ -124,7 +118,7 @@ public class BlockSugarCauldron extends Block
                             --newStack.stackSize;
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, newStack);
                         }
-                        w.playSound((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), SoundEvent.soundEventRegistry.getObject(new ResourceLocation("random.splash")), SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                        w.playSound((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), SoundEvent.REGISTRY.getObject(new ResourceLocation("random.splash")), SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                         w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 2), 3);
                     }
                     return true;
@@ -159,7 +153,7 @@ public class BlockSugarCauldron extends Block
         }
         else if(m == 2)
         {
-            if(below == Blocks.lit_furnace || below == Blocks.fire || below == Blocks.lava)
+            if(below == Blocks.LIT_FURNACE || below == Blocks.FIRE || below == Blocks.LAVA)
             {
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 3), 3);
                 w.scheduleUpdate(pos, this, thirdOfCookTime);
@@ -176,7 +170,7 @@ public class BlockSugarCauldron extends Block
         }
         else
         {
-            if(below == Blocks.lit_furnace || below == Blocks.fire || below == Blocks.lava)
+            if(below == Blocks.LIT_FURNACE || below == Blocks.FIRE || below == Blocks.LAVA)
             {
                 ++m;
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, m), 3);
@@ -189,16 +183,6 @@ public class BlockSugarCauldron extends Block
                 w.scheduleUpdate(pos, this, m == 2 ? 10 : thirdOfCookTime);
             }
         }
-    }
-
-    /**
-     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-     */
-    @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
     }
 
     /**
@@ -222,7 +206,7 @@ public class BlockSugarCauldron extends Block
             }
             if(shouldBubble)
             {
-                this.spawnEntityFX(new EntityMyBubbleFX(world, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0D, 0.00D, 0.0D));
+                this.spawnParticle(new ParticleMyBubble(world, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0D, 0.00D, 0.0D));
             }
         }
     }
@@ -245,12 +229,12 @@ public class BlockSugarCauldron extends Block
     @SideOnly(Side.CLIENT)
     private void splash(World w, int x, int y, int z)
     {
-        this.spawnEntityFX(new EntityMySplashFX(w, x + 0.5, y + 1.0, z + 0.5));
-        this.spawnEntityFX(new EntityMySplashFX(w, x + 0.5, y + 1.0, z + 0.5));
-        this.spawnEntityFX(new EntityMySplashFX(w, x + 0.5, y + 1.0, z + 0.5));
-        this.spawnEntityFX(new EntityMySplashFX(w, x + 0.5, y + 1.0, z + 0.5));
-        this.spawnEntityFX(new EntityMySplashFX(w, x + 0.5, y + 1.0, z + 0.5));
-        this.spawnEntityFX(new EntityMySplashFX(w, x + 0.5, y + 1.0, z + 0.5));
+        this.spawnParticle(new ParticleMySplash(w, x + 0.5, y + 0.8, z + 0.5));
+        this.spawnParticle(new ParticleMySplash(w, x + 0.5, y + 0.8, z + 0.5));
+        this.spawnParticle(new ParticleMySplash(w, x + 0.5, y + 0.8, z + 0.5));
+        this.spawnParticle(new ParticleMySplash(w, x + 0.5, y + 0.8, z + 0.5));
+        this.spawnParticle(new ParticleMySplash(w, x + 0.5, y + 0.8, z + 0.5));
+        this.spawnParticle(new ParticleMySplash(w, x + 0.5, y + 0.8, z + 0.5));
     }
 
     /*
@@ -258,22 +242,23 @@ public class BlockSugarCauldron extends Block
      * For use instead of addEffect
      */
     @SideOnly(Side.CLIENT)
-    private void spawnEntityFX(EntityFX particleFX)
+    private void spawnParticle(Particle particleFX)
     {
         Minecraft mc = Minecraft.getMinecraft();
         Entity renderViewEntity = mc.getRenderViewEntity();
         if (mc != null && renderViewEntity != null && mc.effectRenderer != null)
         {
-//            int i = mc.gameSettings.particleSetting;
-//            double d6 = renderViewEntity.posX - particleFX.posX;
-//            double d7 = renderViewEntity.posY - particleFX.posY;
-//            double d8 = renderViewEntity.posZ - particleFX.posZ;
-//            double d9 = Math.sqrt(mc.gameSettings.renderDistanceChunks) * 45;
-//            if (i <= 1)
-//            {
-//                if (d6 * d6 + d7 * d7 + d8 * d8 <= d9 * d9)
+            int i = mc.gameSettings.particleSetting;
+            AxisAlignedBB aabb = particleFX.getEntityBoundingBox();
+            double d6 = renderViewEntity.posX - aabb.minX;
+            double d7 = renderViewEntity.posY - aabb.minY;
+            double d8 = renderViewEntity.posZ - aabb.minZ;
+            double d9 = Math.sqrt(mc.gameSettings.renderDistanceChunks) * 45;
+            if (i <= 1)
+            {
+                if (d6 * d6 + d7 * d7 + d8 * d8 <= d9 * d9)
                     Minecraft.getMinecraft().effectRenderer.addEffect(particleFX);
-           // }
+            }
         }
     }
 

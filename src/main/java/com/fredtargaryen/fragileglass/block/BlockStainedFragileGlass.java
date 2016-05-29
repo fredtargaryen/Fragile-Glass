@@ -28,14 +28,6 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
     }
 
     /**
-     * Convert the given metadata into a BlockState for this Block
-     */
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
-    }
-
-    /**
      * Convert the BlockState into the correct metadata value
      */
     @Override
@@ -46,14 +38,6 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, new IProperty[]{COLOR});
-    }
-
-    /**
-     * Get the MapColor for this Block and the given BlockState
-     */
-    @Override
-    public MapColor getMapColor(IBlockState state) {
-        return ((EnumDyeColor) state.getValue(COLOR)).getMapColor();
     }
 
     @SideOnly(Side.CLIENT)

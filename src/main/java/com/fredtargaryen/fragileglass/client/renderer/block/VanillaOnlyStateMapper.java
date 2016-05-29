@@ -29,7 +29,7 @@ public class VanillaOnlyStateMapper extends StateMapperBase
 
         if (this.name == null)
         {
-            s = (Block.blockRegistry.getNameForObject(state.getBlock())).toString();
+            s = (Block.REGISTRY.getNameForObject(state.getBlock())).toString();
         }
         else
         {

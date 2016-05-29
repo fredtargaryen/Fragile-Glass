@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -31,23 +32,10 @@ public class BlockFragilePane extends AnyFragileBlock
 
 	public BlockFragilePane()
 	{
-		super(false);
+		super(Material.GLASS);
         this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, Boolean.valueOf(false)).withProperty(EAST, Boolean.valueOf(false)).withProperty(SOUTH, Boolean.valueOf(false)).withProperty(WEST, Boolean.valueOf(false)));
-		this.setCreativeTab(CreativeTabs.tabDecorations);
+		this.setCreativeTab(CreativeTabs.DECORATIONS);
 	}
-
-    /**
-     * Get the actual Block state of this Block at the given position. This applies properties not visible in the
-     * metadata, such as fence connections.
-     */
-    @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
-    {
-        return state.withProperty(NORTH, canPaneConnectTo(worldIn, pos, EnumFacing.NORTH))
-                .withProperty(SOUTH, canPaneConnectTo(worldIn, pos, EnumFacing.SOUTH))
-                .withProperty(WEST, canPaneConnectTo(worldIn, pos, EnumFacing.WEST))
-                .withProperty(EAST, canPaneConnectTo(worldIn, pos, EnumFacing.EAST));
-    }
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -56,51 +44,14 @@ public class BlockFragilePane extends AnyFragileBlock
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
 
-    /**
-     * Add all collision boxes of this Block to the list that intersect with the given mask.
-     */
-    @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB p_185477_4_, List<AxisAlignedBB> p_185477_5_, Entity p_185477_6_)
-    {
-        state = this.getActualState(state, worldIn, pos);
-        addCollisionBoxToList(pos, p_185477_4_, p_185477_5_, boxes[0]);
-
-        if (((Boolean)state.getValue(NORTH)).booleanValue())
-        {
-            addCollisionBoxToList(pos, p_185477_4_, p_185477_5_, boxes[getBoundingBoxIndex(EnumFacing.NORTH)]);
-        }
-
-        if (((Boolean)state.getValue(SOUTH)).booleanValue())
-        {
-            addCollisionBoxToList(pos, p_185477_4_, p_185477_5_, boxes[getBoundingBoxIndex(EnumFacing.SOUTH)]);
-        }
-
-        if (((Boolean)state.getValue(EAST)).booleanValue())
-        {
-            addCollisionBoxToList(pos, p_185477_4_, p_185477_5_, boxes[getBoundingBoxIndex(EnumFacing.EAST)]);
-        }
-
-        if (((Boolean)state.getValue(WEST)).booleanValue())
-        {
-            addCollisionBoxToList(pos, p_185477_4_, p_185477_5_, boxes[getBoundingBoxIndex(EnumFacing.WEST)]);
-        }
-    }
-
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        state = this.getActualState(state, source, pos);
-        return boxes[getBoundingBoxIndex(state)];
-    }
-
     public boolean canPaneConnectToBlock(Block blockIn)
     {
-        return blockIn.isFullBlock(blockIn.getDefaultState())
-                || blockIn == this
-                || blockIn == Blocks.glass
+        return blockIn == this
+                || blockIn == Blocks.GLASS
                 || blockIn == FragileGlassBase.fragileGlass
-                || blockIn == Blocks.stained_glass
+                || blockIn == Blocks.STAINED_GLASS
                 || blockIn == FragileGlassBase.stainedFragileGlass
-                || blockIn == Blocks.stained_glass_pane
+                || blockIn == Blocks.STAINED_GLASS_PANE
                 || blockIn == FragileGlassBase.stainedFragilePane
                 || blockIn instanceof BlockPane;
     }
@@ -156,5 +107,13 @@ public class BlockFragilePane extends AnyFragileBlock
         }
 
         return i;
+    }
+
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
+    {
+        Block near = world.getBlockState(pos.offset(face)).getBlock();
+        return near == FragileGlassBase.fragilePane || near == FragileGlassBase.stainedFragilePane
+                || near == Blocks.GLASS_PANE || near == Blocks.STAINED_GLASS_PANE;
     }
 }

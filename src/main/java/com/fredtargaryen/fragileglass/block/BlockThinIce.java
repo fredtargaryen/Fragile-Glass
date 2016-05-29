@@ -2,9 +2,11 @@ package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockIce;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -20,13 +22,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class BlockThinIce extends BlockIce implements ITileEntityProvider
+public class BlockThinIce extends AnyFragileBlock
 {
     private static final AxisAlignedBB thinBox = new AxisAlignedBB(0.0F, 0.875F, 0.0F, 1.0F, 1.0F, 1.0F);
 
     public BlockThinIce()
     {
-        super();
+        super(Material.ICE);
         this.lightOpacity = 0;
     }
 
@@ -50,11 +52,6 @@ public class BlockThinIce extends BlockIce implements ITileEntityProvider
         }
     }
 
-    public EnumPushReaction getMobilityFlag(IBlockState state)
-    {
-        return EnumPushReaction.DESTROY;
-    }
-
     /**
      * Returns true if the given side of this block should be rendered, if the adjacent block is at the given
      * coordinates.
@@ -68,11 +65,14 @@ public class BlockThinIce extends BlockIce implements ITileEntityProvider
         }
         else if(side == EnumFacing.UP)
         {
-            return worldIn.getBlockState(pos).getBlock() != Blocks.ice;
+            Block blockAtPos = worldIn.getBlockState(pos).getBlock();
+            return !(blockAtPos == Blocks.ICE || blockAtPos == Blocks.FROSTED_ICE || blockAtPos == Blocks.PACKED_ICE);
         }
         else
         {
-            return !(worldIn.getBlockState(pos).getBlock() == Blocks.ice || worldIn.getBlockState(pos).getBlock() == FragileGlassBase.thinIce);
+            Block blockAtPos = worldIn.getBlockState(pos).getBlock();
+            return !(blockAtPos == Blocks.ICE || blockAtPos == FragileGlassBase.thinIce || blockAtPos == Blocks.FROSTED_ICE
+            || blockAtPos == Blocks.PACKED_ICE);
         }
     }
 
@@ -82,22 +82,10 @@ public class BlockThinIce extends BlockIce implements ITileEntityProvider
         return false;
     }
 
-    //Sides of adjacent Ice Blocks never render if  true; always render when false
-    @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
     @SideOnly(Side.CLIENT)
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.TRANSLUCENT;
-    }
-
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        return thinBox;
     }
 }
 

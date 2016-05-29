@@ -100,14 +100,14 @@ public class BlockStainedFragilePane extends BlockFragilePane
     @Override
     public boolean canPaneConnectToBlock(Block blockIn)
     {
-        return blockIn.isFullBlock(blockIn.getDefaultState())
-                || blockIn == this
-                || blockIn == Blocks.glass
+        return //blockIn.isFullBlock(blockIn.getDefaultState()) ||
+                blockIn == this
+                || blockIn == Blocks.GLASS
                 || blockIn == FragileGlassBase.fragileGlass
                 || blockIn == FragileGlassBase.fragilePane
-                || blockIn == Blocks.stained_glass
+                || blockIn == Blocks.STAINED_GLASS
                 || blockIn == FragileGlassBase.stainedFragileGlass
-                || blockIn == Blocks.stained_glass_pane
+                || blockIn == Blocks.STAINED_GLASS_PANE
                 || blockIn instanceof BlockPane;
     }
 }

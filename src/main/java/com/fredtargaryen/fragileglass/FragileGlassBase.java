@@ -1,4 +1,16 @@
 /**
+ * TODO
+ * Fragile blocks don't let light through
+ * Fragile Panes don't connect
+ * Stained Fragile blocks don't have their own names
+ * Stained Fragile blocks are all white when placed in world
+ * Particles and sound when glass breaks
+ *
+ * DONE
+ * Skipping 1.9: using Forge 1.9.4-12.17.0.1921-1.9.4
+ * Moved sugar blocks to food tab
+ * Changed patch gen to hopefully suit varying water levels
+ *
  * "Physics" still not perfect
  */
 
@@ -12,6 +24,8 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -46,6 +60,15 @@ public class FragileGlassBase
 	public static Block sugarBlock;
     public static Block thinIce;
     public static Block sugarCauldron;
+
+    //Declare all items here
+    public static Item iFragileGlass;
+    public static Item iFragilePane;
+    public static Item iStainedFragileGlass;
+    public static Item iStainedFragilePane;
+    public static Item iSugarBlock;
+    public static Item iThinIce;
+    public static Item iSugarCauldron;
     
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
@@ -65,39 +88,68 @@ public class FragileGlassBase
         //BLOCK SETUP
     	fragileGlass = new BlockFragileGlass()
                 .setUnlocalizedName("ftfragileglass")
-                .setRegistryName("fragile_glass");
+                .setRegistryName("ftfragileglass");
     	fragilePane = new BlockFragilePane()
     			.setUnlocalizedName("ftfragilepane")
-                .setRegistryName("fragile_pane");
+                .setRegistryName("ftfragilepane");
         stainedFragileGlass = new BlockStainedFragileGlass()
                 .setUnlocalizedName("ftstainedfragileglass")
-                .setRegistryName("fragile_glass_stained");
+                .setRegistryName("ftstainedfragileglass");
         stainedFragilePane = new BlockStainedFragilePane()
                 .setUnlocalizedName("ftstainedfragilepane")
-                .setRegistryName("fragile_pane_stained");
+                .setRegistryName("ftstainedfragilepane");
     	sugarBlock = new SugarBlock()
                 .setUnlocalizedName("ftsugarblock")
-                .setRegistryName("sugar_block");
+                .setRegistryName("ftsugarblock");
         thinIce = new BlockThinIce()
                 .setUnlocalizedName("ftthinice")
-                .setRegistryName("thin_ice");
+                .setRegistryName("ftthinice");
         sugarCauldron = new BlockSugarCauldron()
                 .setUnlocalizedName("ftsugarcauldron")
                 .setHardness(5.0F)
                 .setResistance(10.0F)
-                .setRegistryName("sugar_cauldron");
+                .setRegistryName("ftsugarcauldron");
 
-    	//Register blocks
-    	GameRegistry.register(fragileGlass, fragileGlass.getRegistryName());
-    	GameRegistry.register(fragilePane, fragilePane.getRegistryName());
-        GameRegistry.register(stainedFragileGlass, stainedFragileGlass.getRegistryName());
-        GameRegistry.register(stainedFragilePane, stainedFragilePane.getRegistryName());
-    	GameRegistry.register(sugarBlock, sugarBlock.getRegistryName());
-        GameRegistry.register(thinIce, thinIce.getRegistryName());
-        GameRegistry.register(sugarCauldron, sugarCauldron.getRegistryName());
+        //ITEM SETUP
+        iFragileGlass = new ItemBlock(fragileGlass)
+                .setRegistryName("ftfragileglass");
+        iFragilePane = new ItemBlock(fragilePane)
+                .setRegistryName("ftfragilepane");
+        iStainedFragileGlass = new ItemBlock(stainedFragileGlass)
+                .setRegistryName("ftstainedfragileglass");
+        iStainedFragilePane = new ItemBlock(stainedFragilePane)
+                .setRegistryName("ftstainedfragilepane");
+        iSugarBlock = new ItemBlock(sugarBlock)
+                .setRegistryName("ftsugarblock");
+        iThinIce = new ItemBlock(thinIce)
+                .setRegistryName("ftthinice");
+        iSugarCauldron = new ItemBlock(sugarCauldron)
+                .setRegistryName("ftsugarcauldron");
 
+    	//Register blocks and items
+    	GameRegistry.register(fragileGlass);
+        GameRegistry.register(iFragileGlass);
+
+    	GameRegistry.register(fragilePane);
+        GameRegistry.register(iFragilePane);
+
+        GameRegistry.register(stainedFragileGlass);
+        GameRegistry.register(iStainedFragileGlass);
+
+        GameRegistry.register(stainedFragilePane);
+        GameRegistry.register(iStainedFragilePane);
+
+    	GameRegistry.register(sugarBlock);
+        GameRegistry.register(iSugarBlock);
+
+        GameRegistry.register(thinIce);
+        GameRegistry.register(iThinIce);
+
+        GameRegistry.register(sugarCauldron);
+        GameRegistry.register(iSugarCauldron);
+
+        OreDictionary.registerOre("blockSugar", sugarBlock);
         proxy.doStateMappings();
-        OreDictionary.registerOre("blockSugar", new ItemStack(sugarBlock, 1, 1));
     }
         
     @Mod.EventHandler
@@ -105,15 +157,15 @@ public class FragileGlassBase
     {
     	//Recipes
     	GameRegistry.addRecipe(new ItemStack(sugarBlock, 1), "xxx", "xxx", "xxx",
-    			'x', Items.sugar);
-    	GameRegistry.addShapelessRecipe(new ItemStack(Items.sugar, 9), new ItemStack(sugarBlock));
-    	GameRegistry.addShapelessRecipe(new ItemStack(sugarCauldron), Items.sugar, Items.cauldron);
+    			'x', Items.SUGAR);
+    	GameRegistry.addShapelessRecipe(new ItemStack(Items.SUGAR, 9), new ItemStack(sugarBlock));
+    	GameRegistry.addShapelessRecipe(new ItemStack(sugarCauldron), Items.SUGAR, Items.CAULDRON);
     	GameRegistry.addRecipe(new ItemStack(fragilePane, 16), "xxx", "xxx",
     	        'x', fragileGlass);
         for(int meta = 0; meta < 16; meta++)
         {
             GameRegistry.addRecipe(new ItemStack(stainedFragileGlass, 8, meta), "xxx", "xox", "xxx",
-                    'x', new ItemStack(fragileGlass), 'o', new ItemStack(Items.dye, 1, 15 - meta));
+                    'x', new ItemStack(fragileGlass), 'o', new ItemStack(Items.DYE, 1, 15 - meta));
             GameRegistry.addRecipe(new ItemStack(stainedFragilePane, 16, meta), "xxx", "xxx",
                     'x', new ItemStack(stainedFragileGlass, 1, meta));
         }

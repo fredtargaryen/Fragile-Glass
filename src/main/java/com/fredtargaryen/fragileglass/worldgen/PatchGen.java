@@ -4,7 +4,7 @@ import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
@@ -24,7 +24,8 @@ public class PatchGen implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
-        BiomeGenBase b = world.getBiomeGenForCoords(new BlockPos(chunkX, 62, chunkZ));
+        //145 is the TerraFirmaCraft sea level - guessing other mods don't go any higher than this
+        Biome b = world.getBiomeGenForCoords(new BlockPos(chunkX, 145, chunkZ));
         if (b.getEnableSnow())
         {
             if(random.nextInt(FragileGlassBase.genChance) == 0)
@@ -46,18 +47,20 @@ public class PatchGen implements IWorldGenerator
 
     public void genPatch(Random random, int chunkX, int chunkZ, World world)
     {
-        //Coords of middle of patch
+        //Coords of middle of patch (with midY)
         int midX = (chunkX * 16) + random.nextInt(16);
         int midZ = (chunkZ * 16) + random.nextInt(16);
-        //Usually the water level...
-        int y = 62;
+        int midY = 0;
+        midY = world.getTopSolidOrLiquidBlock(new BlockPos(midX, midY, midZ)).getY();
+
         int patchRad = (int)(((2*random.nextGaussian()) + FragileGlassBase.avePatchSize)/2);
         for(int rad = patchRad; rad > 0; rad--)
         {
             for(double t = 0; t < 360; t += 10)
             {
-                BlockPos currentPos = new BlockPos((int)(midX + (rad * Math.cos(t))), y, (int)(midZ + (rad * Math.sin(t))));
-                if(world.getBlockState(currentPos).getBlock() == Blocks.ice)
+                BlockPos currentPos = new BlockPos((int)(midX + (rad * Math.cos(t))), midY, (int)(midZ + (rad * Math.sin(t))));
+                //Only normal ice naturally generates in water so only check for this.
+                if(world.getBlockState(currentPos).getBlock() == Blocks.ICE)
                 {
                     //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
                     if(rad > patchRad - 2) {
