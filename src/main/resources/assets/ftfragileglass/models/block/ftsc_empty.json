@@ -1,4 +1,5 @@
 {
+  "ambientocclusion": false,
   "textures": {
     "particle": "ftfragileglass:blocks/ftsugarcauldron_wall",
     "wall": "ftfragileglass:blocks/ftsugarcauldron_wall",

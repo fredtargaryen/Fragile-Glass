@@ -1,12 +1,14 @@
 /**
  * TODO
- * No sound when dropping sugar block or adding water (check)
- * Glass is not breaking at all
+ * No sound when dropping sugar block or adding water
+ * Test thin ice generation
  *
  * DONE
  * Skipping 1.9: using Forge 1.9.4-12.17.0.1921-1.9.4
  * Moved sugar blocks to food tab
  * Changed patch gen to hopefully suit varying water levels
+ * Made glass more fragile: can now be broken by jumping just below it
+ * Stopped sugar cauldrons going black on one side when blocks are adjacent
  *
  * "Physics" still not perfect
  */

@@ -28,7 +28,9 @@ public class TileEntityFragile extends TileEntity implements ITickable
             BlockPos pos = new BlockPos(this.pos);
             //Get all entities near enough to break it if fast enough
             IBlockState myBlockState = this.worldObj.getBlockState(pos);
-            AxisAlignedBB normAABB = myBlockState.getBlock().getCollisionBoundingBox(myBlockState, this.worldObj, pos);
+            AxisAlignedBB normAABB = myBlockState.getBlock()
+                    .getCollisionBoundingBox(myBlockState, this.worldObj, pos)
+                    .offset(pos.getX(), pos.getY(), pos.getZ());
             AxisAlignedBB checkAABB = normAABB.expand(DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE);
             List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, checkAABB);
             Iterator<Entity> remover = entities.iterator();
@@ -62,15 +64,10 @@ public class TileEntityFragile extends TileEntity implements ITickable
                     }
                     else
                     {
-                        double mx = nextEnt.motionX;
-                        double my = nextEnt.motionY;
-                        double mz = nextEnt.motionZ;
-                        if ((nextEnt.posX < normAABB.minX && mx > DataReference.MINIMUM_ENTITY_SPEED)
-                                || (nextEnt.posX > normAABB.maxX && mx < -1 * DataReference.MINIMUM_ENTITY_SPEED)
-                                || (nextEnt.posY < normAABB.maxY && my > DataReference.MINIMUM_ENTITY_SPEED)
-                                || (nextEnt.posY > normAABB.maxY && my < -1 * DataReference.MINIMUM_ENTITY_SPEED)
-                                || (nextEnt.posZ < normAABB.maxZ && mz > DataReference.MINIMUM_ENTITY_SPEED)
-                                || (nextEnt.posZ > normAABB.maxZ && mz < -1 * DataReference.MINIMUM_ENTITY_SPEED)) {
+                        if (Math.abs(nextEnt.motionX) > DataReference.MINIMUM_ENTITY_SPEED ||
+                                Math.abs(nextEnt.motionY) > DataReference.MINIMUM_ENTITY_SPEED ||
+                                Math.abs(nextEnt.motionZ) > DataReference.MINIMUM_ENTITY_SPEED)
+                        {
                             //breaks it
                             this.worldObj.destroyBlock(pos, false);
                             stop = true;
