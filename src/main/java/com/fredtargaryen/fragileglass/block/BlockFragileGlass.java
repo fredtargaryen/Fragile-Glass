@@ -42,4 +42,24 @@ public class BlockFragileGlass extends AnyFragileBlock
                 || near == Blocks.GLASS || near == Blocks.GLASS_PANE
                 || near == Blocks.STAINED_GLASS || near == Blocks.STAINED_GLASS_PANE;
     }
+
+    @Override
+    @Deprecated
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    ///////////////////////////////
+    //METHODS FROM BLOCKBREAKABLE//
+    ///////////////////////////////
+    /**
+     * Used to determine ambient occlusion and culling when rebuilding chunks for render
+     */
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
 }

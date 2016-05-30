@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ITickable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TileEntityFragile extends TileEntity implements ITickable
@@ -30,30 +31,30 @@ public class TileEntityFragile extends TileEntity implements ITickable
             AxisAlignedBB normAABB = myBlockState.getBlock().getCollisionBoundingBox(myBlockState, this.worldObj, pos);
             AxisAlignedBB checkAABB = normAABB.expand(DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE);
             List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, checkAABB);
-            List<Entity> validEnts = new ArrayList<Entity>();
-            for (int x = 0; x < entities.size(); x++)
+            Iterator<Entity> remover = entities.iterator();
+            while(remover.hasNext())
             {
-                Entity nextEnt = entities.get(x);
-                if (nextEnt instanceof EntityLivingBase
+                Entity nextEnt = remover.next();
+                if(!(nextEnt instanceof EntityLivingBase
                         || nextEnt instanceof EntityArrow
                         || nextEnt instanceof EntityFireball
                         || nextEnt instanceof EntityMinecart
                         || nextEnt instanceof EntityFallingBlock
                         || nextEnt instanceof EntityFireworkRocket
                         || nextEnt instanceof EntityBoat
-                        || nextEnt instanceof EntityTNTPrimed)
+                        || nextEnt instanceof EntityTNTPrimed))
                 {
-                    validEnts.add(0, nextEnt);
+                    remover.remove();
                 }
             }
-            if (validEnts.size() > 0)
+            if (entities.size() > 0)
             {
                 //Check if any of the possible entities are fast enough
                 boolean stop = false;
-                int count = 0;
-                while(!stop && count < validEnts.size())
+                remover = entities.iterator();
+                while(!stop && remover.hasNext())
                 {
-                    Entity nextEnt = validEnts.get(count);
+                    Entity nextEnt = remover.next();
                     if(nextEnt instanceof EntityFallingBlock)
                     {
                         this.worldObj.destroyBlock(pos, false);
@@ -75,7 +76,6 @@ public class TileEntityFragile extends TileEntity implements ITickable
                             stop = true;
                         }
                     }
-                    count++;
                 }
             }
         }

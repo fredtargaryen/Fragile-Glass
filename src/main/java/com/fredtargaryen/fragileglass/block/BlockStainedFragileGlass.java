@@ -76,4 +76,16 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
             list.add(new ItemStack(itemIn, 1, enumdyecolor.getMetadata()));
         }
     }
+
+    /**
+     * METHODS FROM BLOCKSTAINEDGLASS
+     */
+    /**
+     * Convert the given metadata into a BlockState for this Block
+     */
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
+    }
 }

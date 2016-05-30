@@ -1,10 +1,7 @@
 /**
  * TODO
- * Fragile blocks don't let light through
- * Fragile Panes don't connect
- * Stained Fragile blocks don't have their own names
- * Stained Fragile blocks are all white when placed in world
- * Particles and sound when glass breaks
+ * No sound when dropping sugar block or adding water (check)
+ * Glass is not breaking at all
  *
  * DONE
  * Skipping 1.9: using Forge 1.9.4-12.17.0.1921-1.9.4
@@ -115,9 +112,9 @@ public class FragileGlassBase
                 .setRegistryName("ftfragileglass");
         iFragilePane = new ItemBlock(fragilePane)
                 .setRegistryName("ftfragilepane");
-        iStainedFragileGlass = new ItemBlock(stainedFragileGlass)
+        iStainedFragileGlass = new ItemBlockStainedFragileGlass(stainedFragileGlass)
                 .setRegistryName("ftstainedfragileglass");
-        iStainedFragilePane = new ItemBlock(stainedFragilePane)
+        iStainedFragilePane = new ItemBlockStainedFragilePane(stainedFragilePane)
                 .setRegistryName("ftstainedfragilepane");
         iSugarBlock = new ItemBlock(sugarBlock)
                 .setRegistryName("ftsugarblock");

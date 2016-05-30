@@ -48,15 +48,6 @@ public class BlockStainedFragilePane extends BlockFragilePane
         }
     }
 
-    /**
-     * Convert the given metadata into a BlockState for this Block
-     */
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public BlockRenderLayer getBlockLayer()
@@ -100,7 +91,7 @@ public class BlockStainedFragilePane extends BlockFragilePane
     @Override
     public boolean canPaneConnectToBlock(Block blockIn)
     {
-        return //blockIn.isFullBlock(blockIn.getDefaultState()) ||
+        return blockIn.isFullBlock(blockIn.getDefaultState()) ||
                 blockIn == this
                 || blockIn == Blocks.GLASS
                 || blockIn == FragileGlassBase.fragileGlass
@@ -109,5 +100,17 @@ public class BlockStainedFragilePane extends BlockFragilePane
                 || blockIn == FragileGlassBase.stainedFragileGlass
                 || blockIn == Blocks.STAINED_GLASS_PANE
                 || blockIn instanceof BlockPane;
+    }
+
+    /**
+     * METHODS FROM BLOCKSTAINEDGLASS
+     */
+    /**
+     * Convert the given metadata into a BlockState for this Block
+     */
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
     }
 }
