@@ -52,27 +52,21 @@ public class BlockThinIce extends AnyFragileBlock
         }
     }
 
-    /**
-     * Returns true if the given side of this block should be rendered, if the adjacent block is at the given
-     * coordinates.
-     */
-    @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
     {
-        if(side == EnumFacing.DOWN)
+        if(face == EnumFacing.DOWN)
         {
-            return true;
+            return false;
         }
-        else if(side == EnumFacing.UP)
+        else if(face == EnumFacing.UP)
         {
-            Block blockAtPos = worldIn.getBlockState(pos).getBlock();
-            return !(blockAtPos == Blocks.ICE || blockAtPos == Blocks.FROSTED_ICE || blockAtPos == Blocks.PACKED_ICE);
+            return world.getBlockState(pos.offset(face)).getBlock() == Blocks.ICE;
         }
         else
         {
-            Block blockAtPos = worldIn.getBlockState(pos).getBlock();
-            return !(blockAtPos == Blocks.ICE || blockAtPos == FragileGlassBase.thinIce || blockAtPos == Blocks.FROSTED_ICE
-            || blockAtPos == Blocks.PACKED_ICE);
+            Block near = world.getBlockState(pos.offset(face)).getBlock();
+            return near == FragileGlassBase.thinIce || near == Blocks.ICE;
         }
     }
 

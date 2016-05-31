@@ -28,14 +28,12 @@ public class PatchGen implements IWorldGenerator
         Biome b = world.getBiomeGenForCoords(new BlockPos(chunkX, 145, chunkZ));
         if (b.getEnableSnow())
         {
-            if(random.nextInt(FragileGlassBase.genChance) == 0)
+            if(random.nextInt(FragileGlassBase.genChance) == 0 && this.genPatch(random, chunkX, chunkZ, world))
             {
-                this.genPatch(random, chunkX, chunkZ, world);
                 this.timeSinceLastPatch = 0;
             }
-            else if(this.timeSinceLastPatch == this.timeToWaitBeforeBonusPatch)
+            else if(this.timeSinceLastPatch >= this.timeToWaitBeforeBonusPatch && this.genPatch(random, chunkX, chunkZ, world))
             {
-                this.genPatch(random, chunkX, chunkZ, world);
                 this.timeSinceLastPatch = 0;
             }
             else
@@ -45,35 +43,40 @@ public class PatchGen implements IWorldGenerator
         }
     }
 
-    public void genPatch(Random random, int chunkX, int chunkZ, World world)
+    public boolean genPatch(Random random, int chunkX, int chunkZ, World world)
     {
-        //Coords of middle of patch (with midY)
-        int midX = (chunkX * 16) + random.nextInt(16);
-        int midZ = (chunkZ * 16) + random.nextInt(16);
-        int midY = 0;
-        midY = world.getTopSolidOrLiquidBlock(new BlockPos(midX, midY, midZ)).getY();
+        boolean madeThinIce = false;
+        int attempts = 0;
+        //Try 4 times to generate a patch
+        while(!madeThinIce && attempts < 4) {
+            //Coords of middle of patch (with midY)
+            int midX = (chunkX * 16) + random.nextInt(16);
+            int midZ = (chunkZ * 16) + random.nextInt(16);
+            int midY = 0;
+            midY = world.getTopSolidOrLiquidBlock(new BlockPos(midX, midY, midZ)).getY();
 
-        int patchRad = (int)(((2*random.nextGaussian()) + FragileGlassBase.avePatchSize)/2);
-        for(int rad = patchRad; rad > 0; rad--)
-        {
-            for(double t = 0; t < 360; t += 10)
-            {
-                BlockPos currentPos = new BlockPos((int)(midX + (rad * Math.cos(t))), midY, (int)(midZ + (rad * Math.sin(t))));
-                //Only normal ice naturally generates in water so only check for this.
-                if(world.getBlockState(currentPos).getBlock() == Blocks.ICE)
-                {
-                    //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
-                    if(rad > patchRad - 2) {
-                        if (random.nextBoolean()) {
+            int patchRad = (int) (((2 * random.nextGaussian()) + FragileGlassBase.avePatchSize) / 2);
+            for (int rad = patchRad; rad > 0; rad--) {
+                for (double t = 0; t < 360; t += 10) {
+                    BlockPos currentPos = new BlockPos((int) (midX + (rad * Math.cos(t))), midY, (int) (midZ + (rad * Math.sin(t))));
+                    //Only normal ice naturally generates in water so only check for this.
+                    if (world.getBlockState(currentPos).getBlock() == Blocks.ICE) {
+                        //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
+                        if (rad > patchRad - 2) {
+                            if (random.nextBoolean()) {
+                                world.setBlockState(currentPos, FragileGlassBase.thinIce.getDefaultState());
+                            }
+                        } else {
                             world.setBlockState(currentPos, FragileGlassBase.thinIce.getDefaultState());
                         }
-                    }
-                    else
-                    {
-                        world.setBlockState(currentPos, FragileGlassBase.thinIce.getDefaultState());
+                        madeThinIce = true;
                     }
                 }
             }
+            if (!madeThinIce) {
+                ++attempts;
+            }
         }
+        return madeThinIce;
     }
 }
