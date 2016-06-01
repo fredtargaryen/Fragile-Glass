@@ -1,17 +1,8 @@
 /**
  * TODO
  * No sound when adding sugar block or water
- *
- * DONE
- * Skipping 1.9: using Forge 1.9.4-12.17.0.1921-1.9.4
- * Moved sugar blocks to food tab
- * Changed patch gen to hopefully suit varying water levels
- * Fixed an issue where blocks could only be broken when moving certain directions
- * Made glass more fragile: can now be broken by jumping just below it
- * Stopped sugar cauldrons going black on one side when blocks are adjacent
- * Thin ice no longer stops nearby blocks rendering
- *
- * "Physics" still not perfect
+ * "Physics" still not perfect - ideally entities should preserve momentum when going through glass,
+ * but collision is evaluated before breaking so this is difficult
  */
 
 package com.fredtargaryen.fragileglass;
