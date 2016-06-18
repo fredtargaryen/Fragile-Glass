@@ -1,9 +1,13 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockIce;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeCache;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
@@ -23,17 +27,16 @@ public class PatchGen implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-        BiomeGenBase b = world.getBiomeGenForCoords(new BlockPos(chunkX, 62, chunkZ));
+        //145 is the TerraFirmaCraft sea level - guessing other mods don't go any higher than this
+        BiomeGenBase b = world.getBiomeGenForCoords(new BlockPos(chunkX, 145, chunkZ));
         if (b.getEnableSnow())
         {
-            if(random.nextInt(FragileGlassBase.genChance) == 0)
+            if(random.nextInt(FragileGlassBase.genChance) == 0 && this.genPatch(random, chunkX, chunkZ, world))
             {
-                this.genPatch(random, chunkX, chunkZ, world);
                 this.timeSinceLastPatch = 0;
             }
-            else if(this.timeSinceLastPatch == this.timeToWaitBeforeBonusPatch)
+            else if(this.timeSinceLastPatch >= this.timeToWaitBeforeBonusPatch && this.genPatch(random, chunkX, chunkZ, world))
             {
-                this.genPatch(random, chunkX, chunkZ, world);
                 this.timeSinceLastPatch = 0;
             }
             else
@@ -43,33 +46,67 @@ public class PatchGen implements IWorldGenerator
         }
     }
 
-    public void genPatch(Random random, int chunkX, int chunkZ, World world)
+    public boolean genPatch(Random random, int chunkX, int chunkZ, World world)
     {
-        //Coords of middle of patch
-        int midX = (chunkX * 16) + random.nextInt(16);
-        int midZ = (chunkZ * 16) + random.nextInt(16);
-        //Usually the water level...
-        int y = 62;
-        int patchRad = (int)(((2*random.nextGaussian()) + FragileGlassBase.avePatchSize)/2);
-        for(int rad = patchRad; rad > 0; rad--)
+        //Coords of "top left" blocks in chunk
+        int chunkBlockX = chunkX * 16;
+        int chunkBlockZ = chunkZ * 16;
+        //Coords of "top left" blocks in an adjacent chunk
+        int nextChunkBlockX = chunkBlockX + 16;
+        int nextChunkBlockZ = chunkBlockZ + 16;
+        //The y coordinate where patch generation will be attempted
+        int patchY;
+        //The BlockPos where patch generation will be attempted
+        BlockPos patchCentre;
+        //Possible middle block in patch
+        Block candidate;
+        BlockPos.MutableBlockPos nextBlockPos = new BlockPos.MutableBlockPos(0, 0, 0);
+        Block nextBlock;
+
+        //Check 16 candidate blocks in the chunk to see if they are ice blocks
+        for(int candX = chunkBlockX; candX < nextChunkBlockX; candX += 8)
         {
-            for(double t = 0; t < 360; t += 10)
+            for(int candZ = chunkBlockZ; candZ < nextChunkBlockZ; candZ += 8)
             {
-                BlockPos currentPos = new BlockPos((int)(midX + (rad * Math.cos(t))), y, (int)(midZ + (rad * Math.sin(t))));
-                if(world.getBlockState(currentPos).getBlock() == Blocks.ice)
+                patchCentre = world.getTopSolidOrLiquidBlock(new BlockPos(candX, 0, candZ)).down();
+                patchY = patchCentre.getY();
+                candidate = world.getBlockState(patchCentre).getBlock();
+                if(candidate instanceof BlockIce || FragileGlassBase.iceBlocks.contains(Item.getItemFromBlock(candidate)))
                 {
-                    //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
-                    if(rad > patchRad - 2) {
-                        if (random.nextBoolean()) {
-                            world.setBlockState(currentPos, FragileGlassBase.thinIce.getDefaultState());
+                    int patchRadius = (int) (((2 * random.nextGaussian()) + FragileGlassBase.avePatchSize) / 2);
+                    for (int rad = patchRadius; rad > 0; rad--)
+                    {
+                        for (double d = 0; d < 360; d += 10)
+                        {
+                            double r = Math.toRadians(d);
+                            int nextX = (int) (candX + (rad * Math.cos(r)));
+                            int nextZ = (int) (candZ + (rad * Math.sin(r)));
+                            nextBlockPos.set(nextX, patchY, nextZ);
+                            nextBlock = world.getBlockState(nextBlockPos).getBlock();
+                            if (nextBlock instanceof BlockIce || FragileGlassBase.iceBlocks.contains(Item.getItemFromBlock(nextBlock)))
+                            {
+                                //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
+                                if (rad > patchRadius - 2)
+                                {
+                                    if (random.nextBoolean())
+                                    {
+                                        world.setBlockState(nextBlockPos, FragileGlassBase.thinIce.getDefaultState());
+                                    }
+                                }
+                                else
+                                {
+                                    world.setBlockState(nextBlockPos, FragileGlassBase.thinIce.getDefaultState());
+                                }
+                            }
                         }
                     }
-                    else
-                    {
-                        world.setBlockState(currentPos, FragileGlassBase.thinIce.getDefaultState());
-                    }
+                    world.setBlockState(patchCentre, FragileGlassBase.thinIce.getDefaultState());
+                    //For testing
+                    //System.out.println("Generated patch at ("+candX+", "+patchY+", "+candZ+").");
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

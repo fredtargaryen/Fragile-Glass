@@ -1,7 +1,3 @@
-/**
- * "Physics" still not perfect
- */
-
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
@@ -12,7 +8,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemDye;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -23,13 +19,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
+
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
 public class FragileGlassBase
 {
 	// The instance of your mod that Forge uses.
-    @Mod.Instance(value = "ftfragileglass")
+    @Mod.Instance(value = DataReference.MODID)
     public static FragileGlassBase instance;
 
+    public static ArrayList<Item> iceBlocks;
     //Config vars
     public static boolean genThinIce;
     public static int avePatchSize;
@@ -122,5 +121,14 @@ public class FragileGlassBase
 
     	proxy.registerRenderers();
         proxy.registerModels();
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        iceBlocks = new ArrayList<Item>();
+        for(ItemStack is : OreDictionary.getOres("blockIce")) {
+            iceBlocks.add(is.getItem());
+        }
     }
 }

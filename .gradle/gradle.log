@@ -1,7 +1,7 @@
-This set of MCP mappings was designed for MC 1.8.8. Use at your own peril.This set of MCP mappings was designed for MC 1.8.8. Use at your own peril.
+This mapping 'stable_20' was designed for MC 1.8.8! Use at your own peril.This mapping 'stable_20' was designed for MC 1.8.8! Use at your own peril.
 
 #################################################
-         ForgeGradle 2.1-SNAPSHOT-75bb646        
+         ForgeGradle 2.1-SNAPSHOT-da90449        
   https://github.com/MinecraftForge/ForgeGradle  
 #################################################
                Powered by MCP unknown               
@@ -15,7 +15,7 @@ This set of MCP mappings was designed for MC 1.8.8. Use at your own peril.This s
 :compileApiJava UP-TO-DATE
 :processApiResources UP-TO-DATE
 :apiClasses UP-TO-DATE
-:sourceMainJava UP-TO-DATE
+:sourceMainJava
 :compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.6
 Note: Some input files use unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
@@ -36,8 +36,9 @@ Note: Recompile with -Xlint:unchecked for details.
 :genSrgs SKIPPED
 :reobfJar
 :extractRangemapReplacedMain
-C:\Users\user\Desktop\DEV\Minecraft Mods\FGATI-1.8.9\build\sources\main\java
-:retromapReplacedMain UP-TO-DATE
+C:\Users\user\Desktop\DEV\Minecraft Mods\FGaTI-1.8.9\build\sources\main\java
+:retromapReplacedMain
+remapping source...
 :sourceJar
 :assemble
 :check UP-TO-DATE
@@ -45,4 +46,4 @@ C:\Users\user\Desktop\DEV\Minecraft Mods\FGATI-1.8.9\build\sources\main\java
 
 BUILD SUCCESSFUL
 
-Total time: 1 mins 21.673 secs
+Total time: 1 mins 21.509 secs
