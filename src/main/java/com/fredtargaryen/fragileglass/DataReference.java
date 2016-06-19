@@ -1,12 +1,14 @@
 package com.fredtargaryen.fragileglass;
 
 // Change version number in: DataReference; build.gradle; mcmod.info
+//Snowy seeds to test thin ice:
+//Vanilla:
 public class DataReference
 {
     //MAIN MOD DETAILS
     public static final String MODID = "ftfragileglass";
     public static final String MODNAME = "Fragile Glass and Thin Ice";
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "1.8";
     //PROXY PATHS
     public static final String CLIENTPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ClientProxy";
     public static final String SERVERPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ServerProxy";

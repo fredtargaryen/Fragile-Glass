@@ -1,10 +1,3 @@
-/**
- * TODO
- * No sound when adding sugar block or water
- * "Physics" still not perfect - ideally entities should preserve momentum when going through glass,
- * but collision is evaluated before breaking so this is difficult
- */
-
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
@@ -29,12 +22,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
+
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
 public class FragileGlassBase
 {
 	// The instance of your mod that Forge uses.
     @Mod.Instance(value = "ftfragileglass")
     public static FragileGlassBase instance;
+
+    public static ArrayList<Item> iceBlocks;
 
     //Config vars
     public static boolean genThinIce;
@@ -166,5 +163,14 @@ public class FragileGlassBase
 
     	proxy.registerRenderers();
         proxy.registerModels();
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        iceBlocks = new ArrayList<Item>();
+        for(ItemStack is : OreDictionary.getOres("blockIce")) {
+            iceBlocks.add(is.getItem());
+        }
     }
 }

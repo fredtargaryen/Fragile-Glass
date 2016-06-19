@@ -22,6 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockFragilePane extends AnyFragileBlock
@@ -30,7 +31,7 @@ public class BlockFragilePane extends AnyFragileBlock
     public static final PropertyBool EAST = PropertyBool.create("east");
     public static final PropertyBool SOUTH = PropertyBool.create("south");
     public static final PropertyBool WEST = PropertyBool.create("west");
-    protected static final AxisAlignedBB[] boxes = new AxisAlignedBB[] {new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D)};
+    protected static final AxisAlignedBB[] AABB_BY_INDEX = new AxisAlignedBB[] {new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D)};
 
 	public BlockFragilePane()
 	{
@@ -79,38 +80,6 @@ public class BlockFragilePane extends AnyFragileBlock
         return new BlockStateContainer(this, new IProperty[] {NORTH, EAST, WEST, SOUTH});
     }
 
-    private static int getBoundingBoxIndex(EnumFacing p_185729_0_)
-    {
-        return 1 << p_185729_0_.getHorizontalIndex();
-    }
-
-    private static int getBoundingBoxIndex(IBlockState p_185728_0_)
-    {
-        int i = 0;
-
-        if (((Boolean)p_185728_0_.getValue(NORTH)).booleanValue())
-        {
-            i |= getBoundingBoxIndex(EnumFacing.NORTH);
-        }
-
-        if (((Boolean)p_185728_0_.getValue(EAST)).booleanValue())
-        {
-            i |= getBoundingBoxIndex(EnumFacing.EAST);
-        }
-
-        if (((Boolean)p_185728_0_.getValue(SOUTH)).booleanValue())
-        {
-            i |= getBoundingBoxIndex(EnumFacing.SOUTH);
-        }
-
-        if (((Boolean)p_185728_0_.getValue(WEST)).booleanValue())
-        {
-            i |= getBoundingBoxIndex(EnumFacing.WEST);
-        }
-
-        return i;
-    }
-
     @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
     {
@@ -127,18 +96,6 @@ public class BlockFragilePane extends AnyFragileBlock
     public boolean isFullCube(IBlockState state)
     {
         return false;
-    }
-
-    /**
-     * Get the actual Block state of this Block at the given position. This applies properties not visible in the
-     * metadata, such as fence connections.
-     */
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
-    {
-        return state.withProperty(NORTH, canPaneConnectTo(worldIn, pos, EnumFacing.NORTH))
-                .withProperty(SOUTH, canPaneConnectTo(worldIn, pos, EnumFacing.SOUTH))
-                .withProperty(WEST, canPaneConnectTo(worldIn, pos, EnumFacing.WEST))
-                .withProperty(EAST, canPaneConnectTo(worldIn, pos, EnumFacing.EAST));
     }
 
     /**
@@ -177,6 +134,81 @@ public class BlockFragilePane extends AnyFragileBlock
         }
     }
 
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn)
+    {
+        state = this.getActualState(state, worldIn, pos);
+        addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[0]);
+
+        if (((Boolean)state.getValue(NORTH)).booleanValue())
+        {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.NORTH)]);
+        }
+
+        if (((Boolean)state.getValue(SOUTH)).booleanValue())
+        {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.SOUTH)]);
+        }
+
+        if (((Boolean)state.getValue(EAST)).booleanValue())
+        {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.EAST)]);
+        }
+
+        if (((Boolean)state.getValue(WEST)).booleanValue())
+        {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.WEST)]);
+        }
+    }
+
+    private static int getBoundingBoxIndex(EnumFacing p_185729_0_)
+    {
+        return 1 << p_185729_0_.getHorizontalIndex();
+    }
+
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        state = this.getActualState(state, source, pos);
+        return AABB_BY_INDEX[getBoundingBoxIndex(state)];
+    }
+
+    private static int getBoundingBoxIndex(IBlockState state)
+    {
+        int i = 0;
+
+        if (((Boolean)state.getValue(NORTH)).booleanValue())
+        {
+            i |= getBoundingBoxIndex(EnumFacing.NORTH);
+        }
+
+        if (((Boolean)state.getValue(EAST)).booleanValue())
+        {
+            i |= getBoundingBoxIndex(EnumFacing.EAST);
+        }
+
+        if (((Boolean)state.getValue(SOUTH)).booleanValue())
+        {
+            i |= getBoundingBoxIndex(EnumFacing.SOUTH);
+        }
+
+        if (((Boolean)state.getValue(WEST)).booleanValue())
+        {
+            i |= getBoundingBoxIndex(EnumFacing.WEST);
+        }
+
+        return i;
+    }
+
+    /**
+     * Get the actual Block state of this Block at the given position. This applies properties not visible in the
+     * metadata, such as fence connections.
+     */
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        return state.withProperty(NORTH, canPaneConnectTo(worldIn, pos, EnumFacing.NORTH))
+                .withProperty(SOUTH, canPaneConnectTo(worldIn, pos, EnumFacing.SOUTH))
+                .withProperty(WEST, canPaneConnectTo(worldIn, pos, EnumFacing.WEST))
+                .withProperty(EAST, canPaneConnectTo(worldIn, pos, EnumFacing.EAST));
+    }
     ///////////////////////////////
     //METHODS FROM BLOCKBREAKABLE//
     ///////////////////////////////

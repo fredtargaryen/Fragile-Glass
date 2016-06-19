@@ -96,7 +96,7 @@ public class BlockSugarCauldron extends Block
                         {
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
                         }
-                        w.playSound((double) pos.getX(), (double) pos.getY(), (double)pos.getZ(), SoundEvents.ENTITY_GENERIC_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                        w.playSound(null, pos, SoundEvents.ENTITY_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 1), 3);
                     }
                     return true;
@@ -119,8 +119,7 @@ public class BlockSugarCauldron extends Block
                             --newStack.stackSize;
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, newStack);
                         }
-                        //If no good, change to ENTITY_GENERIC_SPLASH
-                        w.playSound((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), SoundEvents.ENTITY_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                        w.playSound(null, pos, SoundEvents.ENTITY_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 2), 3);
                     }
                     return true;
