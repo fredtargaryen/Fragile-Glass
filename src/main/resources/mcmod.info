@@ -3,14 +3,11 @@
   "modid": "ftfragileglass",
   "name": "Fragile Glass and Thin Ice",
   "description": "Fragile glass blocks which shatter gratuitously on impact! Great for adventure maps.",
-  "version": "1.8",
+  "version": "1.8.1",
   "mcversion": "${mcversion}",
   "url": "http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2358091-fragile-glass-sugar-blocks-which-shatter-on-impact",
-  "updateUrl": "",
   "authorList": ["FredTargaryen"],
   "credits": "Thanks to Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
+  "logoFile": "assets/ftfragileglass/textures/gui/banner.png"
 }
 ]

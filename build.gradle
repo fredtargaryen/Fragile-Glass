@@ -20,12 +20,12 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.8"
+version = "1.8.1"
 group= "com.fredtargaryen.fragileglass" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Fragile Glass and Thin Ice"
+archivesBaseName = "Fragile Glass and Thin Ice 1.10.2"
 
 minecraft {
-    version = "1.9.4-12.17.0.1965"
+    version = "1.10.2-12.18.0.2002-1.10.0"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
