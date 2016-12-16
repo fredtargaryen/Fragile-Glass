@@ -28,7 +28,7 @@ public class PatchGen implements IWorldGenerator
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         //145 is the TerraFirmaCraft sea level - guessing other mods don't go any higher than this
-        Biome b = world.getBiomeGenForCoords(new BlockPos(chunkX, 145, chunkZ));
+        Biome b = world.getBiome(new BlockPos(chunkX, 145, chunkZ));
         if (b.getEnableSnow())
         {
             if(random.nextInt(FragileGlassBase.genChance) == 0 && this.genPatch(random, chunkX, chunkZ, world))
