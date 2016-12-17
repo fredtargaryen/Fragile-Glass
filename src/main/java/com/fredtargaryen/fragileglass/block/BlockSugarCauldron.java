@@ -68,7 +68,7 @@ public class BlockSugarCauldron extends Block
     }
 
     @Override
-    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing heldItem, float side, float hitX, float hitY)
     {
         if (w.isRemote)
         {
@@ -115,8 +115,8 @@ public class BlockSugarCauldron extends Block
                     {
                         if (!player.capabilities.isCreativeMode)
                         {
-                            ItemStack newStack = ItemStack.copyItemStack(itemstack);
-                            --newStack.stackSize;
+                            ItemStack newStack = itemstack.copy();
+                            newStack.func_190918_g(1);
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, newStack);
                         }
                         w.playSound(null, pos, SoundEvents.ENTITY_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);

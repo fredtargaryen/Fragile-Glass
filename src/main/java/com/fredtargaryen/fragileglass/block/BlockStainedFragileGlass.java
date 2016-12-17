@@ -7,6 +7,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
@@ -65,7 +66,7 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
     {
         EnumDyeColor[] aenumdyecolor = EnumDyeColor.values();
         int i = aenumdyecolor.length;

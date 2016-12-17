@@ -10,6 +10,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
@@ -40,7 +41,7 @@ public class BlockStainedFragilePane extends BlockFragilePane
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (int i = 0; i < EnumDyeColor.values().length; ++i)
         {
