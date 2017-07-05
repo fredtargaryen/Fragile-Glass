@@ -66,21 +66,17 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
+    public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> list)
     {
         EnumDyeColor[] aenumdyecolor = EnumDyeColor.values();
-        int i = aenumdyecolor.length;
-
-        for (int j = 0; j < i; ++j)
-        {
-            EnumDyeColor enumdyecolor = aenumdyecolor[j];
-            list.add(new ItemStack(itemIn, 1, enumdyecolor.getMetadata()));
+        for (EnumDyeColor enumdyecolor : aenumdyecolor) {
+            list.add(new ItemStack(this, 1, enumdyecolor.getMetadata()));
         }
     }
 
-    /**
-     * METHODS FROM BLOCKSTAINEDGLASS
-     */
+    //////////////////////////////////
+    //METHODS FROM BLOCKSTAINEDGLASS//
+    //////////////////////////////////
     /**
      * Convert the given metadata into a BlockState for this Block
      */

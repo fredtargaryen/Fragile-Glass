@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.Map;
+import static net.minecraft.block.BlockColored.COLOR;
 
 @SideOnly(Side.CLIENT)
 public class VanillaOnlyStateMapper extends StateMapperBase
@@ -50,9 +51,9 @@ public class VanillaOnlyStateMapper extends StateMapperBase
         private IProperty<?> name;
         private String suffix;
 
-        public VanillaOnlyStateMapper.Builder withName(IProperty<?> builderPropertyIn)
+        public VanillaOnlyStateMapper.Builder withColour()
         {
-            this.name = builderPropertyIn;
+            this.name = COLOR;
             return this;
         }
 

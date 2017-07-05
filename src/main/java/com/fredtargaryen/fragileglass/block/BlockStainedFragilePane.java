@@ -41,11 +41,11 @@ public class BlockStainedFragilePane extends BlockFragilePane
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (int i = 0; i < EnumDyeColor.values().length; ++i)
         {
-            list.add(new ItemStack(itemIn, 1, i));
+            list.add(new ItemStack(this, 1, i));
         }
     }
 
@@ -103,9 +103,9 @@ public class BlockStainedFragilePane extends BlockFragilePane
                 || blockIn instanceof BlockPane;
     }
 
-    /**
-     * METHODS FROM BLOCKSTAINEDGLASS
-     */
+    //////////////////////////////////
+    //METHODS FROM BLOCKSTAINEDGLASS//
+    //////////////////////////////////
     /**
      * Convert the given metadata into a BlockState for this Block
      */

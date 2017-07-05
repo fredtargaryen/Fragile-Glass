@@ -51,14 +51,4 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
     {
         return false;
     }
-
-    /**
-     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
-     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
-     */
-    @Override
-    protected ItemStack createStackedBlock(IBlockState state)
-    {
-        return null;
-    }
 }

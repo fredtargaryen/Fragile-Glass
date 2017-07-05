@@ -63,7 +63,7 @@ public class ClientProxy extends CommonProxy
 
     public void doStateMappings()
     {
-        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragileGlass, (new VanillaOnlyStateMapper.Builder()).withName(BlockColored.COLOR).withSuffix("_stained_glass").build());
-        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragilePane, (new VanillaOnlyStateMapper.Builder()).withName(BlockColored.COLOR).withSuffix("_stained_glass_pane").build());
+        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragileGlass, (new VanillaOnlyStateMapper.Builder()).withColour().withSuffix("_stained_glass").build());
+        ModelLoader.setCustomStateMapper(FragileGlassBase.stainedFragilePane, (new VanillaOnlyStateMapper.Builder()).withColour().withSuffix("_stained_glass_pane").build());
     }
 }

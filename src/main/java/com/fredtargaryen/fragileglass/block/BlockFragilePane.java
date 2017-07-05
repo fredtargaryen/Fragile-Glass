@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -23,6 +24,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class BlockFragilePane extends AnyFragileBlock
@@ -75,9 +77,10 @@ public class BlockFragilePane extends AnyFragileBlock
     }
 
     @Override
+    @MethodsReturnNonnullByDefault
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {NORTH, EAST, WEST, SOUTH});
+        return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH);
     }
 
     @Override
@@ -134,7 +137,9 @@ public class BlockFragilePane extends AnyFragileBlock
         }
     }
 
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn)
+    @Override
+    @ParametersAreNonnullByDefault
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
     {
         state = this.getActualState(state, worldIn, pos);
         addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[0]);

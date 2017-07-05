@@ -2,9 +2,9 @@ package com.fredtargaryen.fragileglass.proxy;
 
 public interface IProxy
 {
-    public void registerRenderers();
+    void registerRenderers();
 
-    public void registerModels();
+    void registerModels();
 
-    public void doStateMappings();
+    void doStateMappings();
 }

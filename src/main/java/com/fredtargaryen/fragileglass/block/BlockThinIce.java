@@ -24,8 +24,6 @@ import java.util.Random;
 
 public class BlockThinIce extends AnyFragileBlock
 {
-    private static final AxisAlignedBB thinBox = new AxisAlignedBB(0.0F, 0.875F, 0.0F, 1.0F, 1.0F, 1.0F);
-
     public BlockThinIce()
     {
         super(Material.ICE);

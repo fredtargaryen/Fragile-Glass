@@ -12,7 +12,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ITickable;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,16 +22,16 @@ public class TileEntityFragile extends TileEntity implements ITickable
     @Override
     public void update()
     {
-        if(!this.worldObj.isRemote)
+        if(!this.world.isRemote)
         {
             BlockPos pos = new BlockPos(this.pos);
             //Get all entities near enough to break it if fast enough
-            IBlockState myBlockState = this.worldObj.getBlockState(pos);
+            IBlockState myBlockState = this.world.getBlockState(pos);
             AxisAlignedBB normAABB = myBlockState.getBlock()
-                    .getCollisionBoundingBox(myBlockState, this.worldObj, pos)
+                    .getCollisionBoundingBox(myBlockState, this.world, pos)
                     .offset(pos.getX(), pos.getY(), pos.getZ());
             AxisAlignedBB checkAABB = normAABB.expand(DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE, DataReference.GLASS_DETECTION_RANGE);
-            List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, checkAABB);
+            List<Entity> entities = this.world.getEntitiesWithinAABBExcludingEntity(null, checkAABB);
             Iterator<Entity> remover = entities.iterator();
             while(remover.hasNext())
             {
@@ -59,7 +58,7 @@ public class TileEntityFragile extends TileEntity implements ITickable
                     Entity nextEnt = remover.next();
                     if(nextEnt instanceof EntityFallingBlock)
                     {
-                        this.worldObj.destroyBlock(pos, false);
+                        this.world.destroyBlock(pos, false);
                         stop = true;
                     }
                     else
@@ -69,7 +68,7 @@ public class TileEntityFragile extends TileEntity implements ITickable
                                 Math.abs(nextEnt.motionZ) > DataReference.MINIMUM_ENTITY_SPEED)
                         {
                             //breaks it
-                            this.worldObj.destroyBlock(pos, false);
+                            this.world.destroyBlock(pos, false);
                             stop = true;
                         }
                     }

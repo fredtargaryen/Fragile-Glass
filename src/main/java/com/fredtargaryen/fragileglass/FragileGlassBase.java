@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
 public class FragileGlassBase
@@ -168,9 +169,7 @@ public class FragileGlassBase
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        iceBlocks = new ArrayList<Item>();
-        for(ItemStack is : OreDictionary.getOres("blockIce")) {
-            iceBlocks.add(is.getItem());
-        }
+        iceBlocks = new ArrayList<>();
+        iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
     }
 }
