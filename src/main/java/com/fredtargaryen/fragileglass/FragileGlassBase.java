@@ -1,3 +1,4 @@
+//Cauldron is dark on the inside
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
@@ -7,18 +8,16 @@ import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -35,11 +34,11 @@ public class FragileGlassBase
     public static ArrayList<Item> iceBlocks;
 
     //Config vars
-    public static boolean genThinIce;
+    private static boolean genThinIce;
     public static int avePatchSize;
     public static int genChance;
 
-    public static final PatchGen patchGen = new PatchGen();
+    private static final PatchGen patchGen = new PatchGen();
 
     //Declare all blocks here
     public static Block fragileGlass;
@@ -51,17 +50,17 @@ public class FragileGlassBase
     public static Block sugarCauldron;
 
     //Declare all items here
-    public static Item iFragileGlass;
-    public static Item iFragilePane;
-    public static Item iStainedFragileGlass;
-    public static Item iStainedFragilePane;
-    public static Item iSugarBlock;
-    public static Item iThinIce;
-    public static Item iSugarCauldron;
+    private static Item iFragileGlass;
+    private static Item iFragilePane;
+    private static Item iStainedFragileGlass;
+    private static Item iStainedFragilePane;
+    private static Item iSugarBlock;
+    private static Item iThinIce;
+    private static Item iSugarCauldron;
     
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
-    public static CommonProxy proxy;
+    private static CommonProxy proxy;
         
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -116,26 +115,26 @@ public class FragileGlassBase
                 .setRegistryName("ftsugarcauldron");
 
     	//Register blocks and items
-    	GameRegistry.register(fragileGlass);
-        GameRegistry.register(iFragileGlass);
+        ForgeRegistries.BLOCKS.register(fragileGlass);
+        ForgeRegistries.ITEMS.register(iFragileGlass);
 
-    	GameRegistry.register(fragilePane);
-        GameRegistry.register(iFragilePane);
+        ForgeRegistries.BLOCKS.register(fragilePane);
+        ForgeRegistries.ITEMS.register(iFragilePane);
 
-        GameRegistry.register(stainedFragileGlass);
-        GameRegistry.register(iStainedFragileGlass);
+        ForgeRegistries.BLOCKS.register(stainedFragileGlass);
+        ForgeRegistries.ITEMS.register(iStainedFragileGlass);
 
-        GameRegistry.register(stainedFragilePane);
-        GameRegistry.register(iStainedFragilePane);
+        ForgeRegistries.BLOCKS.register(stainedFragilePane);
+        ForgeRegistries.ITEMS.register(iStainedFragilePane);
 
-    	GameRegistry.register(sugarBlock);
-        GameRegistry.register(iSugarBlock);
+        ForgeRegistries.BLOCKS.register(sugarBlock);
+        ForgeRegistries.ITEMS.register(iSugarBlock);
 
-        GameRegistry.register(thinIce);
-        GameRegistry.register(iThinIce);
+        ForgeRegistries.BLOCKS.register(thinIce);
+        ForgeRegistries.ITEMS.register(iThinIce);
 
-        GameRegistry.register(sugarCauldron);
-        GameRegistry.register(iSugarCauldron);
+        ForgeRegistries.BLOCKS.register(sugarCauldron);
+        ForgeRegistries.ITEMS.register(iSugarCauldron);
 
         OreDictionary.registerOre("blockSugar", sugarBlock);
         proxy.doStateMappings();
@@ -144,25 +143,10 @@ public class FragileGlassBase
     @Mod.EventHandler
     public void load(FMLInitializationEvent event)
     {
-    	//Recipes
-    	GameRegistry.addRecipe(new ItemStack(sugarBlock, 1), "xxx", "xxx", "xxx",
-    			'x', Items.SUGAR);
-    	GameRegistry.addShapelessRecipe(new ItemStack(Items.SUGAR, 9), new ItemStack(sugarBlock));
-    	GameRegistry.addShapelessRecipe(new ItemStack(sugarCauldron), Items.SUGAR, Items.CAULDRON);
-    	GameRegistry.addRecipe(new ItemStack(fragilePane, 16), "xxx", "xxx",
-    	        'x', fragileGlass);
-        for(int meta = 0; meta < 16; meta++)
-        {
-            GameRegistry.addRecipe(new ItemStack(stainedFragileGlass, 8, meta), "xxx", "xox", "xxx",
-                    'x', new ItemStack(fragileGlass), 'o', new ItemStack(Items.DYE, 1, 15 - meta));
-            GameRegistry.addRecipe(new ItemStack(stainedFragilePane, 16, meta), "xxx", "xxx",
-                    'x', new ItemStack(stainedFragileGlass, 1, meta));
-        }
+    	GameRegistry.registerTileEntity(TileEntityFragile.class, "glassTE");
 
-        GameRegistry.registerTileEntity(TileEntityFragile.class, "glassTE");
         if(genThinIce) GameRegistry.registerWorldGenerator(patchGen, 1);
 
-    	proxy.registerRenderers();
         proxy.registerModels();
     }
 

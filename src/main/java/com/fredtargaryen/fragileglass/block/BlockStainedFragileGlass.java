@@ -1,8 +1,6 @@
 package com.fredtargaryen.fragileglass.block;
 
 import net.minecraft.block.BlockBeacon;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -14,14 +12,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.List;
 
 public class BlockStainedFragileGlass extends BlockFragileGlass
 {
-    public static final PropertyEnum COLOR = PropertyEnum.create("color", EnumDyeColor.class);
+    private static final PropertyEnum COLOR = PropertyEnum.create("color", EnumDyeColor.class);
 
     public BlockStainedFragileGlass() {
         super();
@@ -38,7 +33,7 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, new IProperty[]{COLOR});
+        return new BlockStateContainer(this, COLOR);
     }
 
     @SideOnly(Side.CLIENT)

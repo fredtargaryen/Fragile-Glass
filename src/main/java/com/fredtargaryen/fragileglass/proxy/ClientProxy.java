@@ -3,7 +3,6 @@ package com.fredtargaryen.fragileglass.proxy;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.client.renderer.block.VanillaOnlyStateMapper;
-import net.minecraft.block.BlockColored;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -12,11 +11,6 @@ import net.minecraftforge.client.model.ModelLoader;
 
 public class ClientProxy extends CommonProxy
 {
-    @Override
-    public void registerRenderers()
-    {
-    }
-
     @Override
     public void registerModels()
     {

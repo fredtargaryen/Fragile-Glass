@@ -4,19 +4,17 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-
 import java.util.Random;
 
-public abstract class AnyFragileBlock extends Block implements ITileEntityProvider
+abstract class AnyFragileBlock extends Block implements ITileEntityProvider
 {
-    public AnyFragileBlock(Material m)
+    AnyFragileBlock(Material m)
     {
         super(m);
         this.setSoundType(SoundType.GLASS);

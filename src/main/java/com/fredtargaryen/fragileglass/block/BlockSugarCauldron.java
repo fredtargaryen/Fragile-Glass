@@ -5,7 +5,6 @@ import com.fredtargaryen.fragileglass.client.particle.ParticleMyBubble;
 import com.fredtargaryen.fragileglass.client.particle.ParticleMySplash;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -44,7 +43,7 @@ import java.util.Random;
  */
 public class BlockSugarCauldron extends Block
 {
-    public static final PropertyInteger STAGE = PropertyInteger.create("stage", 0, 6);
+    private static final PropertyInteger STAGE = PropertyInteger.create("stage", 0, 6);
 
     private static final int thirdOfCookTime = 100;
 
@@ -59,14 +58,14 @@ public class BlockSugarCauldron extends Block
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return (Integer)(state.getValue(STAGE));
+        return state.getValue(STAGE);
     }
 
     @Override
     @MethodsReturnNonnullByDefault
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[]{STAGE});
+        return new BlockStateContainer(this, STAGE);
     }
 
     @Override
@@ -82,7 +81,7 @@ public class BlockSugarCauldron extends Block
         }
         else
         {
-            int i1 = (Integer)(state.getValue(STAGE));
+            int i1 = state.getValue(STAGE);
             ItemStack itemstack = player.inventory.getCurrentItem();
             if(i1 == 0)
             {
@@ -135,7 +134,7 @@ public class BlockSugarCauldron extends Block
     public void updateTick(World w, BlockPos pos, IBlockState state, Random r)
     {
         Block below = w.getBlockState(pos.offset(EnumFacing.DOWN, 1)).getBlock();
-        int m = (Integer)(state.getValue(STAGE));
+        int m = state.getValue(STAGE);
         if(m < 2 || m == 6)
         {
             w.scheduleUpdate(pos, this, 50);
@@ -181,7 +180,7 @@ public class BlockSugarCauldron extends Block
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random r)
     {
-        int m = (Integer)(state.getValue(STAGE));
+        int m = state.getValue(STAGE);
         if(m > 2 && m < 6)
         {
             boolean shouldBubble = true;

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "AAA",
+    "AAA"
+  ],
+  "key":
+  {
+    "A": [{"item": "ftfragileglass:ftfragileglass"}]
+  },
+  "result": {
+    "item": "ftfragileglass:ftfragilepane",
+    "count": 16
+  }
+}
