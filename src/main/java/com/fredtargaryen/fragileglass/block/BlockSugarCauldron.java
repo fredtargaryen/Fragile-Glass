@@ -256,4 +256,13 @@ public class BlockSugarCauldron extends Block
     {
         return BlockRenderLayer.TRANSLUCENT;
     }
+
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) { return false; }
+
+    @Deprecated
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
 }
