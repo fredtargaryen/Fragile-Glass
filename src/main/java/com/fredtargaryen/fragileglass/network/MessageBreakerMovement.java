@@ -1,6 +1,8 @@
 package com.fredtargaryen.fragileglass.network;
 
+import com.fredtargaryen.fragileglass.entity.capability.CommonBreakingMethods;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -10,26 +12,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageBreakerMovement implements IMessage, IMessageHandler<MessageBreakerMovement, IMessage>
 {
-    public double minx;
-    public double maxx;
-    public double miny;
-    public double maxy;
-    public double minz;
-    public double maxz;
     public double motionx;
     public double motiony;
     public double motionz;
-    public int blockx;
-    public int blocky;
-    public int blockz;
+    public double distance;
 
     @Override
     public IMessage onMessage(final MessageBreakerMovement message, MessageContext ctx)
     {
-        final IThreadListener serverWorld = ctx.getServerHandler().player.getServerWorld();
+        final EntityPlayerMP player = ctx.getServerHandler().player;
+        final IThreadListener serverWorld = player.getServerWorld();
         serverWorld.addScheduledTask(() -> {
-            WorldServer castedServerWorld = (WorldServer)serverWorld;
-            castedServerWorld.destroyBlock(new BlockPos(message.blockx, message.blocky, message.blockz), false);
+            CommonBreakingMethods.breakBlocksInWay(player, message.motionx, message.motiony, message.motionz, message.distance);
         });
         return null;
     }
@@ -37,16 +31,18 @@ public class MessageBreakerMovement implements IMessage, IMessageHandler<Message
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        this.blockx = buf.readInt();
-        this.blocky = buf.readInt();
-        this.blockz = buf.readInt();
+        this.motionx = buf.readDouble();
+        this.motiony = buf.readDouble();
+        this.motionz = buf.readDouble();
+        this.distance = buf.readDouble();
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
-        buf.writeInt(this.blockx);
-        buf.writeInt(this.blocky);
-        buf.writeInt(this.blockz);
+        buf.writeDouble(this.motionx);
+        buf.writeDouble(this.motiony);
+        buf.writeDouble(this.motionz);
+        buf.writeDouble(this.distance);
     }
 }

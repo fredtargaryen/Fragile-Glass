@@ -3,13 +3,18 @@ package com.fredtargaryen.fragileglass.block;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Random;
 
 abstract class AnyFragileBlock extends Block implements ITileEntityProvider

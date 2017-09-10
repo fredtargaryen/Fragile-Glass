@@ -3,8 +3,6 @@ package com.fredtargaryen.fragileglass;
 import net.minecraft.util.ResourceLocation;
 
 // Change version number in: DataReference; build.gradle; mcmod.info
-//Snowy seeds to test thin ice:
-//Vanilla:
 public class DataReference
 {
     //MAIN MOD DETAILS
@@ -15,14 +13,21 @@ public class DataReference
     public static final String CLIENTPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ClientProxy";
     public static final String SERVERPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ServerProxy";
 
-    public static final double GLASS_DETECTION_RADIUS = 10.0;
     //The minimum speed a permitted entity must be travelling to break a block.
-    //This should be 5.5 m/s.
+    //This should be sprinting, which is over 5.5 m/s.
     //Divided by 20: 0.275 blocks per tick.
-    public static final double MINIMUM_ENTITY_SPEED = 0.05;
+    //Squared, so we don't have to do a sqrt each tick: 0.075625
+    public static final double MINIMUM_ENTITY_SPEED_SQUARED = 0.075625;
+    //Arbitrary high speed.
+    //A potion of Speed "increases walking speed by 20% × level" (Minecraft Wiki)
+    //At potion levels above 100 the player is moving faster than chunks can load so no point allowing higher speeds
+    //Maximum speed = 5.612 m/s [sprint speed average] + (5.612 * 0.2 [20%] * 100 [potion level]) = 117.852 m/s
+    //117.852 / 20 = 5.8926 blocks per tick.
+    //Squared for the same reason as above: 34.7227348
+    public static final double MAXIMUM_ENTITY_SPEED_SQUARED = 34.7227348;
 
-    public static final ResourceLocation CLIENT_CAN_BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "IClientCanBreakCapability");
-    public static final ResourceLocation SERVER_CAN_BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "IServerCanBreakCapability");
+    public static final ResourceLocation BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "IBreakCapability");
+    public static final ResourceLocation PLAYER_BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "IBreakCapability2");
 
     public static final ResourceLocation FRAGILE_CAP_LOCATION = new ResourceLocation(DataReference.MODID, "IFragileCapability");
 }

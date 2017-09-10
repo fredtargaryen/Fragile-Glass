@@ -1,8 +1,15 @@
 /**
- * New physics works perfectly but players rarely break it
- * --For players on server, motionX and motionZ are always 0, though motionY is ok but not perfect. Need another way to monitor Y motion.
- * ----Trying using client motion and sending break packets
- * ------Players are stopped then fall
+ * Fix physics for players
+ * On client, players send packets of their new position to the server. The server then adjusts the position based on the
+ * packets and its own logic, but motion values are not set server-side. The server does not update players by itself.
+ *
+ * Method tried                                                             Result
+ * Get motion from client and send break packets                            Players are stopped then fall
+ * Remove collision boxes from list in GetCollisionBoxesEvent, then         Players are not stopped, but the list in
+ * break blocks in PlayerTickEvent                                          GetCollisionBoxesEvent only
+ *                                                                          includes some ground blocks, there is
+ *                                                                          still shaking due to "ex-blocks", and non-
+ *                                                                          downward movement is bad
  */
 package com.fredtargaryen.fragileglass;
 
@@ -16,6 +23,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
+import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -29,21 +37,22 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
@@ -52,6 +61,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
+@Mod.EventBusSubscriber
 public class FragileGlassBase
 {
 	// The instance of your mod that Forge uses.
@@ -66,6 +76,8 @@ public class FragileGlassBase
     public static int genChance;
 
     private static final PatchGen patchGen = new PatchGen();
+
+    public static BreakSystem breakSystem;
 
     //Declare all blocks here
     public static Block fragileGlass;
@@ -84,7 +96,7 @@ public class FragileGlassBase
     private static Item iSugarBlock;
     private static Item iThinIce;
     private static Item iSugarCauldron;
-    
+
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
     private static CommonProxy proxy;
@@ -95,9 +107,8 @@ public class FragileGlassBase
         PacketHandler.init();
 
         //Capability
-        CapabilityManager.INSTANCE.register(IClientCanBreakCapability.class, new ClientCapStorage(), new ClientCanBreakFactory());
-        CapabilityManager.INSTANCE.register(IServerCanBreakCapability.class, new ServerCapStorage(), new ServerCanBreakFactory());
-
+        CapabilityManager.INSTANCE.register(IBreakCapability.class, new BreakCapStorage(), new BreakCapFactory());
+        CapabilityManager.INSTANCE.register(IPlayerBreakCapability.class, new PlayerBreakStorage(), new PlayerBreakFactory());
         CapabilityManager.INSTANCE.register(IFragileCapability.class, new FragileCapStorage(), new FragileCapFactory());
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -150,36 +161,27 @@ public class FragileGlassBase
         iSugarCauldron = new ItemBlock(sugarCauldron)
                 .setRegistryName("ftsugarcauldron");
 
-    	//Register blocks and items
-        ForgeRegistries.BLOCKS.register(fragileGlass);
-        ForgeRegistries.ITEMS.register(iFragileGlass);
-
-        ForgeRegistries.BLOCKS.register(fragilePane);
-        ForgeRegistries.ITEMS.register(iFragilePane);
-
-        ForgeRegistries.BLOCKS.register(stainedFragileGlass);
-        ForgeRegistries.ITEMS.register(iStainedFragileGlass);
-
-        ForgeRegistries.BLOCKS.register(stainedFragilePane);
-        ForgeRegistries.ITEMS.register(iStainedFragilePane);
-
-        ForgeRegistries.BLOCKS.register(sugarBlock);
-        ForgeRegistries.ITEMS.register(iSugarBlock);
-
-        ForgeRegistries.BLOCKS.register(thinIce);
-        ForgeRegistries.ITEMS.register(iThinIce);
-
-        ForgeRegistries.BLOCKS.register(sugarCauldron);
-        ForgeRegistries.ITEMS.register(iSugarCauldron);
-
-        OreDictionary.registerOre("blockSugar", sugarBlock);
         proxy.doStateMappings();
+    }
+
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event)
+    {
+        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock, thinIce, sugarCauldron);
+    }
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event)
+    {
+        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane, iSugarBlock, iThinIce, iSugarCauldron);
     }
         
     @Mod.EventHandler
     public void load(FMLInitializationEvent event)
     {
     	GameRegistry.registerTileEntity(TileEntityFragile.class, "glassTE");
+
+        OreDictionary.registerOre("blockSugar", sugarBlock);
 
         if(genThinIce) GameRegistry.registerWorldGenerator(patchGen, 1);
 
@@ -199,10 +201,10 @@ public class FragileGlassBase
     /**
      * For entities that are able to break fragile blocks.
      */
-    @CapabilityInject(IClientCanBreakCapability.class)
-    public static Capability<IClientCanBreakCapability> CLIENTBREAKCAP = null;
-    @CapabilityInject(IServerCanBreakCapability.class)
-    public static Capability<IServerCanBreakCapability> SERVERBREAKCAP = null;
+    @CapabilityInject(IBreakCapability.class)
+    public static Capability<IBreakCapability> BREAKCAP = null;
+    @CapabilityInject(IBreakCapability.class)
+    public static Capability<IBreakCapability> PLAYERBREAKCAP = null;
     @CapabilityInject(IFragileCapability.class)
     public static Capability<IFragileCapability> FRAGILECAP = null;
 
@@ -212,23 +214,24 @@ public class FragileGlassBase
         Entity e = evt.getObject();
         if(e instanceof EntityPlayer)
         {
-            if(e.world.isRemote)
+            //May need to change
+            if(!e.world.isRemote)
             {
-//                evt.addCapability(DataReference.CLIENT_CAN_BREAK_LOCATION,
-//                        new ICapabilityProvider() {
-//                            IClientCanBreakCapability inst = CLIENTBREAKCAP.getDefaultInstance();
-//
-//                            @Override
-//                            public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-//                                return capability == CLIENTBREAKCAP;
-//                            }
-//
-//                            @Override
-//                            public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-//                                return capability == CLIENTBREAKCAP ? CLIENTBREAKCAP.<T>cast(inst) : null;
-//                            }
-//                        }
-//                );
+                evt.addCapability(DataReference.PLAYER_BREAK_LOCATION,
+                        new ICapabilityProvider() {
+                            IBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
+
+                            @Override
+                            public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+                                return capability == PLAYERBREAKCAP;
+                            }
+
+                            @Override
+                            public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+                                return capability == PLAYERBREAKCAP ? PLAYERBREAKCAP.<T>cast(inst) : null;
+                            }
+                        }
+                );
             }
         }
         else
@@ -244,20 +247,19 @@ public class FragileGlassBase
                         || e instanceof EntityTNTPrimed
                         || e instanceof EntityFallingBlock) {
                     ICapabilityProvider icp = new ICapabilityProvider() {
-                        IServerCanBreakCapability inst = SERVERBREAKCAP.getDefaultInstance();
+                        IBreakCapability inst = BREAKCAP.getDefaultInstance();
 
                         @Override
                         public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-                            return capability == SERVERBREAKCAP;
+                            return capability == BREAKCAP;
                         }
 
                         @Override
                         public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-                            return capability == SERVERBREAKCAP ? SERVERBREAKCAP.<T>cast(inst) : null;
+                            return capability == BREAKCAP ? BREAKCAP.<T>cast(inst) : null;
                         }
                     };
-                    icp.getCapability(SERVERBREAKCAP, null).addEntityReference(e);
-                    evt.addCapability(DataReference.SERVER_CAN_BREAK_LOCATION, icp);
+                    evt.addCapability(DataReference.BREAK_LOCATION, icp);
                 }
             }
         }
@@ -292,9 +294,32 @@ public class FragileGlassBase
     public void registerBreakerCap(EntityJoinWorldEvent ejwe)
     {
         Entity e = ejwe.getEntity();
-        if(e.hasCapability(SERVERBREAKCAP, null))
+        if(e.hasCapability(PLAYERBREAKCAP, null))
         {
-            MinecraftForge.EVENT_BUS.register(e.getCapability(SERVERBREAKCAP, null));
+            MinecraftForge.EVENT_BUS.register(e.getCapability(PLAYERBREAKCAP, null));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void loadSystem(WorldEvent.Load event)
+    {
+        World w = event.getWorld();
+        if(!w.isRemote)
+        {
+            breakSystem = new BreakSystem();
+            breakSystem.init(w);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void stopSystem(WorldEvent.Unload event)
+    {
+        World w = event.getWorld();
+        if(!w.isRemote)
+        {
+            if(breakSystem != null) {
+                breakSystem.end(w);
+            }
         }
     }
 }
