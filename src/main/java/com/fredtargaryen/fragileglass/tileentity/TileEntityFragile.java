@@ -1,7 +1,5 @@
 package com.fredtargaryen.fragileglass.tileentity;
 
-import com.fredtargaryen.fragileglass.FragileGlassBase;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityFragile extends TileEntity
@@ -42,57 +40,4 @@ public class TileEntityFragile extends TileEntity
      *      disappointing as well, because the arrow hits the wall (losing all its speed), then
      *      breaks the wall, then falls down as the block is no longer there.
      */
-
-//    @SubscribeEvent(priority = EventPriority.HIGHEST)
-//    public void clientBreakCheck(TickEvent.ClientTickEvent event)
-//    {
-//        if(event.phase == TickEvent.Phase.START)
-//        {
-//            Iterator<Entity> i = this.entities.iterator();
-//            boolean shouldBreak = false;
-//            while (!shouldBreak && i.hasNext()) {
-//                shouldBreak = this.shouldBreakNow(i.next());
-//            }
-//            if (shouldBreak) {
-//                MessageBreakerMovement mbm = new MessageBreakerMovement();
-//                mbm.blockx = this.pos.getX();
-//                mbm.blocky = this.pos.getY();
-//                mbm.blockz = this.pos.getZ();
-//                PacketHandler.INSTANCE.sendToServer(mbm);
-//            }
-//        }
-//    }
-
-    private boolean shouldBreakNow(Entity entity)
-    {
-        boolean validEntity = false;
-        double mx = 0.0;
-        double my = 0.0;
-        double mz = 0.0;
-        if(this.world.isRemote) {
-            if (entity.hasCapability(FragileGlassBase.CLIENTBREAKCAP, null))
-            {
-                //The entity is controlled from keyboard input on client side (it is probably the player). The player (and
-                //possibly other mobs controlled this way) cannot have their movement checked with motionX, motionY and
-                //motionZ - on the server, for players, motionX and motionZ are 0 and the reliability of motionY is not
-                //clear.
-                mx = entity.motionX;
-                my = entity.motionY;
-                mz = entity.motionZ;
-                validEntity = true;
-            }
-        }
-        else if (entity.hasCapability(FragileGlassBase.SERVERBREAKCAP, null))
-        {
-            mx = entity.motionX;
-            my = entity.motionY;
-            mz = entity.motionZ;
-            validEntity = true;
-        }
-        if(validEntity)
-        {
-
-        }
-        return false;
-    }
 }

@@ -1,5 +1,6 @@
 package com.fredtargaryen.fragileglass.entity.capability;
 
+import com.fredtargaryen.fragileglass.DataReference;
 import net.minecraft.entity.Entity;
 
 import java.util.concurrent.Callable;
@@ -23,7 +24,7 @@ public class BreakCapFactory implements Callable<IBreakCapability> {
 
         @Override
         public boolean isAbleToBreak(Entity e, double speed) {
-            return speed >= 0.275;
+            return speed >= DataReference.MINIMUM_ENTITY_SPEED;
         }
 
         @Override

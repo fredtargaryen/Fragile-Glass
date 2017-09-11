@@ -203,8 +203,8 @@ public class FragileGlassBase
      */
     @CapabilityInject(IBreakCapability.class)
     public static Capability<IBreakCapability> BREAKCAP = null;
-    @CapabilityInject(IBreakCapability.class)
-    public static Capability<IBreakCapability> PLAYERBREAKCAP = null;
+    @CapabilityInject(IPlayerBreakCapability.class)
+    public static Capability<IPlayerBreakCapability> PLAYERBREAKCAP = null;
     @CapabilityInject(IFragileCapability.class)
     public static Capability<IFragileCapability> FRAGILECAP = null;
 
@@ -212,31 +212,33 @@ public class FragileGlassBase
     public void onBreakerConstruct(AttachCapabilitiesEvent<Entity> evt)
     {
         Entity e = evt.getObject();
-        if(e instanceof EntityPlayer)
+        if(!e.world.isRemote)
         {
-            //May need to change
-            if(!e.world.isRemote)
+            if(e instanceof EntityPlayer)
             {
                 evt.addCapability(DataReference.PLAYER_BREAK_LOCATION,
-                        new ICapabilityProvider() {
-                            IBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
+                        new ICapabilityProvider()
+                        {
+                            IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
 
                             @Override
                             public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-                                return capability == PLAYERBREAKCAP;
+                                return capability == PLAYERBREAKCAP || capability == BREAKCAP;
                             }
 
                             @Override
-                            public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-                                return capability == PLAYERBREAKCAP ? PLAYERBREAKCAP.<T>cast(inst) : null;
+                            public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+                            {
+                                if(capability == PLAYERBREAKCAP || capability == BREAKCAP)
+                                {
+                                    return PLAYERBREAKCAP.<T>cast(inst);
+                                }
+                                return null;
                             }
                         }
                 );
             }
-        }
-        else
-        {
-            if(!e.world.isRemote)
+            else
             {
                 if(e instanceof EntityLivingBase
                         || e instanceof EntityArrow
@@ -246,24 +248,26 @@ public class FragileGlassBase
                         || e instanceof EntityBoat
                         || e instanceof EntityTNTPrimed
                         || e instanceof EntityFallingBlock) {
-                    ICapabilityProvider icp = new ICapabilityProvider() {
-                        IBreakCapability inst = BREAKCAP.getDefaultInstance();
+                    evt.addCapability(DataReference.BREAK_LOCATION,
+                            new ICapabilityProvider() {
 
-                        @Override
-                        public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-                            return capability == BREAKCAP;
-                        }
+                                IBreakCapability inst = BREAKCAP.getDefaultInstance();
 
-                        @Override
-                        public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-                            return capability == BREAKCAP ? BREAKCAP.<T>cast(inst) : null;
-                        }
-                    };
-                    evt.addCapability(DataReference.BREAK_LOCATION, icp);
+                                @Override
+                                public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+                                {
+                                    return capability == BREAKCAP;
+                                }
+
+                                @Override
+                                public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+                                    return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
+                                }
+                            });
+                    }
                 }
             }
         }
-    }
 
     @SubscribeEvent
     public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt)
@@ -296,7 +300,7 @@ public class FragileGlassBase
         Entity e = ejwe.getEntity();
         if(e.hasCapability(PLAYERBREAKCAP, null))
         {
-            MinecraftForge.EVENT_BUS.register(e.getCapability(PLAYERBREAKCAP, null));
+            e.getCapability(PLAYERBREAKCAP, null).init(e);
         }
     }
 

@@ -92,6 +92,6 @@ public class CommonBreakingMethods
 
     public static boolean isValidMoveSpeedSquared(double blocksPerTick)
     {
-        return blocksPerTick >= DataReference.MINIMUM_ENTITY_SPEED_SQUARED && blocksPerTick <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
+        return blocksPerTick <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
     }
 }

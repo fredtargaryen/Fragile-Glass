@@ -1,6 +1,12 @@
 package com.fredtargaryen.fragileglass.entity.capability;
 
+import com.fredtargaryen.fragileglass.DataReference;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+
 import java.util.concurrent.Callable;
 
 public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
@@ -10,8 +16,7 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
         return new PlayerCanBreakImpl();
     }
 
-    private class PlayerCanBreakImpl implements IPlayerBreakCapability
-    {
+    private class PlayerCanBreakImpl implements IPlayerBreakCapability {
         protected double prevPosX;
         protected double prevPosY;
         protected double prevPosZ;
@@ -19,36 +24,39 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
         private byte distancePointer;
         private double[] latestDistances;
         private double[] motionVec;
+        private Entity entity;
 
-        public void init(Entity e)
-        {
+        private short tickCounter;
+        private double lastDistance;
+
+        public void init(Entity e) {
+            this.entity = e;
             this.prevPosX = e.posX;
             this.prevPosY = e.posY;
             this.prevPosZ = e.posZ;
             this.modeDistance = 0.0;
-            this.latestDistances = new double[] {0.0, 0.0, 0.0};
+            this.latestDistances = new double[]{0.0, 0.0, 0.0};
             this.distancePointer = 0;
-            this.motionVec = new double[] { 0.0, 0.0, 0.0 };
+            this.motionVec = new double[]{0.0, 0.0, 0.0};
+            this.tickCounter = 0;
+            this.lastDistance = 0.0;
+            MinecraftForge.EVENT_BUS.register(this);
         }
 
         @Override
         public void update(Entity e) {
-            this.motionVec[0] = e.posX - this.prevPosX;
-            this.prevPosX = e.posX;
-            this.motionVec[1] = e.posY - this.prevPosY;
-            this.prevPosY = e.posY;
-            this.motionVec[2] = e.posZ - this.prevPosZ;
-            this.prevPosZ = e.posZ;
+            ++this.tickCounter;
         }
 
         @Override
         public double getSpeedSquared(Entity e) {
-            return this.getNormalSpeed(this.motionVec[0] * this.motionVec[0] + this.motionVec[1] * this.motionVec[1] + this.motionVec[2] * this.motionVec[2]);
+            return this.lastDistance * this.lastDistance;
+            //return this.getNormalSpeed(this.motionVec[0] * this.motionVec[0] + this.motionVec[1] * this.motionVec[1] + this.motionVec[2] * this.motionVec[2]);
         }
 
         @Override
         public boolean isAbleToBreak(Entity e, double speed) {
-            return speed >= 0.275;
+            return speed >= DataReference.MINIMUM_ENTITY_SPEED;
         }
 
         @Override
@@ -64,6 +72,25 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
         @Override
         public double getMotionZ(Entity e) {
             return this.motionVec[2];
+        }
+
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
+        public void updateLastDistance(TickEvent.PlayerTickEvent event)
+        {
+            if(event.player == this.entity) {
+                if (this.tickCounter > 0) {
+                    this.motionVec[0] = (this.entity.posX - this.prevPosX) / (double) this.tickCounter;
+                    this.prevPosX = this.entity.posX;
+                    this.motionVec[1] = (this.entity.posY - this.prevPosY) / (double) this.tickCounter;
+                    this.prevPosY = this.entity.posY;
+                    this.motionVec[2] = (this.entity.posZ - this.prevPosZ) / (double) this.tickCounter;
+                    this.prevPosZ = this.entity.posZ;
+                    this.lastDistance = Math.sqrt(this.motionVec[0] * this.motionVec[0]
+                            + this.motionVec[1] * this.motionVec[1]
+                            + this.motionVec[2] * this.motionVec[2]) / (double) this.tickCounter;
+                    this.tickCounter = 0;
+                }
+            }
         }
 
         /**
