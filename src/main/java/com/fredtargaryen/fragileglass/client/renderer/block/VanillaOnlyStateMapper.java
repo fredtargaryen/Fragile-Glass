@@ -15,11 +15,13 @@ import static net.minecraft.block.BlockColored.COLOR;
 public class VanillaOnlyStateMapper extends StateMapperBase
 {
     private final IProperty<?> name;
+    private final String prefix;
     private final String suffix;
 
-    private VanillaOnlyStateMapper(IProperty<?> name, String suffix)
+    private VanillaOnlyStateMapper(IProperty<?> name, String prefix, String suffix)
     {
         this.name = name;
+        this.prefix = prefix;
         this.suffix = suffix;
     }
 
@@ -30,16 +32,11 @@ public class VanillaOnlyStateMapper extends StateMapperBase
 
         if (this.name == null)
         {
-            s = (Block.REGISTRY.getNameForObject(state.getBlock())).toString();
+            s = this.prefix+(Block.REGISTRY.getNameForObject(state.getBlock())).toString()+this.suffix;
         }
         else
         {
-            s = "minecraft:"+((IProperty)this.name).getName(map.remove(this.name));
-        }
-
-        if (this.suffix != null)
-        {
-            s = s + this.suffix;
+            s = "minecraft:"+this.prefix+((IProperty)this.name).getName(map.remove(this.name))+this.suffix;
         }
 
         return new ModelResourceLocation(s, this.getPropertyString(map));
@@ -49,11 +46,18 @@ public class VanillaOnlyStateMapper extends StateMapperBase
     public static class Builder
     {
         private IProperty<?> name;
+        private String prefix;
         private String suffix;
 
         public VanillaOnlyStateMapper.Builder withColour()
         {
             this.name = COLOR;
+            return this;
+        }
+
+        public VanillaOnlyStateMapper.Builder withPrefix(String prefix)
+        {
+            this.prefix = prefix;
             return this;
         }
 
@@ -65,7 +69,9 @@ public class VanillaOnlyStateMapper extends StateMapperBase
 
         public VanillaOnlyStateMapper build()
         {
-            return new VanillaOnlyStateMapper(this.name, this.suffix);
+            return new VanillaOnlyStateMapper(this.name,
+                    this.prefix == null ? "" : this.prefix,
+                    this.suffix == null ? "" : this.suffix);
         }
     }
 }

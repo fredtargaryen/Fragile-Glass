@@ -1,5 +1,7 @@
 package com.fredtargaryen.fragileglass.tileentity.capability;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.concurrent.Callable;
@@ -13,9 +15,10 @@ public class FragileCapFactory implements Callable<IFragileCapability>
 
     public class FragileImpl implements IFragileCapability
     {
-        public void onCrash(TileEntity te)
+        public boolean onCrash(IBlockState state, TileEntity te, Entity crasher, double speed)
         {
             te.getWorld().destroyBlock(te.getPos(), false);
+            return false;
         }
     }
 }

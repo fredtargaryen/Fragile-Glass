@@ -41,5 +41,10 @@ public class BreakCapFactory implements Callable<IBreakCapability> {
         public double getMotionZ(Entity e) {
             return e.motionZ;
         }
+
+        @Override
+        public byte getNoOfBreaks(Entity e) {
+            return 1;
+        }
     }
 }

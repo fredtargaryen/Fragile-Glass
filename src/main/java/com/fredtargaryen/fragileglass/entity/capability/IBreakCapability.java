@@ -48,4 +48,13 @@ public interface IBreakCapability
      * @return the z motion of the entity, for the block break code.
      */
     double getMotionZ(Entity e);
+
+    /**
+     * Sometimes it might be useful to break blocks further ahead than the speed would normally allow.
+     * A value of 0 will not break anything, regardless of speed.
+     * A value of 1 is good for normal entities on the server, whose motion values are updated every tick.
+     * A higher value might be good for entities which project some kind of aura that breaks blocks further away. It is
+     * used for players here to try to compromise for the latency of speed updates from the client. I give it a 9/10.
+     */
+    byte getNoOfBreaks(Entity e);
 }

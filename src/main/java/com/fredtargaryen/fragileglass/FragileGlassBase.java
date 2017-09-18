@@ -1,22 +1,10 @@
-/**
- * Fix physics for players
- * On client, players send packets of their new position to the server. The server then adjusts the position based on the
- * packets and its own logic, but motion values are not set server-side. The server does not update players by itself.
- *
- * Method tried                                                             Result
- * Get motion from client and send break packets                            Players are stopped then fall
- * Remove collision boxes from list in GetCollisionBoxesEvent, then         Players are not stopped, but the list in
- * break blocks in PlayerTickEvent                                          GetCollisionBoxesEvent only
- *                                                                          includes some ground blocks, there is
- *                                                                          still shaking due to "ex-blocks", and non-
- *                                                                          downward movement is bad
- */
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragileGlass;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragilePane;
+import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
@@ -38,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.config.Configuration;
@@ -52,12 +41,15 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
@@ -160,8 +152,6 @@ public class FragileGlassBase
                 .setRegistryName("ftthinice");
         iSugarCauldron = new ItemBlock(sugarCauldron)
                 .setRegistryName("ftsugarcauldron");
-
-        proxy.doStateMappings();
     }
 
     @SubscribeEvent
@@ -175,7 +165,14 @@ public class FragileGlassBase
     {
         event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane, iSugarBlock, iThinIce, iSugarCauldron);
     }
-        
+
+    @SubscribeEvent
+    public static void registerModels(ModelRegistryEvent event)
+    {
+        proxy.registerModels();
+        proxy.doStateMappings();
+    }
+
     @Mod.EventHandler
     public void load(FMLInitializationEvent event)
     {
@@ -184,8 +181,6 @@ public class FragileGlassBase
         OreDictionary.registerOre("blockSugar", sugarBlock);
 
         if(genThinIce) GameRegistry.registerWorldGenerator(patchGen, 1);
-
-        proxy.registerModels();
     }
 
     @Mod.EventHandler
@@ -211,8 +206,45 @@ public class FragileGlassBase
     @SubscribeEvent
     public void onBreakerConstruct(AttachCapabilitiesEvent<Entity> evt)
     {
-        Entity e = evt.getObject();
-        if(!e.world.isRemote)
+        final Entity e = evt.getObject();
+        if(e.world.isRemote)
+        {
+            if(e instanceof EntityPlayer)
+            {
+                MinecraftForge.EVENT_BUS.register(new Object() {
+                    private EntityPlayer ep = (EntityPlayer) e;
+                    private double lastSpeed;
+                    @SubscribeEvent(priority=EventPriority.HIGHEST)
+                    public void speedUpdate(TickEvent.ClientTickEvent event)
+                    {
+                        if(event.phase == TickEvent.Phase.END)
+                        {
+                            double speed = Math.sqrt(ep.motionX * ep.motionX + ep.motionY * ep.motionY + ep.motionZ * ep.motionZ);
+                            if(Math.abs(speed - lastSpeed) > 0.01)
+                            {
+                                MessageBreakerMovement mbm = new MessageBreakerMovement();
+                                mbm.motionx = ep.motionX;
+                                mbm.motiony = ep.motionY;
+                                mbm.motionz = ep.motionZ;
+                                mbm.speed = speed;
+                                PacketHandler.INSTANCE.sendToServer(mbm);
+                            }
+                            this.lastSpeed = speed;
+                            if(ep.isDead)
+                            {
+                                MinecraftForge.EVENT_BUS.unregister(this);
+                            }
+                        }
+                    }
+                    @SubscribeEvent
+                    public void killObject(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
+                    {
+                        MinecraftForge.EVENT_BUS.unregister(this);
+                    }
+            });
+            }
+        }
+        else
         {
             if(e instanceof EntityPlayer)
             {
@@ -295,7 +327,7 @@ public class FragileGlassBase
     }
 
     @SubscribeEvent
-    public void registerBreakerCap(EntityJoinWorldEvent ejwe)
+    public void initPlayerBreakerCap(EntityJoinWorldEvent ejwe)
     {
         Entity e = ejwe.getEntity();
         if(e.hasCapability(PLAYERBREAKCAP, null))
