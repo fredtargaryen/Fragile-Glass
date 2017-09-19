@@ -220,7 +220,7 @@ public class FragileGlassBase
                         if(event.phase == TickEvent.Phase.END)
                         {
                             double speed = Math.sqrt(ep.motionX * ep.motionX + ep.motionY * ep.motionY + ep.motionZ * ep.motionZ);
-                            if(Math.abs(speed - lastSpeed) > 0.01)
+                            if(Math.abs(speed - this.lastSpeed) > 0.01)
                             {
                                 MessageBreakerMovement mbm = new MessageBreakerMovement();
                                 mbm.motionx = ep.motionX;
@@ -228,8 +228,8 @@ public class FragileGlassBase
                                 mbm.motionz = ep.motionZ;
                                 mbm.speed = speed;
                                 PacketHandler.INSTANCE.sendToServer(mbm);
+                                this.lastSpeed = speed;
                             }
-                            this.lastSpeed = speed;
                             if(ep.isDead)
                             {
                                 MinecraftForge.EVENT_BUS.unregister(this);
