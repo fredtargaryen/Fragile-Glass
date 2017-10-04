@@ -135,6 +135,7 @@ public class BreakSystem
     }
 
     /**
+     * Added a check for blocks underneath; i.e. a block breaking if an entity walks on it.
      * @param e
      * @param aabb
      * @return Whether the crasher was blocked from passing through

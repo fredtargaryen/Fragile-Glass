@@ -1,12 +1,7 @@
 package com.fredtargaryen.fragileglass.entity.capability;
 
-import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.concurrent.Callable;
 
@@ -22,11 +17,9 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
         protected double prevPosY;
         protected double prevPosZ;
         private double[] motionVec;
-        private Entity entity;
         private double lastDistance;
 
         public void init(Entity e) {
-            this.entity = e;
             this.prevPosX = e.posX;
             this.prevPosY = e.posY;
             this.prevPosZ = e.posZ;
@@ -42,9 +35,12 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
             return this.lastDistance * this.lastDistance;
         }
 
+        /**
+         * On the client, for some reason sprint speed is recorded as roughly 0.17.
+         */
         @Override
         public boolean isAbleToBreak(Entity e, double speed) {
-            return speed >= DataReference.MINIMUM_ENTITY_SPEED;
+            return speed >= 0.15;
         }
 
         @Override

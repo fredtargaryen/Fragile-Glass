@@ -204,102 +204,89 @@ public class FragileGlassBase
     public static Capability<IFragileCapability> FRAGILECAP = null;
 
     @SubscribeEvent
-    public void onBreakerConstruct(AttachCapabilitiesEvent<Entity> evt)
-    {
+    public void onBreakerConstruct(AttachCapabilitiesEvent<Entity> evt) {
         final Entity e = evt.getObject();
-        if(e.world.isRemote)
-        {
-            if(e instanceof EntityPlayer)
-            {
-                MinecraftForge.EVENT_BUS.register(new Object() {
-                    private EntityPlayer ep = (EntityPlayer) e;
-                    private double lastSpeed;
-                    @SubscribeEvent(priority=EventPriority.HIGHEST)
-                    public void speedUpdate(TickEvent.ClientTickEvent event)
-                    {
-                        if(event.phase == TickEvent.Phase.END)
-                        {
-                            double speed = Math.sqrt(ep.motionX * ep.motionX + ep.motionY * ep.motionY + ep.motionZ * ep.motionZ);
-                            if(Math.abs(speed - this.lastSpeed) > 0.01)
-                            {
-                                MessageBreakerMovement mbm = new MessageBreakerMovement();
-                                mbm.motionx = ep.motionX;
-                                mbm.motiony = ep.motionY;
-                                mbm.motionz = ep.motionZ;
-                                mbm.speed = speed;
-                                PacketHandler.INSTANCE.sendToServer(mbm);
-                                this.lastSpeed = speed;
-                            }
-                            if(ep.isDead)
-                            {
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }
-                    }
-                    @SubscribeEvent
-                    public void killObject(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
-                    {
-                        MinecraftForge.EVENT_BUS.unregister(this);
-                    }
-            });
-            }
-        }
-        else
-        {
-            if(e instanceof EntityPlayer)
-            {
-                evt.addCapability(DataReference.PLAYER_BREAK_LOCATION,
-                        new ICapabilityProvider()
-                        {
-                            IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
+        if (e.world != null) {
+            if (e.world.isRemote) {
+                if (e instanceof EntityPlayer) {
+                    MinecraftForge.EVENT_BUS.register(new Object() {
+                        private EntityPlayer ep = (EntityPlayer) e;
+                        private double lastSpeed;
 
-                            @Override
-                            public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-                                return capability == PLAYERBREAKCAP || capability == BREAKCAP;
-                            }
-
-                            @Override
-                            public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-                            {
-                                if(capability == PLAYERBREAKCAP || capability == BREAKCAP)
-                                {
-                                    return PLAYERBREAKCAP.<T>cast(inst);
+                        @SubscribeEvent(priority = EventPriority.HIGHEST)
+                        public void speedUpdate(TickEvent.ClientTickEvent event) {
+                            if (event.phase == TickEvent.Phase.END) {
+                                double speed = Math.sqrt(ep.motionX * ep.motionX + ep.motionY * ep.motionY + ep.motionZ * ep.motionZ);
+                                if (Math.abs(speed - this.lastSpeed) > 0.01) {
+                                    MessageBreakerMovement mbm = new MessageBreakerMovement();
+                                    mbm.motionx = ep.motionX;
+                                    mbm.motiony = ep.motionY;
+                                    mbm.motionz = ep.motionZ;
+                                    mbm.speed = speed;
+                                    PacketHandler.INSTANCE.sendToServer(mbm);
+                                    this.lastSpeed = speed;
                                 }
-                                return null;
+                                if (ep.isDead) {
+                                    MinecraftForge.EVENT_BUS.unregister(this);
+                                }
                             }
                         }
-                );
-            }
-            else
-            {
-                if(e instanceof EntityLivingBase
-                        || e instanceof EntityArrow
-                        || e instanceof EntityFireball
-                        || e instanceof EntityMinecart
-                        || e instanceof EntityFireworkRocket
-                        || e instanceof EntityBoat
-                        || e instanceof EntityTNTPrimed
-                        || e instanceof EntityFallingBlock) {
-                    evt.addCapability(DataReference.BREAK_LOCATION,
-                            new ICapabilityProvider() {
 
-                                IBreakCapability inst = BREAKCAP.getDefaultInstance();
+                        @SubscribeEvent
+                        public void killObject(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+                            MinecraftForge.EVENT_BUS.unregister(this);
+                        }
+                    });
+                }
+            } else {
+                if (e instanceof EntityPlayer) {
+                    evt.addCapability(DataReference.PLAYER_BREAK_LOCATION,
+                            new ICapabilityProvider() {
+                                IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
 
                                 @Override
-                                public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-                                {
-                                    return capability == BREAKCAP;
+                                public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+                                    return capability == PLAYERBREAKCAP || capability == BREAKCAP;
                                 }
 
                                 @Override
                                 public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-                                    return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
+                                    if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
+                                        return PLAYERBREAKCAP.<T>cast(inst);
+                                    }
+                                    return null;
                                 }
-                            });
+                            }
+                    );
+                } else {
+                    if (e instanceof EntityLivingBase
+                            || e instanceof EntityArrow
+                            || e instanceof EntityFireball
+                            || e instanceof EntityMinecart
+                            || e instanceof EntityFireworkRocket
+                            || e instanceof EntityBoat
+                            || e instanceof EntityTNTPrimed
+                            || e instanceof EntityFallingBlock) {
+                        evt.addCapability(DataReference.BREAK_LOCATION,
+                                new ICapabilityProvider() {
+
+                                    IBreakCapability inst = BREAKCAP.getDefaultInstance();
+
+                                    @Override
+                                    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+                                        return capability == BREAKCAP;
+                                    }
+
+                                    @Override
+                                    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+                                        return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
+                                    }
+                                });
                     }
                 }
             }
         }
+    }
 
     @SubscribeEvent
     public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt)
