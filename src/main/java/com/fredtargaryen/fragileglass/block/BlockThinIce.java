@@ -3,6 +3,7 @@ package com.fredtargaryen.fragileglass.block;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
@@ -30,11 +31,6 @@ public class BlockThinIce extends AnyFragileBlock
         super(Material.ICE);
         this.lightOpacity = 0;
         this.setCreativeTab(CreativeTabs.MISC);
-    }
-
-    public TileEntity createNewTileEntity(@Nonnull World w, int i)
-    {
-        return new TileEntityFragile();
     }
 
     /**
@@ -80,6 +76,17 @@ public class BlockThinIce extends AnyFragileBlock
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        try {
+            return new TileEntityThinIce();
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
 

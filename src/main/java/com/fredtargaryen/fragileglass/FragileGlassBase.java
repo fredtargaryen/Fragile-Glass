@@ -8,12 +8,16 @@ import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.*;
@@ -79,6 +83,7 @@ public class FragileGlassBase
 	public static Block sugarBlock;
     public static Block thinIce;
     public static Block sugarCauldron;
+    public static Block weakStone;
 
     //Declare all items here
     private static Item iFragileGlass;
@@ -88,6 +93,7 @@ public class FragileGlassBase
     private static Item iSugarBlock;
     private static Item iThinIce;
     private static Item iSugarCauldron;
+    private static Item iWeakStone;
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
@@ -136,6 +142,9 @@ public class FragileGlassBase
                 .setHardness(5.0F)
                 .setResistance(10.0F)
                 .setRegistryName("ftsugarcauldron");
+        weakStone = new BlockWeakStone()
+                .setUnlocalizedName("ftweakstone")
+                .setRegistryName("ftweakstone");
 
         //ITEM SETUP
         iFragileGlass = new ItemBlock(fragileGlass)
@@ -152,18 +161,20 @@ public class FragileGlassBase
                 .setRegistryName("ftthinice");
         iSugarCauldron = new ItemBlock(sugarCauldron)
                 .setRegistryName("ftsugarcauldron");
+        iWeakStone = new ItemBlock(weakStone)
+                .setRegistryName("ftweakstone");
     }
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock, thinIce, sugarCauldron);
+        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock, thinIce, sugarCauldron, weakStone);
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane, iSugarBlock, iThinIce, iSugarCauldron);
+        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane, iSugarBlock, iThinIce, iSugarCauldron, iWeakStone);
     }
 
     @SubscribeEvent
@@ -176,7 +187,9 @@ public class FragileGlassBase
     @Mod.EventHandler
     public void load(FMLInitializationEvent event)
     {
-    	GameRegistry.registerTileEntity(TileEntityFragile.class, "glassTE");
+    	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, "TEFG");
+    	GameRegistry.registerTileEntity(TileEntityThinIce.class, "TETI");
+    	GameRegistry.registerTileEntity(TileEntityWeakStone.class, "TEWS");
 
         OreDictionary.registerOre("blockSugar", sugarBlock);
 
@@ -215,7 +228,7 @@ public class FragileGlassBase
 
                         @SubscribeEvent(priority = EventPriority.HIGHEST)
                         public void speedUpdate(TickEvent.ClientTickEvent event) {
-                            if (event.phase == TickEvent.Phase.END) {
+                            if (event.phase == TickEvent.Phase.START) {
                                 double speed = Math.sqrt(ep.motionX * ep.motionX + ep.motionY * ep.motionY + ep.motionZ * ep.motionZ);
                                 if (Math.abs(speed - this.lastSpeed) > 0.01) {
                                     MessageBreakerMovement mbm = new MessageBreakerMovement();
@@ -294,22 +307,74 @@ public class FragileGlassBase
         TileEntity te = evt.getObject();
         if(te instanceof TileEntityFragile)
         {
-            evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
-                    new ICapabilityProvider() {
-                        IFragileCapability inst = FRAGILECAP.getDefaultInstance();
+            //Now easy to fall through when walking. #SneakOrSink
+            if(te instanceof TileEntityThinIce) {
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
+                        new ICapabilityProvider() {
+                            IFragileCapability inst = FRAGILECAP.getDefaultInstance();
 
-                        @Override
-                        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                            return capability == FRAGILECAP;
-                        }
+                            @Override
+                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                                return capability == FRAGILECAP;
+                            }
 
-                        @Nullable
-                        @Override
-                        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                            return capability == FRAGILECAP ? FRAGILECAP.<T>cast(inst) : null;
+                            @Nullable
+                            @Override
+                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                                return capability == FRAGILECAP ? FRAGILECAP.<T>cast(inst) : null;
+                            }
                         }
+                );
+            }
+            else if(te instanceof TileEntityFragileGlass)
+            {
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
+                        new ICapabilityProvider() {
+                            IFragileCapability inst = new IFragileCapability() {
+                                @Override
+                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                                    if(speed > DataReference.PLAYER_SPRINT_SPEED)
+                                    {
+                                        te.getWorld().destroyBlock(te.getPos(), false);
+                                    }
+                                }
+                            };
+
+                            @Override
+                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                                return capability == FRAGILECAP;
+                            }
+
+                            @Nullable
+                            @Override
+                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                                return capability == FRAGILECAP ? FRAGILECAP.<T>cast(inst) : null;
+                            }
+                        });
+            }
+            else if(te instanceof TileEntityWeakStone)
+            {
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
+                        new ICapabilityProvider() {
+                            IFragileCapability inst = new IFragileCapability() {
+                                @Override
+                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                                    World w = te.getWorld();
+                                    w.scheduleUpdate(te.getPos(), FragileGlassBase.weakStone, FragileGlassBase.weakStone.tickRate(w));
+                                }
+                            };
+                    @Override
+                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                        return capability == FRAGILECAP;
                     }
-            );
+
+                    @Nullable
+                    @Override
+                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                        return capability == FRAGILECAP ? FRAGILECAP.<T>cast(inst) : null;
+                    }
+                });
+            }
         }
     }
 

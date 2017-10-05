@@ -15,6 +15,7 @@ public class ClientProxy extends CommonProxy
     public void registerModels()
     {
         //Describes how some blocks should look in the inventory
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.weakStone), 0, new ModelResourceLocation(DataReference.MODID+":ftweakstone"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.sugarBlock), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarblock"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.sugarCauldron), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarcauldron", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.fragileGlass), 0, new ModelResourceLocation("glass"));

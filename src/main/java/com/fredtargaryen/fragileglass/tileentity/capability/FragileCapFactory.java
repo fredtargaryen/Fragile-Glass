@@ -15,10 +15,11 @@ public class FragileCapFactory implements Callable<IFragileCapability>
 
     public class FragileImpl implements IFragileCapability
     {
-        public boolean onCrash(IBlockState state, TileEntity te, Entity crasher, double speed)
+        //Breaks the block if the entity is currently able to break blocks. Enough for most blocks.
+        //Used for thin ice. Use a speed check if you want the block to be tougher.
+        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed)
         {
             te.getWorld().destroyBlock(te.getPos(), false);
-            return false;
         }
     }
 }

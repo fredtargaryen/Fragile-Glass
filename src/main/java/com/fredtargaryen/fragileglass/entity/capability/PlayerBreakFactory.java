@@ -1,5 +1,6 @@
 package com.fredtargaryen.fragileglass.entity.capability;
 
+import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import net.minecraft.entity.Entity;
 
@@ -35,12 +36,9 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
             return this.lastDistance * this.lastDistance;
         }
 
-        /**
-         * On the client, for some reason sprint speed is recorded as roughly 0.17.
-         */
         @Override
         public boolean isAbleToBreak(Entity e, double speed) {
-            return speed >= 0.15;
+            return speed >= DataReference.PLAYER_WALK_SPEED;
         }
 
         @Override

@@ -124,23 +124,22 @@ public class BreakSystem
                 //block bounding boxes.
                 aabb = aabb.offset(xComp, yComp, zComp);
                 distance -= 1.0;
-                if (breakNearbyFragileBlocks(e, aabb, distance)) return;
+                this.breakNearbyFragileBlocks(e, aabb, distance);
             }
             //The end of the movement vector is now less than one block away from the current
             //entity bounding box. Offset the entity bounding box right to the end of the
             //movement vector, and check that it intersects with the block bounding box.
             originalAABB = originalAABB.offset(xToUse, yToUse, zToUse);
-            if (breakNearbyFragileBlocks(e, originalAABB, distance)) return;
+            this.breakNearbyFragileBlocks(e, originalAABB, distance);
         }
     }
 
     /**
-     * Added a check for blocks underneath; i.e. a block breaking if an entity walks on it.
      * @param e
      * @param aabb
-     * @return Whether the crasher was blocked from passing through
+     * @param speed
      */
-    private boolean breakNearbyFragileBlocks(Entity e, AxisAlignedBB aabb, double speed)
+    private void breakNearbyFragileBlocks(Entity e, AxisAlignedBB aabb, double speed)
     {
         BlockPos blockPos;
         Block block;
@@ -156,36 +155,16 @@ public class BreakSystem
                     //Chances are the block will be an air block (pass through no question) so best check this first
                     if (block != Blocks.AIR)
                     {
-                        if (block.hasTileEntity(state))
-                        {
+                        if (block.hasTileEntity(state)) {
                             TileEntity te = e.world.getTileEntity(blockPos);
-                            if (te.hasCapability(FragileGlassBase.FRAGILECAP, null))
-                            {
-                                if(te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed))
-                                {
-                                    return true;
-                                }
-                            }
-                            else
-                            {
-                                if (block.isNormalCube(state, e.world, blockPos))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (block.isNormalCube(state, e.world, blockPos))
-                            {
-                                return true;
+                            if (te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
+                                te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
                             }
                         }
                     }
                 }
             }
         }
-        return false;
     }
 
     /**

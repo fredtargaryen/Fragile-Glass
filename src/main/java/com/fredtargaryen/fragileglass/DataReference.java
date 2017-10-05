@@ -13,10 +13,21 @@ public class DataReference
     public static final String CLIENTPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ClientProxy";
     public static final String SERVERPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ServerProxy";
 
-    //The minimum speed a permitted entity must be travelling to break a block.
+    //The minimum speed a permitted entity must be travelling to break a fragile glass block.
     //This should be sprinting, which is over 5.5 m/s.
     //Divided by 20: 0.275 blocks per tick.
     public static final double MINIMUM_ENTITY_SPEED = 0.275;
+
+    /**
+     * On the client, for some reason walk speed is recorded as roughly 0.136.
+     */
+    public static final double PLAYER_WALK_SPEED = 0.135;
+
+    /**
+     * On the client, for some reason sprint speed is recorded as roughly 0.1655.
+     */
+    public static final double PLAYER_SPRINT_SPEED = 0.165;
+
     //Arbitrary high speed.
     //A potion of Speed "increases walking speed by 20% × level" (Minecraft Wiki)
     //At potion levels above 100 the player is moving faster than chunks can load so no point allowing higher speeds

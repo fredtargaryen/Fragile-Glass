@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "AA",
+    "AA"
+  ],
+  "key":
+  {
+    "A":
+    {
+      "item": "minecraft:stone_slab",
+      "data": 0
+    }
+  },
+  "result":
+  {
+    "item": "ftfragileglass:ftweakstone",
+    "count": 2
+  }
+}

@@ -26,17 +26,7 @@ abstract class AnyFragileBlock extends Block implements ITileEntityProvider
     }
 
     @Override
-    public TileEntity createNewTileEntity(World par1World, int par2)
-    {
-        try
-        {
-            return new TileEntityFragile();
-        }
-        catch (Exception exception)
-        {
-            throw new RuntimeException(exception);
-        }
-    }
+    public abstract TileEntity createNewTileEntity(World worldIn, int meta);
 
     @Override
     public int quantityDropped(Random par1Random)
