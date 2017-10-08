@@ -16,6 +16,8 @@ import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
+import com.fredtargaryen.fragileglass.worldgen.PatchGenIce;
+import com.fredtargaryen.fragileglass.worldgen.PatchGenStone;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -53,7 +55,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
@@ -68,10 +69,14 @@ public class FragileGlassBase
 
     //Config vars
     private static boolean genThinIce;
-    public static int avePatchSize;
-    public static int genChance;
+    public static int avePatchSizeIce;
+    public static int genChanceIce;
+    private static boolean genWeakStone;
+    public static int avePatchSizeStone;
+    public static int genChanceStone;
 
-    private static final PatchGen patchGen = new PatchGen();
+    private static PatchGen patchGenIce;
+    private static PatchGen patchGenStone;
 
     public static BreakSystem breakSystem;
 
@@ -113,9 +118,12 @@ public class FragileGlassBase
         //CONFIG SETUP
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
-        avePatchSize = config.getInt("avePatchSize", "Worldgen", 5, 4, 10, "Average patch diameter");
-        genChance = config.getInt("genChance", "Worldgen", 3, 2, 5, "1 in x chance of patch appearing");
-        genThinIce = config.getBoolean("genThinIce", "Worldgen", true, "If true, thin ice patches will generate on frozen bodies of water");
+        genThinIce = config.getBoolean("genThinIce", "Worldgen - Thin Ice", true, "If true, thin ice patches will generate on frozen bodies of water");
+        avePatchSizeIce = config.getInt("avePatchSizeIce", "Worldgen - Thin Ice", 5, 1, 10, "Average patch diameter");
+        genChanceIce = config.getInt("genChanceIce", "Worldgen - Thin Ice", 3, 1, 5, "1 in x chance of patch appearing");
+        genWeakStone = config.getBoolean("genWeakStone", "Worldgen - Weak Stone", false, "If true, weak stone patches will generate. Expect falls into lava!");
+        avePatchSizeStone = config.getInt("avePatchSizeStone", "Worldgen - Weak Stone", 4, 1, 10, "Average patch diameter");
+        genChanceStone = config.getInt("genChanceStone", "Worldgen - Weak Stone", 3, 1, 5, "1 in x chance of patch appearing");
         config.save();
 
         //BLOCK SETUP
@@ -193,7 +201,16 @@ public class FragileGlassBase
 
         OreDictionary.registerOre("blockSugar", sugarBlock);
 
-        if(genThinIce) GameRegistry.registerWorldGenerator(patchGen, 1);
+        if(genThinIce)
+        {
+            patchGenIce = new PatchGenIce();
+            GameRegistry.registerWorldGenerator(patchGenIce, 1);
+        }
+        if(genWeakStone)
+        {
+            patchGenStone = new PatchGenStone();
+            GameRegistry.registerWorldGenerator(patchGenStone, 1);
+        }
     }
 
     @Mod.EventHandler

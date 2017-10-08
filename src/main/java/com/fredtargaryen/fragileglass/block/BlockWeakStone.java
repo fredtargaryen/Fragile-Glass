@@ -16,7 +16,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class BlockWeakStone extends BlockFalling implements ITileEntityProvider {
     @Nullable
@@ -58,7 +57,7 @@ public class BlockWeakStone extends BlockFalling implements ITileEntityProvider 
      */
     public int tickRate(World worldIn)
     {
-        return 10;
+        return 20;
     }
 
     public void onEndFalling(World worldIn, BlockPos pos, IBlockState p_176502_3_, IBlockState p_176502_4_)
