@@ -1,7 +1,7 @@
 This mapping 'snapshot_20170624' was designed for MC 1.12! Use at your own peril.This mapping 'snapshot_20170624' was designed for MC 1.12! Use at your own peril.
 
 #################################################
-         ForgeGradle 2.3-SNAPSHOT-a34ebfc        
+         ForgeGradle 2.3-SNAPSHOT-f49079d        
   https://github.com/MinecraftForge/ForgeGradle  
 #################################################
                Powered by MCP unknown               
@@ -11,7 +11,7 @@ This mapping 'snapshot_20170624' was designed for MC 1.12! Use at your own peril
 #################################################
 :deobfCompileDummyTask
 :deobfProvidedDummyTask
-:sourceApiJava UP-TO-DATE
+:sourceApiJava
 :compileApiJava UP-TO-DATE
 :processApiResources UP-TO-DATE
 :apiClasses UP-TO-DATE
@@ -21,16 +21,16 @@ Note: Recompile with -Xlint:deprecation for details.
 Note: Some input files use unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
 
-:processResources UP-TO-DATE
+:processResources
 :classes
 :jar
-:sourceTestJava UP-TO-DATE
+:sourceTestJava
 :compileTestJava UP-TO-DATE
 :processTestResources UP-TO-DATE
 :testClasses UP-TO-DATE
 :test UP-TO-DATE
 :extractMcpData SKIPPED
-:extractMcpMappings SKIPPED
+:extractMcpMappings
 :getVersionJson
 :extractUserdev UP-TO-DATE
 :genSrgs SKIPPED
@@ -46,4 +46,4 @@ remapping source...
 
 BUILD SUCCESSFUL
 
-Total time: 1 mins 34.301 secs
+Total time: 9 mins 0.268 secs

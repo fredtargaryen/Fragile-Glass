@@ -7,6 +7,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public abstract class PatchGen implements IWorldGenerator
@@ -44,12 +45,12 @@ public abstract class PatchGen implements IWorldGenerator
 
     protected boolean attemptPatch(Random random, int chunkX, int chunkZ, BlockPos patchCentre, World world)
     {
-        if(random.nextInt(this.genChance) == 0 && this.genPatch(random, patchCentre, world))
+        if(random.nextInt(this.genChance) == 0 && this.genPatch(random, chunkX, chunkZ, patchCentre, world))
         {
             this.timeSinceLastPatch = 0;
             return true;
         }
-        else if(this.timeSinceLastPatch >= this.timeToWaitBeforeBonusPatch && this.genPatch(random, patchCentre, world))
+        else if(this.timeSinceLastPatch >= this.timeToWaitBeforeBonusPatch && this.genPatch(random, chunkX, chunkZ, patchCentre, world))
         {
             this.timeSinceLastPatch = 0;
             return true;
@@ -61,35 +62,52 @@ public abstract class PatchGen implements IWorldGenerator
         }
     }
 
-    protected boolean genPatch(Random random, BlockPos patchCentre, World world)
+    /**
+     * Uses flag 18 to set BlockStates, because flag 2 sends the change to clients and flag 16 prevents observers
+     * (which may be in an unloaded chunk) from seeing the change.
+     * @param random
+     * @param chunkX
+     * @param chunkZ
+     * @param patchCentre
+     * @param world
+     * @return
+     */
+    protected boolean genPatch(Random random, int chunkX, int chunkZ, BlockPos patchCentre, World world)
     {
         BlockPos.MutableBlockPos nextBlockPos = new BlockPos.MutableBlockPos(0, 0, 0);
         Block nextBlock;
         int patchRadius = (int) (((2 * random.nextGaussian()) + this.avePatchSize) / 2);
+        //Move centre of patch so that patches cannot go outside the chunk
+        int chunkBlockX = chunkX * 16;
+        int chunkBlockZ = chunkZ * 16;
+        double centreX = Math.max(patchCentre.getX(), chunkBlockX + patchRadius);
+        centreX = Math.min(centreX, chunkBlockX + 16 - patchRadius);
+        double centreY = patchCentre.getY();
+        double centreZ = Math.max(patchCentre.getZ(), chunkBlockZ + patchRadius);
+        centreZ = Math.min(centreZ, chunkBlockZ + 16 - patchRadius);
+        patchCentre = new BlockPos(centreX, centreY, centreZ);
         for (int rad = patchRadius; rad > 0; rad--)
         {
-            int nextY = patchCentre.getY();
             for (double r = 0; r < twoPi; r += piFraction)
             {
-                int nextX = (int) (patchCentre.getX() + (rad * Math.cos(r)));
-                int nextZ = (int) (patchCentre.getZ() + (rad * Math.sin(r)));
-                nextBlockPos.setPos(nextX, nextY, nextZ);
+                int nextX = (int) (centreX + (rad * Math.cos(r)));
+                int nextZ = (int) (centreZ + (rad * Math.sin(r)));
+                nextBlockPos.setPos(nextX, centreY, nextZ);
                 nextBlock = world.getBlockState(nextBlockPos).getBlock();
                 if(this.isBlockValidToTransform(nextBlock))
                 {
                     //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
                     if (rad > patchRadius - 2) {
                         if (random.nextBoolean()) {
-                            world.setBlockState(nextBlockPos, this.blockToSet.getDefaultState());
+                            world.setBlockState(nextBlockPos, this.blockToSet.getDefaultState(), 18);
                         }
                     } else {
-                        world.setBlockState(nextBlockPos, this.blockToSet.getDefaultState());
+                        world.setBlockState(nextBlockPos, this.blockToSet.getDefaultState(), 18);
                     }
                 }
             }
         }
-        world.setBlockState(patchCentre, this.blockToSet.getDefaultState());
-        System.out.println("Patch at "+patchCentre);
+        world.setBlockState(patchCentre, this.blockToSet.getDefaultState(), 18);
         return true;
     }
 
