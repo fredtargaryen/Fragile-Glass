@@ -116,7 +116,7 @@ public class BlockSugarCauldron extends Block
                         if (!player.capabilities.isCreativeMode)
                         {
                             ItemStack newStack = itemstack.copy();
-                            newStack.func_190918_g(1);
+                            newStack.grow(-1);
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, newStack);
                         }
                         w.playSound(null, pos, SoundEvents.ENTITY_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -127,8 +127,8 @@ public class BlockSugarCauldron extends Block
             }
             else if(i1 == 6)
             {
-                w.spawnEntityInWorld(new EntityItem(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, new ItemStack(FragileGlassBase.fragileGlass, 16)));
-                w.spawnEntityInWorld(new EntityXPOrb(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, 4));
+                w.spawnEntity(new EntityItem(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, new ItemStack(FragileGlassBase.fragileGlass, 16)));
+                w.spawnEntity(new EntityXPOrb(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, 4));
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 0), 3);
                 return true;
             }
@@ -221,8 +221,8 @@ public class BlockSugarCauldron extends Block
             double y = pos.getY();
             double z = pos.getZ();
             EntityItem entityItem = new EntityItem(w, x + 0.5D, y + 1.0D, z + 0.5D, new ItemStack(FragileGlassBase.fragileGlass, 16));
-            w.spawnEntityInWorld(entityItem);
-            w.spawnEntityInWorld(new EntityXPOrb(w, x + 0.5, y + 0.5, z + 0.5, 4));
+            w.spawnEntity(entityItem);
+            w.spawnEntity(new EntityXPOrb(w, x + 0.5, y + 0.5, z + 0.5, 4));
         }
         super.onBlockDestroyedByPlayer(w, pos, state);
     }
@@ -250,7 +250,7 @@ public class BlockSugarCauldron extends Block
         if (mc != null && renderViewEntity != null && mc.effectRenderer != null)
         {
             int i = mc.gameSettings.particleSetting;
-            AxisAlignedBB aabb = particleFX.getEntityBoundingBox();
+            AxisAlignedBB aabb = particleFX.getBoundingBox();
             double d6 = renderViewEntity.posX - aabb.minX;
             double d7 = renderViewEntity.posY - aabb.minY;
             double d8 = renderViewEntity.posZ - aabb.minZ;
@@ -261,6 +261,15 @@ public class BlockSugarCauldron extends Block
                     Minecraft.getMinecraft().effectRenderer.addEffect(particleFX);
             }
         }
+    }
+
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) { return false; }
+
+    @Deprecated
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
     }
 
     @SideOnly(Side.CLIENT)

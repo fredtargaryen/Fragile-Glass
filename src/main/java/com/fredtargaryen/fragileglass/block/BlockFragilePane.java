@@ -1,11 +1,13 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -134,7 +136,8 @@ public class BlockFragilePane extends AnyFragileBlock
         }
     }
 
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn)
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b)
     {
         state = this.getActualState(state, worldIn, pos);
         addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[0]);
@@ -209,6 +212,18 @@ public class BlockFragilePane extends AnyFragileBlock
                 .withProperty(WEST, canPaneConnectTo(worldIn, pos, EnumFacing.WEST))
                 .withProperty(EAST, canPaneConnectTo(worldIn, pos, EnumFacing.EAST));
     }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        try {
+            return new TileEntityFragileGlass();
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     ///////////////////////////////
     //METHODS FROM BLOCKBREAKABLE//
     ///////////////////////////////

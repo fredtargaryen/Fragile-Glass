@@ -2,12 +2,14 @@ package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockIce;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -30,11 +32,18 @@ public class BlockThinIce extends AnyFragileBlock
     {
         super(Material.ICE);
         this.lightOpacity = 0;
+        this.setCreativeTab(CreativeTabs.MISC);
     }
 
     public TileEntity createNewTileEntity(World w, int i)
     {
-        return new TileEntityFragile();
+        try {
+            return new TileEntityThinIce();
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

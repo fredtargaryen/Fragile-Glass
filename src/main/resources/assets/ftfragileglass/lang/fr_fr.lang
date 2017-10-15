@@ -1,0 +1,48 @@
+tile.ftfragileglass.name=Verre fragile
+tile.ftfragilepane.name=Vitre fragile
+tile.ftthinice.name=Glace mince
+tile.ftsugarcauldron.name=Chaudron pour sucre
+
+/STAINED FRAGILE GLASS
+tile.ftstainedfragileglass.name=Verre fragile coloré
+tile.ftstainedfragileglass.black.name=Verre fragile noir
+tile.ftstainedfragileglass.red.name=Verre fragile rouge
+tile.ftstainedfragileglass.green.name=Verre fragile vert
+tile.ftstainedfragileglass.brown.name=Verre fragile marron
+tile.ftstainedfragileglass.blue.name=Verre fragile bleu
+tile.ftstainedfragileglass.purple.name=Verre fragile violet
+tile.ftstainedfragileglass.cyan.name=Verre fragile cyan
+tile.ftstainedfragileglass.silver.name=Verre fragile gris clair
+tile.ftstainedfragileglass.gray.name=Verre fragile gris
+tile.ftstainedfragileglass.pink.name=Verre fragile rose
+tile.ftstainedfragileglass.lime.name=Verre fragile vert clair
+tile.ftstainedfragileglass.yellow.name=Verre fragile jaune
+tile.ftstainedfragileglass.lightBlue.name=Verre fragile bleu clair
+tile.ftstainedfragileglass.magenta.name=Verre fragile magenta
+tile.ftstainedfragileglass.orange.name=Verre fragile orange
+tile.ftstainedfragileglass.white.name=Verre fragile blanc
+
+
+/STAINED FRAGILE GLASS PANE
+tile.ftstainedfragilepane.name=Vitre fragile coloré
+tile.ftstainedfragilepane.black.name=Vitre fragile noir
+tile.ftstainedfragilepane.red.name=Vitre fragile rouge
+tile.ftstainedfragilepane.green.name=Vitre fragile vert
+tile.ftstainedfragilepane.brown.name=Vitre fragile marron
+tile.ftstainedfragilepane.blue.name=Vitre fragile bleu
+tile.ftstainedfragilepane.purple.name=Vitre fragile violet
+tile.ftstainedfragilepane.cyan.name=Vitre fragile cyan
+tile.ftstainedfragilepane.silver.name=Vitre fragile gris clair
+tile.ftstainedfragilepane.gray.name=Vitre fragile gris
+tile.ftstainedfragilepane.pink.name=Vitre fragile rose
+tile.ftstainedfragilepane.lime.name=Vitre fragile vert clair
+tile.ftstainedfragilepane.yellow.name=Vitre fragile jaune
+tile.ftstainedfragilepane.lightBlue.name=Vitre fragile bleu clair
+tile.ftstainedfragilepane.magenta.name=Vitre fragile magenta
+tile.ftstainedfragilepane.orange.name=Vitre fragile orange
+tile.ftstainedfragilepane.white.name=Vitre fragile blanc
+
+
+/OTHER BLOCKS
+tile.ftsugarblock.name=Bloc de sucre
+tile.ftweakstone.name=Pierre faible

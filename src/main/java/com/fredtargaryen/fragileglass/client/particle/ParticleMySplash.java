@@ -19,7 +19,7 @@ public class ParticleMySplash extends ParticleSplash
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
         this.motionY -= (double)this.particleGravity;
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.move(this.motionX, this.motionY, this.motionZ);
         this.motionX *= 0.9800000190734863D;
         this.motionY *= 0.9800000190734863D;
         this.motionZ *= 0.9800000190734863D;

@@ -1,6 +1,5 @@
 package com.fredtargaryen.fragileglass.block;
 
-import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,17 +22,7 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
     }
 
     @Override
-    public TileEntity createNewTileEntity(World par1World, int par2)
-    {
-        try
-        {
-            return new TileEntityFragile();
-        }
-        catch (Exception exception)
-        {
-            throw new RuntimeException(exception);
-        }
-    }
+    public abstract TileEntity createNewTileEntity(World world, int meta);
 
     @Override
     public int quantityDropped(Random par1Random)
@@ -57,7 +46,7 @@ public abstract class AnyFragileBlock extends Block implements ITileEntityProvid
      * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
      */
     @Override
-    protected ItemStack createStackedBlock(IBlockState state)
+    protected ItemStack getSilkTouchDrop(IBlockState state)
     {
         return null;
     }

@@ -1,0 +1,48 @@
+tile.ftfragileglass.name=Vidro Frágil
+tile.ftfragilepane.name=Painel de Vidro Frágil
+tile.ftthinice.name=Gelo Fino
+tile.ftsugarcauldron.name=Caldeirão para Açúcar
+
+/STAINED FRAGILE GLASS
+tile.ftstainedfragileglass.name=Vidro Frágil Tingido
+tile.ftstainedfragileglass.black.name=Vidro Frágil Tingido de Preto
+tile.ftstainedfragileglass.red.name=Vidro Frágil Tingido de Vermelho
+tile.ftstainedfragileglass.green.name=Vidro Frágil Tingido de Verde
+tile.ftstainedfragileglass.brown.name=Vidro Frágil Tingido de Castanho
+tile.ftstainedfragileglass.blue.name=Vidro Frágil Tingido de Azul
+tile.ftstainedfragileglass.purple.name=Vidro Frágil Tingido de Roxo
+tile.ftstainedfragileglass.cyan.name=Vidro Frágil Tingido de Azul Ciano
+tile.ftstainedfragileglass.silver.name=Vidro Frágil Tingido de Cinzento Claro
+tile.ftstainedfragileglass.gray.name=Vidro Frágil Tingido de Cinzento
+tile.ftstainedfragileglass.pink.name=Vidro Frágil Tingido de Rosa
+tile.ftstainedfragileglass.lime.name=Vidro Frágil Tingido de Verde Lima
+tile.ftstainedfragileglass.yellow.name=Vidro Frágil Tingido de Amarelo
+tile.ftstainedfragileglass.lightBlue.name=Vidro Frágil Tingido de Azul Claro
+tile.ftstainedfragileglass.magenta.name=Vidro Frágil Tingido de Magenta
+tile.ftstainedfragileglass.orange.name=Vidro Frágil Tingido de Laranja
+tile.ftstainedfragileglass.white.name=Vidro Frágil Tingido de Branco
+
+
+/STAINED FRAGILE GLASS PANE
+tile.ftstainedfragilepane.name=Painel de Vidro Frágil Tingido
+tile.ftstainedfragilepane.black.name=Painel de Vidro Frágil Tingido de Preto
+tile.ftstainedfragilepane.red.name=Painel de Vidro Frágil Tingido de Vermelho
+tile.ftstainedfragilepane.green.name=Painel de Vidro Frágil Tingido de Verde
+tile.ftstainedfragilepane.brown.name=Painel de Vidro Frágil Tingido de Castanho
+tile.ftstainedfragilepane.blue.name=Painel de Vidro Frágil Tingido de Azul
+tile.ftstainedfragilepane.purple.name=Painel de Vidro Frágil Tingido de Roxo
+tile.ftstainedfragilepane.cyan.name=Painel de Vidro Frágil Tingido de Azul Ciano
+tile.ftstainedfragilepane.silver.name=Painel de Vidro Frágil Tingido de Cinzento Claro
+tile.ftstainedfragilepane.gray.name=Painel de Vidro Frágil Tingido de Cinzento
+tile.ftstainedfragilepane.pink.name=Painel de Vidro Frágil Tingido de Rosa
+tile.ftstainedfragilepane.lime.name=Painel de Vidro Frágil Tingido de Verde Lima
+tile.ftstainedfragilepane.yellow.name=Painel de Vidro Frágil Tingido de Amarelo
+tile.ftstainedfragilepane.lightBlue.name=Painel de Vidro Frágil Tingido de Azul Claro
+tile.ftstainedfragilepane.magenta.name=Painel de Vidro Frágil Tingido de Magenta
+tile.ftstainedfragilepane.orange.name=Painel de Vidro Frágil Tingido de Laranja
+tile.ftstainedfragilepane.white.name=Painel de Vidro Frágil Tingido de Branco
+
+
+/OTHER BLOCKS
+tile.ftsugarblock.name=Bloco de Açúcar
+tile.ftweakstone.name=Pedra Fraca
