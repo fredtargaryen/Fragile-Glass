@@ -65,12 +65,12 @@ public abstract class PatchGen implements IWorldGenerator
     /**
      * Uses flag 18 to set BlockStates, because flag 2 sends the change to clients and flag 16 prevents observers
      * (which may be in an unloaded chunk) from seeing the change.
-     * @param random
-     * @param chunkX
-     * @param chunkZ
-     * @param patchCentre
-     * @param world
-     * @return
+     * @param random Random object to use
+     * @param chunkX Position of chunk. Multiplied by 16 to get corner block position
+     * @param chunkZ As above
+     * @param patchCentre The block in the middle of the patch - the only block to definitely have been placed if
+     * @param world The world object
+     * @return true; can't remember why
      */
     protected boolean genPatch(Random random, int chunkX, int chunkZ, BlockPos patchCentre, World world)
     {

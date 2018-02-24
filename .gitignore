@@ -16,8 +16,10 @@ out
 # gradle
 build
 .gradle
+gradle
 
 # other
 eclipse
 run
 mods
+gradlew

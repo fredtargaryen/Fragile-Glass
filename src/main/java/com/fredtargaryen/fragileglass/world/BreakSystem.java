@@ -40,10 +40,12 @@ public class BreakSystem
     public void breakCheck(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START)
         {
-            Iterator<Entity> i = event.world.loadedEntityList.iterator();
-            while(i.hasNext())
+            //Re-add this stuff if you get ConcurrentModificationExceptions
+            //Iterator<Entity> i = event.world.loadedEntityList.iterator();
+            //while(i.hasNext())
+            for(Entity e : event.world.loadedEntityList)
             {
-                Entity e = i.next();
+                //Entity e = i.next();
                 if(!e.isDead) {
                     //Entities must have an instance of IBreakCapability or they will never be able to break blocks with
                     //IFragileCapability.
@@ -102,7 +104,7 @@ public class BreakSystem
      * @param e The entity that is moving.
      * @param xToUse The x motion value to use; not necessarily e.motionX, especially in the player's case.
      * @param yToUse The y motion value to use; not necessarily e.motionY, especially in the player's case.
-     * @param xToUse The z motion value to use; not necessarily e.motionZ, especially in the player's case.
+     * @param zToUse The z motion value to use; not necessarily e.motionZ, especially in the player's case.
      * @param distance The distance in blocks that Entity e will travel in this current tick.
      * @param noOfBreaks Effectively multiplies the range of blocks to call onCrash on, but does not multiply the
      *                   speed of e when onCrash is called.
@@ -135,9 +137,9 @@ public class BreakSystem
     }
 
     /**
-     * @param e
-     * @param aabb
-     * @param speed
+     * @param e The entity doing the breaking
+     * @param aabb The bounding box to break blocks around
+     * @param speed The speed e is travelling at
      */
     private void breakNearbyFragileBlocks(Entity e, AxisAlignedBB aabb, double speed)
     {
