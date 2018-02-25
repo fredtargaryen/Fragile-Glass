@@ -1,12 +1,9 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityFragile;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockIce;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -32,7 +29,9 @@ public class BlockThinIce extends AnyFragileBlock
     {
         super(Material.ICE);
         this.lightOpacity = 0;
+        this.slipperiness = 0.98F;
         this.setCreativeTab(CreativeTabs.MISC);
+        this.setTickRandomly(true);
     }
 
     public TileEntity createNewTileEntity(World w, int i)
@@ -54,10 +53,7 @@ public class BlockThinIce extends AnyFragileBlock
     {
         if (worldIn.getLightFor(EnumSkyBlock.BLOCK, pos) > 11 - this.getLightOpacity(state, worldIn, pos))
         {
-            if (worldIn.provider.doesWaterVaporize())
-            {
-                worldIn.setBlockToAir(pos);
-            }
+            worldIn.setBlockToAir(pos);
         }
     }
 
@@ -89,6 +85,29 @@ public class BlockThinIce extends AnyFragileBlock
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Deprecated
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
+    {
+        if(side == EnumFacing.NORTH || side == EnumFacing.SOUTH || side == EnumFacing.EAST || side == EnumFacing.WEST)
+        {
+            Block b = blockAccess.getBlockState(pos.offset(side)).getBlock();
+            if(b == this || b instanceof BlockIce)
+            {
+                return false;
+            }
+        }
+        return super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+    }
+
+    @Deprecated
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
     }
 }
 

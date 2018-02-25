@@ -2,7 +2,7 @@ package com.fredtargaryen.fragileglass;
 
 import net.minecraft.util.ResourceLocation;
 
-// Change version number in: DataReference; build.gradle; mcmod.info
+// Change version number in: DataReference; build.gradle; mcmod.info; README.md
 //Snowy seeds to test thin ice:
 //Vanilla:
 public class DataReference
@@ -10,7 +10,7 @@ public class DataReference
     //MAIN MOD DETAILS
     public static final String MODID = "ftfragileglass";
     public static final String MODNAME = "Fragile Glass and Thin Ice";
-    public static final String VERSION = "1.8.5";
+    public static final String VERSION = "1.8.6";
     //PROXY PATHS
     public static final String CLIENTPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ClientProxy";
     public static final String SERVERPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ServerProxy";
