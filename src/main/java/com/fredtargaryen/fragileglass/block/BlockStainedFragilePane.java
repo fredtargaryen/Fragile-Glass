@@ -12,19 +12,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class BlockStainedFragilePane extends BlockFragilePane
 {
@@ -103,9 +97,10 @@ public class BlockStainedFragilePane extends BlockFragilePane
                 || blockIn instanceof BlockPane;
     }
 
-    /**
-     * METHODS FROM BLOCKSTAINEDGLASS
-     */
+    //////////////////////////////////
+    //METHODS FROM BLOCKSTAINEDGLASS//
+    //////////////////////////////////
+
     /**
      * Convert the given metadata into a BlockState for this Block
      */

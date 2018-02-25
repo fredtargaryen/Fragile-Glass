@@ -58,6 +58,18 @@ public class BlockThinIce extends AnyFragileBlock
     }
 
     @Override
+    public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side)
+    {
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
     {
         if(face == EnumFacing.DOWN)
@@ -75,18 +87,6 @@ public class BlockThinIce extends AnyFragileBlock
         }
     }
 
-    @Override
-    public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side)
-    {
-        return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public BlockRenderLayer getBlockLayer()
-    {
-        return BlockRenderLayer.TRANSLUCENT;
-    }
-
     @Deprecated
     @SideOnly(Side.CLIENT)
     @Override
@@ -95,7 +95,7 @@ public class BlockThinIce extends AnyFragileBlock
         if(side == EnumFacing.NORTH || side == EnumFacing.SOUTH || side == EnumFacing.EAST || side == EnumFacing.WEST)
         {
             Block b = blockAccess.getBlockState(pos.offset(side)).getBlock();
-            if(b == this || b instanceof BlockIce)
+            if(b == this || b == Blocks.ICE)
             {
                 return false;
             }

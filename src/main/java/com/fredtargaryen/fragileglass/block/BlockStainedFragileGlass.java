@@ -1,7 +1,6 @@
 package com.fredtargaryen.fragileglass.block;
 
 import net.minecraft.block.BlockBeacon;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -16,8 +15,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.List;
 
 public class BlockStainedFragileGlass extends BlockFragileGlass
 {
@@ -78,9 +75,9 @@ public class BlockStainedFragileGlass extends BlockFragileGlass
         }
     }
 
-    /**
-     * METHODS FROM BLOCKSTAINEDGLASS
-     */
+    //////////////////////////////////
+    //METHODS FROM BLOCKSTAINEDGLASS//
+    //////////////////////////////////
     /**
      * Convert the given metadata into a BlockState for this Block
      */
