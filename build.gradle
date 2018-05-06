@@ -21,7 +21,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.2.2611"
+    version = "1.12.2-14.23.3.2655"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -38,6 +38,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
+    compile files('libs/dc.jar')
       
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env

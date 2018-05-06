@@ -40,12 +40,11 @@ public class BreakSystem
     public void breakCheck(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START)
         {
-            //Re-add this stuff if you get ConcurrentModificationExceptions
-            //Iterator<Entity> i = event.world.loadedEntityList.iterator();
-            //while(i.hasNext())
-            for(Entity e : event.world.loadedEntityList)
+            //foreach leads to ConcurrentModificationExceptions
+            Iterator<Entity> i = event.world.loadedEntityList.iterator();
+            while(i.hasNext())
             {
-                //Entity e = i.next();
+                Entity e = i.next();
                 if(!e.isDead) {
                     //Entities must have an instance of IBreakCapability or they will never be able to break blocks with
                     //IFragileCapability.

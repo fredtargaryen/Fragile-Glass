@@ -21,5 +21,6 @@ gradle
 # other
 eclipse
 run
+libs
 mods
 gradlew
