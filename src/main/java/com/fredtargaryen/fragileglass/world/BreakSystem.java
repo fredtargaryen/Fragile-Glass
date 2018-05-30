@@ -153,12 +153,19 @@ public class BreakSystem
                     blockPos = new BlockPos(x, y, z);
                     IBlockState state = e.world.getBlockState(blockPos);
                     block = state.getBlock();
-                    //Chances are the block will be an air block (pass through no question) so best check this first
+                    // Chances are the block will be an air block (pass through no question) so best check this first
                     if (block != Blocks.AIR)
                     {
-                        if (block.hasTileEntity(state)) {
-                            TileEntity te = e.world.getTileEntity(blockPos);
-                            if (te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
+                        // Workaround - not all mods conform to the hasTileEntity->getTileEntity pattern
+                        //if (block.hasTileEntity(state)) {
+                        //    TileEntity te = e.world.getTileEntity(blockPos);
+                        //    if (te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
+                        //        te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
+                        //    }
+                        //}
+                        TileEntity te = e.world.getTileEntity(blockPos);
+                        if(te != null) {
+                            if(te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
                                 te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
                             }
                         }
