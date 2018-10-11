@@ -40,7 +40,7 @@ public class BreakSystem
     public void breakCheck(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START)
         {
-            //foreach leads to ConcurrentModificationExceptions
+            //Anything leads to ConcurrentModificationExceptions
             Iterator<Entity> i = event.world.loadedEntityList.iterator();
             while(i.hasNext())
             {
