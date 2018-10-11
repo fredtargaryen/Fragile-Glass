@@ -7,12 +7,12 @@
   ],
   "key": {
     "#": {
-      "item": "ftfragileglass:ftstainedfragileglass",
+      "item": "fragileglassft:ftstainedfragileglass",
       "data": 7
     }
   },
   "result": {
-    "item": "ftfragileglass:ftstainedfragilepane",
+    "item": "fragileglassft:ftstainedfragilepane",
     "data": 7,
     "count": 16
   }

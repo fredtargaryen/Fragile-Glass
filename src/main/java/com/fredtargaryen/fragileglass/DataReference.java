@@ -6,9 +6,9 @@ import net.minecraft.util.ResourceLocation;
 public class DataReference
 {
     //MAIN MOD DETAILS
-    public static final String MODID = "ftfragileglass";
+    public static final String MODID = "fragileglassft";
     public static final String MODNAME = "Fragile Glass and Thin Ice";
-    public static final String VERSION = "1.8.65";
+    public static final String VERSION = "1.8.7";
     //PROXY PATHS
     public static final String CLIENTPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ClientProxy";
     public static final String SERVERPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ServerProxy";

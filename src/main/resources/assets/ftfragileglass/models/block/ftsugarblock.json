@@ -1,6 +1,6 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "ftfragileglass:blocks/ftsugarblock"
+        "all": "fragileglassft:blocks/ftsugarblock"
     }
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "ftfragileglass:block/ftsc_empty",
+  "parent": "fragileglassft:block/ftsc_empty",
   "textures": {
-    "water": "ftfragileglass:blocks/sugarwater"
+    "water": "fragileglassft:blocks/sugarwater"
   }
 }

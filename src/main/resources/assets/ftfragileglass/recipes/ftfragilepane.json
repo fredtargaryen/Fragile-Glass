@@ -7,10 +7,10 @@
   ],
   "key":
   {
-    "A": [{"item": "ftfragileglass:ftfragileglass"}]
+    "A": [{"item": "fragileglassft:ftfragileglass"}]
   },
   "result": {
-    "item": "ftfragileglass:ftfragilepane",
+    "item": "fragileglassft:ftfragilepane",
     "count": 16
   }
 }

@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.fredtargaryen.fragileglass.FragileGlassBase.BREAKCAP;
 
@@ -38,10 +39,10 @@ public class BreakSystem
 
     @SubscribeEvent(priority= EventPriority.HIGHEST)
     public void breakCheck(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START)
-        {
-            //Anything leads to ConcurrentModificationExceptions
-            Iterator<Entity> i = event.world.loadedEntityList.iterator();
+        if (event.phase == TickEvent.Phase.START) {
+            //Intended to avoid ConcurrentModificationExceptions
+            CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(event.world.loadedEntityList);
+            Iterator<Entity> i = entityList.iterator();
             while(i.hasNext())
             {
                 Entity e = i.next();

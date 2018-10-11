@@ -8,7 +8,7 @@
   ],
   "key": {
     "#": {
-      "item": "ftfragileglass:ftfragileglass"
+      "item": "fragileglassft:ftfragileglass"
     },
     "X": {
       "item": "minecraft:dye",
@@ -16,7 +16,7 @@
     }
   },
   "result": {
-    "item": "ftfragileglass:ftstainedfragileglass",
+    "item": "fragileglassft:ftstainedfragileglass",
     "data": 9,
     "count": 8
   }
