@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "ftstainedfragilepane",
+  "group": "stainedfragilepane",
   "pattern": [
     "###",
     "###"
   ],
   "key": {
     "#": {
-      "item": "fragileglassft:ftstainedfragileglass",
+      "item": "fragileglassft:stainedfragileglass",
       "data": 9
     }
   },
   "result": {
-    "item": "fragileglassft:ftstainedfragilepane",
+    "item": "fragileglassft:stainedfragilepane",
     "data": 9,
     "count": 16
   }

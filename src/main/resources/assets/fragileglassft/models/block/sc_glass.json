@@ -1,5 +1,5 @@
 {
-  "parent": "fragileglassft:block/ftsc_empty",
+  "parent": "fragileglassft:block/sc_empty",
   "textures": {
     "water": "blocks/glass"
   }

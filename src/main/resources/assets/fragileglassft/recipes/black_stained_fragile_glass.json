@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "ftstainedfragileglass",
+  "group": "stainedfragileglass",
   "pattern": [
     "###",
     "#X#",
@@ -8,7 +8,7 @@
   ],
   "key": {
     "#": {
-      "item": "fragileglassft:ftfragileglass"
+      "item": "fragileglassft:fragileglass"
     },
     "X": {
       "item": "minecraft:dye",
@@ -16,7 +16,7 @@
     }
   },
   "result": {
-    "item": "fragileglassft:ftstainedfragileglass",
+    "item": "fragileglassft:stainedfragileglass",
     "data": 15,
     "count": 8
   }

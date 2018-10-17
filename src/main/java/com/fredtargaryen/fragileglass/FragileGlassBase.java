@@ -130,49 +130,49 @@ public class FragileGlassBase
 
         //BLOCK SETUP
     	fragileGlass = new BlockFragileGlass()
-                .setUnlocalizedName("ftfragileglass")
-                .setRegistryName("ftfragileglass");
+                .setUnlocalizedName("fragileglass")
+                .setRegistryName("fragileglass");
     	fragilePane = new BlockFragilePane()
-    			.setUnlocalizedName("ftfragilepane")
-                .setRegistryName("ftfragilepane");
+    			.setUnlocalizedName("fragilepane")
+                .setRegistryName("fragilepane");
         stainedFragileGlass = new BlockStainedFragileGlass()
-                .setUnlocalizedName("ftstainedfragileglass")
-                .setRegistryName("ftstainedfragileglass");
+                .setUnlocalizedName("stainedfragileglass")
+                .setRegistryName("stainedfragileglass");
         stainedFragilePane = new BlockStainedFragilePane()
-                .setUnlocalizedName("ftstainedfragilepane")
-                .setRegistryName("ftstainedfragilepane");
+                .setUnlocalizedName("stainedfragilepane")
+                .setRegistryName("stainedfragilepane");
     	sugarBlock = new SugarBlock()
-                .setUnlocalizedName("ftsugarblock")
-                .setRegistryName("ftsugarblock");
+                .setUnlocalizedName("sugarblock")
+                .setRegistryName("sugarblock");
         thinIce = new BlockThinIce()
-                .setUnlocalizedName("ftthinice")
-                .setRegistryName("ftthinice");
+                .setUnlocalizedName("thinice")
+                .setRegistryName("thinice");
         sugarCauldron = new BlockSugarCauldron()
-                .setUnlocalizedName("ftsugarcauldron")
+                .setUnlocalizedName("sugarcauldron")
                 .setHardness(5.0F)
                 .setResistance(10.0F)
-                .setRegistryName("ftsugarcauldron");
+                .setRegistryName("sugarcauldron");
         weakStone = new BlockWeakStone()
-                .setUnlocalizedName("ftweakstone")
-                .setRegistryName("ftweakstone");
+                .setUnlocalizedName("weakstone")
+                .setRegistryName("weakstone");
 
         //ITEM SETUP
         iFragileGlass = new ItemBlock(fragileGlass)
-                .setRegistryName("ftfragileglass");
+                .setRegistryName("fragileglass");
         iFragilePane = new ItemBlock(fragilePane)
-                .setRegistryName("ftfragilepane");
+                .setRegistryName("fragilepane");
         iStainedFragileGlass = new ItemBlockStainedFragileGlass(stainedFragileGlass)
-                .setRegistryName("ftstainedfragileglass");
+                .setRegistryName("stainedfragileglass");
         iStainedFragilePane = new ItemBlockStainedFragilePane(stainedFragilePane)
-                .setRegistryName("ftstainedfragilepane");
+                .setRegistryName("stainedfragilepane");
         iSugarBlock = new ItemBlock(sugarBlock)
-                .setRegistryName("ftsugarblock");
+                .setRegistryName("sugarblock");
         iThinIce = new ItemBlock(thinIce)
-                .setRegistryName("ftthinice");
+                .setRegistryName("thinice");
         iSugarCauldron = new ItemBlock(sugarCauldron)
-                .setRegistryName("ftsugarcauldron");
+                .setRegistryName("sugarcauldron");
         iWeakStone = new ItemBlock(weakStone)
-                .setRegistryName("ftweakstone");
+                .setRegistryName("weakstone");
     }
 
     @SubscribeEvent

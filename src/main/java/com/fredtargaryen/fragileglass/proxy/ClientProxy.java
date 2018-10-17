@@ -15,9 +15,9 @@ public class ClientProxy extends CommonProxy
     public void registerModels()
     {
         //Describes how some blocks should look in the inventory
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.weakStone), 0, new ModelResourceLocation(DataReference.MODID+":ftweakstone"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.sugarBlock), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarblock"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.sugarCauldron), 0, new ModelResourceLocation(DataReference.MODID+":ftsugarcauldron", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.weakStone), 0, new ModelResourceLocation(DataReference.MODID+":weakstone"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.sugarBlock), 0, new ModelResourceLocation(DataReference.MODID+":sugarblock"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.sugarCauldron), 0, new ModelResourceLocation(DataReference.MODID+":sugarcauldron", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.fragileGlass), 0, new ModelResourceLocation("glass"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.stainedFragileGlass), 0, new ModelResourceLocation("white_stained_glass"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.stainedFragileGlass), 1, new ModelResourceLocation("orange_stained_glass"));
@@ -52,7 +52,7 @@ public class ClientProxy extends CommonProxy
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 13, new ModelResourceLocation("green_stained_glass_pane", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 14, new ModelResourceLocation("red_stained_glass_pane", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 15, new ModelResourceLocation("black_stained_glass_pane", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.thinIce), 0, new ModelResourceLocation(DataReference.MODID+":ftthinice"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.thinIce), 0, new ModelResourceLocation(DataReference.MODID+":thinice"));
     }
 
     public void doStateMappings()

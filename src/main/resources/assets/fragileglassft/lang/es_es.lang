@@ -1,48 +1,48 @@
-tile.ftfragileglass.name=Cristal frágil
-tile.ftfragilepane.name=Panel de cristal frágil
-tile.ftthinice.name=Hielo delgado
-tile.ftsugarcauldron.name=Caldero para azúcar
+tile.fragileglass.name=Cristal frágil
+tile.fragilepane.name=Panel de cristal frágil
+tile.thinice.name=Hielo delgado
+tile.sugarcauldron.name=Caldero para azúcar
 
 /STAINED FRAGILE GLASS
-tile.ftstainedfragileglass.name=Cristal frágil tintado
-tile.ftstainedfragileglass.black.name=Cristal frágil tintado de negro
-tile.ftstainedfragileglass.red.name=Cristal frágil tintado de rojo
-tile.ftstainedfragileglass.green.name=Cristal frágil tintado de verde
-tile.ftstainedfragileglass.brown.name=Cristal frágil tintado de marrón
-tile.ftstainedfragileglass.blue.name=Cristal frágil tintado de azul
-tile.ftstainedfragileglass.purple.name=Cristal frágil tintado de morado
-tile.ftstainedfragileglass.cyan.name=Cristal frágil tintado de cian
-tile.ftstainedfragileglass.silver.name=Cristal frágil tintado de gris claro
-tile.ftstainedfragileglass.gray.name=Cristal frágil tintado de gris
-tile.ftstainedfragileglass.pink.name=Cristal frágil tintado de rosa
-tile.ftstainedfragileglass.lime.name=Cristal frágil tintado de verde lima
-tile.ftstainedfragileglass.yellow.name=Cristal frágil tintado de amarillo
-tile.ftstainedfragileglass.lightBlue.name=Cristal frágil tintado de azul claro
-tile.ftstainedfragileglass.magenta.name=Cristal frágil tintado de magenta
-tile.ftstainedfragileglass.orange.name=Cristal frágil tintado de naranja
-tile.ftstainedfragileglass.white.name=Cristal frágil tintado de blanco
+tile.stainedfragileglass.name=Cristal frágil tintado
+tile.stainedfragileglass.black.name=Cristal frágil tintado de negro
+tile.stainedfragileglass.red.name=Cristal frágil tintado de rojo
+tile.stainedfragileglass.green.name=Cristal frágil tintado de verde
+tile.stainedfragileglass.brown.name=Cristal frágil tintado de marrón
+tile.stainedfragileglass.blue.name=Cristal frágil tintado de azul
+tile.stainedfragileglass.purple.name=Cristal frágil tintado de morado
+tile.stainedfragileglass.cyan.name=Cristal frágil tintado de cian
+tile.stainedfragileglass.silver.name=Cristal frágil tintado de gris claro
+tile.stainedfragileglass.gray.name=Cristal frágil tintado de gris
+tile.stainedfragileglass.pink.name=Cristal frágil tintado de rosa
+tile.stainedfragileglass.lime.name=Cristal frágil tintado de verde lima
+tile.stainedfragileglass.yellow.name=Cristal frágil tintado de amarillo
+tile.stainedfragileglass.lightBlue.name=Cristal frágil tintado de azul claro
+tile.stainedfragileglass.magenta.name=Cristal frágil tintado de magenta
+tile.stainedfragileglass.orange.name=Cristal frágil tintado de naranja
+tile.stainedfragileglass.white.name=Cristal frágil tintado de blanco
 
 
 /STAINED FRAGILE GLASS PANE
-tile.ftstainedfragilepane.name=Panel de cristal frágil tintado
-tile.ftstainedfragilepane.black.name=Panel de cristal frágil tintado de negro
-tile.ftstainedfragilepane.red.name=Panel de cristal frágil tintado de rojo
-tile.ftstainedfragilepane.green.name=Panel de cristal frágil tintado de verde
-tile.ftstainedfragilepane.brown.name=Panel de cristal frágil tintado de marrón
-tile.ftstainedfragilepane.blue.name=Panel de cristal frágil tintado de azul
-tile.ftstainedfragilepane.purple.name=Panel de cristal frágil tintado de morado
-tile.ftstainedfragilepane.cyan.name=Panel de cristal frágil tintado de cian
-tile.ftstainedfragilepane.silver.name=Panel de cristal frágil tintado de gris claro
-tile.ftstainedfragilepane.gray.name=Panel de cristal frágil tintado de gris
-tile.ftstainedfragilepane.pink.name=Panel de cristal frágil tintado de rosa
-tile.ftstainedfragilepane.lime.name=Panel de cristal frágil tintado de verde lima
-tile.ftstainedfragilepane.yellow.name=Panel de cristal frágil tintado de amarillo
-tile.ftstainedfragilepane.lightBlue.name=Panel de cristal frágil tintado de azul claro
-tile.ftstainedfragilepane.magenta.name=Panel de cristal frágil tintado de magenta
-tile.ftstainedfragilepane.orange.name=Panel de cristal frágil tintado de naranja
-tile.ftstainedfragilepane.white.name=Panel de cristal frágil tintado de blanco
+tile.stainedfragilepane.name=Panel de cristal frágil tintado
+tile.stainedfragilepane.black.name=Panel de cristal frágil tintado de negro
+tile.stainedfragilepane.red.name=Panel de cristal frágil tintado de rojo
+tile.stainedfragilepane.green.name=Panel de cristal frágil tintado de verde
+tile.stainedfragilepane.brown.name=Panel de cristal frágil tintado de marrón
+tile.stainedfragilepane.blue.name=Panel de cristal frágil tintado de azul
+tile.stainedfragilepane.purple.name=Panel de cristal frágil tintado de morado
+tile.stainedfragilepane.cyan.name=Panel de cristal frágil tintado de cian
+tile.stainedfragilepane.silver.name=Panel de cristal frágil tintado de gris claro
+tile.stainedfragilepane.gray.name=Panel de cristal frágil tintado de gris
+tile.stainedfragilepane.pink.name=Panel de cristal frágil tintado de rosa
+tile.stainedfragilepane.lime.name=Panel de cristal frágil tintado de verde lima
+tile.stainedfragilepane.yellow.name=Panel de cristal frágil tintado de amarillo
+tile.stainedfragilepane.lightBlue.name=Panel de cristal frágil tintado de azul claro
+tile.stainedfragilepane.magenta.name=Panel de cristal frágil tintado de magenta
+tile.stainedfragilepane.orange.name=Panel de cristal frágil tintado de naranja
+tile.stainedfragilepane.white.name=Panel de cristal frágil tintado de blanco
 
 
 /OTHER BLOCKS
-tile.ftsugarblock.name=Bloque de azúcar
-tile.ftweakstone.name=Piedra débil
+tile.sugarblock.name=Bloque de azúcar
+tile.thinice.name=Piedra débil
