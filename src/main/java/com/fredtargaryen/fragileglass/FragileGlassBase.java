@@ -31,6 +31,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,6 +52,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -195,9 +197,9 @@ public class FragileGlassBase
     @Mod.EventHandler
     public void load(FMLInitializationEvent event)
     {
-    	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, "TEFG");
-    	GameRegistry.registerTileEntity(TileEntityThinIce.class, "TETI");
-    	GameRegistry.registerTileEntity(TileEntityWeakStone.class, "TEWS");
+    	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, new ResourceLocation(DataReference.MODID+":tefg"));
+    	GameRegistry.registerTileEntity(TileEntityThinIce.class, new ResourceLocation(DataReference.MODID+":teti"));
+    	GameRegistry.registerTileEntity(TileEntityWeakStone.class, new ResourceLocation(DataReference.MODID+":tews"));
 
         OreDictionary.registerOre("blockSugar", sugarBlock);
 
@@ -218,6 +220,84 @@ public class FragileGlassBase
     {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
+    }
+
+    ////////////////////////
+    //FOR THE MODID CHANGE//
+    ////////////////////////
+    @SubscribeEvent
+    public void handleMissingMappings(RegistryEvent.MissingMappings evt) {
+        String fullName = evt.getName().toString();
+        if(fullName.equals("minecraft:blocks")) {
+            for(Object mapping : evt.getAllMappings()) {
+                RegistryEvent.MissingMappings.Mapping trueMapping = (RegistryEvent.MissingMappings.Mapping) mapping;
+                if(trueMapping.key.getResourceDomain().equals("ftfragileglass")) {
+                    switch (trueMapping.key.getResourcePath()) {
+                        case "ftfragileglass":
+                            trueMapping.remap(fragileGlass);
+                            break;
+                        case "ftfragilepane":
+                            trueMapping.remap(fragilePane);
+                            break;
+                        case "ftstainedfragileglass":
+                            trueMapping.remap(stainedFragileGlass);
+                            break;
+                        case "ftstainedfragilepane":
+                            trueMapping.remap(stainedFragilePane);
+                            break;
+                        case "ftthinice":
+                            trueMapping.remap(thinIce);
+                            break;
+                        case "ftweakstone":
+                            trueMapping.remap(weakStone);
+                            break;
+                        case "ftsugarcauldron":
+                            trueMapping.remap(sugarCauldron);
+                            break;
+                        case "ftsugarblock":
+                            trueMapping.remap(sugarBlock);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        else if(fullName.equals("minecraft:items")) {
+            for(Object mapping : evt.getAllMappings()) {
+                RegistryEvent.MissingMappings.Mapping trueMapping = (RegistryEvent.MissingMappings.Mapping) mapping;
+                if (trueMapping.key.getResourceDomain().equals("ftfragileglass")) {
+                    switch (trueMapping.key.getResourcePath()) {
+                        case "ftfragileglass":
+                            trueMapping.remap(iFragileGlass);
+                            break;
+                        case "ftfragilepane":
+                            trueMapping.remap(iFragilePane);
+                            break;
+                        case "ftstainedfragileglass":
+                            trueMapping.remap(iStainedFragileGlass);
+                            break;
+                        case "ftstainedfragilepane":
+                            trueMapping.remap(iStainedFragilePane);
+                            break;
+                        case "ftthinice":
+                            trueMapping.remap(iThinIce);
+                            break;
+                        case "ftweakstone":
+                            trueMapping.remap(iWeakStone);
+                            break;
+                        case "ftsugarcauldron":
+                            trueMapping.remap(iSugarCauldron);
+                            break;
+                        case "ftsugarblock":
+                            trueMapping.remap(iSugarBlock);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     ////////////////
