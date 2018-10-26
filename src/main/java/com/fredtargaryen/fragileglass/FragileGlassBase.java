@@ -399,11 +399,9 @@ public class FragileGlassBase
     }
 
     @SubscribeEvent
-    public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt)
-    {
+    public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt) {
         TileEntity te = evt.getObject();
-        if(te instanceof TileEntityFragile)
-        {
+        if(te instanceof TileEntityFragile) {
             //Now easy to fall through when walking. #SneakOrSink
             if(te instanceof TileEntityThinIce) {
                 evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
@@ -423,8 +421,7 @@ public class FragileGlassBase
                         }
                 );
             }
-            else if(te instanceof TileEntityFragileGlass)
-            {
+            else if(te instanceof TileEntityFragileGlass) {
                 evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
                         new ICapabilityProvider() {
                             IFragileCapability inst = new IFragileCapability() {
@@ -449,8 +446,7 @@ public class FragileGlassBase
                             }
                         });
             }
-            else if(te instanceof TileEntityWeakStone)
-            {
+            else if(te instanceof TileEntityWeakStone) {
                 evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
                         new ICapabilityProvider() {
                             IFragileCapability inst = new IFragileCapability() {
@@ -476,32 +472,26 @@ public class FragileGlassBase
     }
 
     @SubscribeEvent
-    public void initPlayerBreakerCap(EntityJoinWorldEvent ejwe)
-    {
+    public void initPlayerBreakerCap(EntityJoinWorldEvent ejwe) {
         Entity e = ejwe.getEntity();
-        if(e.hasCapability(PLAYERBREAKCAP, null))
-        {
+        if(e.hasCapability(PLAYERBREAKCAP, null)) {
             e.getCapability(PLAYERBREAKCAP, null).init(e);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void loadSystem(WorldEvent.Load event)
-    {
+    public void loadSystem(WorldEvent.Load event) {
         World w = event.getWorld();
-        if(!w.isRemote)
-        {
+        if(!w.isRemote) {
             breakSystem = new BreakSystem();
             breakSystem.init(w);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void stopSystem(WorldEvent.Unload event)
-    {
+    public void stopSystem(WorldEvent.Unload event) {
         World w = event.getWorld();
-        if(!w.isRemote)
-        {
+        if(!w.isRemote) {
             if(breakSystem != null) {
                 breakSystem.end(w);
             }
