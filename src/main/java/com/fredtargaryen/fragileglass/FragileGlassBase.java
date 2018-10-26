@@ -13,6 +13,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
+import com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
@@ -52,7 +53,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,13 +69,15 @@ public class FragileGlassBase
 
     public static ArrayList<Item> iceBlocks;
 
-    //Config vars
+    //Config vars - worldgen
     private static boolean genThinIce;
     public static int avePatchSizeIce;
     public static int genChanceIce;
     private static boolean genWeakStone;
     public static int avePatchSizeStone;
     public static int genChanceStone;
+
+    private static FragilityDataManager fragDataManager;
 
     private static PatchGen patchGenIce;
     private static PatchGen patchGenStone;
@@ -127,6 +129,9 @@ public class FragileGlassBase
         avePatchSizeStone = config.getInt("avePatchSizeStone", "Worldgen - Weak Stone", 5, 1, 14, "Average patch diameter");
         genChanceStone = config.getInt("genChanceStone", "Worldgen - Weak Stone", 3, 1, 5, "1 in x chance of patch appearing");
         config.save();
+        fragDataManager = FragilityDataManager.getInstance();
+        fragDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
+        fragDataManager.loadBlockData();
 
         //BLOCK SETUP
     	fragileGlass = new BlockFragileGlass()
@@ -216,8 +221,7 @@ public class FragileGlassBase
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
+    public void postInit(FMLPostInitializationEvent event) {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
     }
