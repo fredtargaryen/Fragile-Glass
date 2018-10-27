@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager.FragileBehaviour.GLASS;
+import static com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager.FragileBehaviour.MOD;
 import static com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager.FragileBehaviour.STONE;
 
 /**
@@ -37,7 +38,9 @@ public class FragilityDataManager {
         //Break if above the break speed
         GLASS,
         //Update after the update delay if above the break speed
-        STONE
+        STONE,
+        //Load the data but don't even construct the capability; let another mod deal with it all
+        MOD
     }
 
     public static FragilityDataManager getInstance() {
@@ -52,73 +55,72 @@ public class FragilityDataManager {
     }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
+        FragilityData fragData = this.getTileEntityFragilityData(te);
+        if(fragData.behaviour == FragileBehaviour.GLASS) {
+            ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                IFragileCapability inst = new IFragileCapability() {
+                    @Override
+                    public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                        if (speed > fragData.breakSpeed) {
+                            te.getWorld().destroyBlock(te.getPos(), false);
+                        }
+                    }
+                };
+
+                @Override
+                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.FRAGILECAP;
+                }
+
+                @Nullable
+                @Override
+                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                }
+            };
+            evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+        }
+        else if(fragData.behaviour == FragileBehaviour.STONE) {
+            ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                IFragileCapability inst = new IFragileCapability() {
+                    @Override
+                    public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                        if (speed > fragData.breakSpeed) {
+                            World w = te.getWorld();
+                            BlockPos tilePos = te.getPos();
+                            w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
+                        }
+                    }
+                };
+
+                @Override
+                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.FRAGILECAP;
+                }
+
+                @Nullable
+                @Override
+                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                }
+            };
+            evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+        }
+    }
+
+    public FragilityData getTileEntityFragilityData(TileEntity te) {
         //Consider me the ambassador for using "clarse" instead of "clazz"
         Class<? extends TileEntity> clarse = te.getClass();
         //Use the tile entity's class in the TileEntityRegistry to get its ResourceLocation
         String resourceLocationString = TileEntity.getKey(clarse).toString();
         //Check the ResourceLocation string is in the manager, i.e. if the cfg was valid, it was in the cfg
         if(resourceLocationString != null) {
-            if(this.tileEntityData.containsKey(resourceLocationString)) {
+            if (this.tileEntityData.containsKey(resourceLocationString)) {
                 //If the cfg was valid and the string was in the cfg, there must be fragility data
-                FragilityData fragData = this.tileEntityData.get(resourceLocationString);
-                if(fragData.behaviour == FragileBehaviour.GLASS) {
-                    ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                        IFragileCapability inst = new IFragileCapability() {
-                            @Override
-                            public void handleExtraData(String[] extraData) {}
-
-                            @Override
-                            public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                if (speed > fragData.breakSpeed) {
-                                    te.getWorld().destroyBlock(te.getPos(), false);
-                                }
-                            }
-                        };
-
-                        @Override
-                        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                            return capability == FragileGlassBase.FRAGILECAP;
-                        }
-
-                        @Nullable
-                        @Override
-                        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                            return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
-                        }
-                    };
-                    evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-                }
-                else if(fragData.behaviour == FragileBehaviour.STONE) {
-                    ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                        IFragileCapability inst = new IFragileCapability() {
-                            @Override
-                            public void handleExtraData(String[] extraData) {}
-
-                            @Override
-                            public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                if (speed > fragData.breakSpeed) {
-                                    World w = te.getWorld();
-                                    BlockPos tilePos = te.getPos();
-                                    w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
-                                }
-                            }
-                        };
-
-                        @Override
-                        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                            return capability == FragileGlassBase.FRAGILECAP;
-                        }
-
-                        @Nullable
-                        @Override
-                        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                            return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
-                        }
-                    };
-                    evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-                }
+                return this.tileEntityData.get(resourceLocationString);
             }
         }
+        return null;
     }
 
     private void handleConfigFileException(Exception e) {
@@ -146,20 +148,23 @@ public class FragilityDataManager {
                     //Validation
                     if(values[0].split(":").length == 2) {
                         FragileBehaviour behaviour;
-                        if(values[1].equals("stone")) {
+                        if(values[1].equals("mod")) {
+                            behaviour = MOD;
+                        }
+                        else if(values[1].equals("stone")) {
                             behaviour = STONE;
                         }
                         else {
                             behaviour = GLASS;
                             if (!values[1].equals("glass")) {
-                                FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'glass' or 'stone'. Assuming you mean 'glass'");
+                                FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'glass', 'stone' or 'mod'. Assuming you mean 'glass'");
                             }
-                            this.tileEntityData.put(values[0],
-                                    new FragilityData(behaviour,
-                                            Double.parseDouble(values[2]),
-                                            Integer.parseInt(values[3]),
-                                            Arrays.copyOfRange(values, 4, values.length)));
                         }
+                        this.tileEntityData.put(values[0],
+                                new FragilityData(behaviour,
+                                        Double.parseDouble(values[2]),
+                                        Integer.parseInt(values[3]),
+                                        Arrays.copyOfRange(values, 4, values.length)));
                     }
                     else {
                         FMLLog.log.error("[FRAGILITY CONFIG] '" + values[0] + "' should have the form modid:tileregistryname - ignoring");
@@ -203,6 +208,14 @@ public class FragilityDataManager {
             this.updateDelay = updateDelay;
             this.extraData = extraData;
         }
+
+        public FragileBehaviour getBehaviour() { return this.behaviour; }
+
+        public double getBreakSpeed() { return this.breakSpeed; }
+
+        public int getUpdateDelay() { return this.updateDelay; }
+
+        public String[] getExtraData() { return this.extraData; }
     }
 
     //Doesn't look like I can read from assets so sadly this is needed for now
@@ -219,22 +232,24 @@ public class FragilityDataManager {
             "#--How to customise--\n",
             "#To add a comment to the file, start the line with a # symbol.\n",
             "#To make a tile entity fragile, add a new row in this file following this format:\n",
-            "#<modid>:<tile entity id> <glass/stone> <min speed> <update delay> <extra values>\n",
+            "#<modid>:<tile entity id> <glass/stone/mod> <min speed> <update delay> <extra values>\n",
             "#* modid and tile entity id are the ResourceLocation string used to register the tile entity with Forge.\n",
             "#  You can find these by searching for \"GameRegistry.registerTileEntity\" in the mod's source code...\n",
             "#  or by asking the developer.\n",
-            "#* You must choose one of \"glass\" or \"stone\"; the tile entity will copy the behaviour of the\n",
+            "#* You must choose one of 'glass', 'stone' or 'mod'; the tile entity will copy the behaviour of the\n",
             "#  corresponding block in Fragile Glass and Thin Ice. For more advanced behaviour the modder will have to\n",
             "#  code the Capability themselves.\n",
-            "#  * All blocks' \"crash behaviours\" will trigger (but not necessarily break) when the \"breaker\" is\n",
+            "#  * All blocks' 'crash behaviours' will trigger (but not necessarily break) when the 'breaker' is\n",
             "#    moving fast enough to be able to break things. If the breaker isn't fast enough, the block won't\n",
-            "#    break. This \"breaking speed\" depends on the breaker.\n",
-            "#  * \"glass\" means the block will simply break.\n",
-            "#  * \"stone\" means a block update will trigger, but it won't break unless that is in the update code.\n",
-            "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their breaking \n",
+            "#    break. This 'breaking speed' depends on the breaker.\n",
+            "#  * 'glass' means the block will simply break.\n",
+            "#  * 'stone' means a block update will trigger, but it won't break unless that is in the update code.\n",
+            "#  * 'mod' is for a block that does something more advanced. It is completely up to the mod developer\n",
+            "#    what the break behaviour will be, but this mod will still load all the values you write here.\n",
+            "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their breaking\n",
             "#  speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks per tick,\n",
             "#  which is metres per second divided by 20.\n",
-            "#* The second number (must be integer) is only used by \"stone\" blocks, and it specifies the delay\n",
+            "#* The second number (must be integer) is only used by 'stone' blocks, and it specifies the delay\n",
             "#  between the collision and their block update. Delays are measured in ticks and there are 20 ticks per second.\n",
             "#* You can add extra values of any format, separated by spaces, for any mod blocks that might require\n",
             "#  them.\n",
