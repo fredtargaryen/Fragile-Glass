@@ -13,12 +13,12 @@ public class FragileCapFactory implements Callable<IFragileCapability>
         return new FragileImpl();
     }
 
-    public class FragileImpl implements IFragileCapability
-    {
+    public class FragileImpl implements IFragileCapability {
+        public void handleExtraData(String[] extraData) {}
+
         //Breaks the block if the entity is currently able to break blocks. Enough for most blocks.
-        //Used for thin ice. Use a speed check if you want the block to be tougher.
-        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed)
-        {
+        //Effectively the default behaviour of Thin Ice. Use a speed check if you want the block to be tougher.
+        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
             te.getWorld().destroyBlock(te.getPos(), false);
         }
     }

@@ -405,74 +405,7 @@ public class FragileGlassBase
     @SubscribeEvent
     public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt) {
         TileEntity te = evt.getObject();
-        if(te instanceof TileEntityFragile) {
-            //Now easy to fall through when walking. #SneakOrSink
-            if(te instanceof TileEntityThinIce) {
-                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
-                        new ICapabilityProvider() {
-                            IFragileCapability inst = FRAGILECAP.getDefaultInstance();
-
-                            @Override
-                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                                return capability == FRAGILECAP;
-                            }
-
-                            @Nullable
-                            @Override
-                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FRAGILECAP ? FRAGILECAP.<T>cast(inst) : null;
-                            }
-                        }
-                );
-            }
-            else if(te instanceof TileEntityFragileGlass) {
-                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
-                        new ICapabilityProvider() {
-                            IFragileCapability inst = new IFragileCapability() {
-                                @Override
-                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                    if(speed > DataReference.PLAYER_SPRINT_SPEED)
-                                    {
-                                        te.getWorld().destroyBlock(te.getPos(), false);
-                                    }
-                                }
-                            };
-
-                            @Override
-                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                                return capability == FRAGILECAP;
-                            }
-
-                            @Nullable
-                            @Override
-                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FRAGILECAP ? FRAGILECAP.<T>cast(inst) : null;
-                            }
-                        });
-            }
-            else if(te instanceof TileEntityWeakStone) {
-                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION,
-                        new ICapabilityProvider() {
-                            IFragileCapability inst = new IFragileCapability() {
-                                @Override
-                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                    World w = te.getWorld();
-                                    w.scheduleUpdate(te.getPos(), FragileGlassBase.weakStone, FragileGlassBase.weakStone.tickRate(w));
-                                }
-                            };
-                    @Override
-                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                        return capability == FRAGILECAP;
-                    }
-
-                    @Nullable
-                    @Override
-                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                        return capability == FRAGILECAP ? FRAGILECAP.<T>cast(inst) : null;
-                    }
-                });
-            }
-        }
+        fragDataManager.addCapabilityIfPossible(te, evt);
     }
 
     @SubscribeEvent

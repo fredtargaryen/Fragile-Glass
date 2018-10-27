@@ -1,8 +1,20 @@
 package com.fredtargaryen.fragileglass.tileentity.capability;
 
 import com.fredtargaryen.fragileglass.DataReference;
+import com.fredtargaryen.fragileglass.FragileGlassBase;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLLog;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +49,76 @@ public class FragilityDataManager {
 
     public FragilityDataManager() {
         this.tileEntityData = new HashMap<>();
+    }
+
+    public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
+        //Consider me the ambassador for using "clarse" instead of "clazz"
+        Class<? extends TileEntity> clarse = te.getClass();
+        //Use the tile entity's class in the TileEntityRegistry to get its ResourceLocation
+        String resourceLocationString = TileEntity.getKey(clarse).toString();
+        //Check the ResourceLocation string is in the manager, i.e. if the cfg was valid, it was in the cfg
+        if(resourceLocationString != null) {
+            if(this.tileEntityData.containsKey(resourceLocationString)) {
+                //If the cfg was valid and the string was in the cfg, there must be fragility data
+                FragilityData fragData = this.tileEntityData.get(resourceLocationString);
+                if(fragData.behaviour == FragileBehaviour.GLASS) {
+                    ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                        IFragileCapability inst = new IFragileCapability() {
+                            @Override
+                            public void handleExtraData(String[] extraData) {}
+
+                            @Override
+                            public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                                if (speed > fragData.breakSpeed) {
+                                    te.getWorld().destroyBlock(te.getPos(), false);
+                                }
+                            }
+                        };
+
+                        @Override
+                        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                            return capability == FragileGlassBase.FRAGILECAP;
+                        }
+
+                        @Nullable
+                        @Override
+                        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                            return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                        }
+                    };
+                    evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+                }
+                else if(fragData.behaviour == FragileBehaviour.STONE) {
+                    ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                        IFragileCapability inst = new IFragileCapability() {
+                            @Override
+                            public void handleExtraData(String[] extraData) {}
+
+                            @Override
+                            public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                                if (speed > fragData.breakSpeed) {
+                                    World w = te.getWorld();
+                                    BlockPos tilePos = te.getPos();
+                                    w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
+                                }
+                            }
+                        };
+
+                        @Override
+                        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                            return capability == FragileGlassBase.FRAGILECAP;
+                        }
+
+                        @Nullable
+                        @Override
+                        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                            return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                        }
+                    };
+                    evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+                }
+            }
+        }
     }
 
     private void handleConfigFileException(Exception e) {

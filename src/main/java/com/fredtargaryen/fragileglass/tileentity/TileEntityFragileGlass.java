@@ -1,5 +1,7 @@
 package com.fredtargaryen.fragileglass.tileentity;
 
-public class TileEntityFragileGlass extends TileEntityFragile
-{
+/**
+ * ResourceLocation for config: fragileglassft:tefg
+ */
+public class TileEntityFragileGlass extends TileEntityFragile {
 }

@@ -4,8 +4,15 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
-public interface IFragileCapability
-{
+public interface IFragileCapability {
+    /**
+     * Mod TileEntities making use of the block config file for fragility can work with extra data in whatever format
+     * they wish, supplied as a String array. This method is called once just after construction, to let the
+     * Capability implementation store or process the data as necessary.
+     * TODO Currently unusable.
+     */
+    void handleExtraData(String[] extraData);
+
     /**
      * This method is the final decision on whether a block will break. Even if IBreakCapability#isAbleToBreak always
      * returns true, the block only breaks if told to in onCrash.
