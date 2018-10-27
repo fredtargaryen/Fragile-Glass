@@ -125,8 +125,8 @@ public class FragilityDataManager {
     }
 
     private void handleConfigFileException(Exception e) {
-        FMLLog.bigWarning("Could not load "+DataReference.MODID+"_blocklist.cfg!");
-        FMLLog.bigWarning("Default block behaviour will be loaded. No custom data will take effect.");
+        FMLLog.bigWarning("Could not load "+DataReference.MODID+"_blocklist.cfg! " +
+                "Default block behaviour will be loaded. No custom data will take effect.");
         e.printStackTrace();
         this.loadDefaultData();
     }
@@ -164,11 +164,16 @@ public class FragilityDataManager {
                                     FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'glass', 'stone' or 'mod'. Assuming you mean 'glass'");
                                 }
                             }
-                            this.tileEntityData.put(values[0],
-                                    new FragilityData(behaviour,
-                                            Double.parseDouble(values[2]),
-                                            Integer.parseInt(values[3]),
-                                            Arrays.copyOfRange(values, 4, values.length)));
+                            if(this.tileEntityData.containsKey(values[0])) {
+                                FMLLog.log.warn("[FRAGILITY CONFIG] '" + values[0] + "' is already in the file - using the first entry only");
+                            }
+                            else {
+                                this.tileEntityData.put(values[0],
+                                        new FragilityData(behaviour,
+                                                Double.parseDouble(values[2]),
+                                                Integer.parseInt(values[3]),
+                                                Arrays.copyOfRange(values, 4, values.length)));
+                            }
                         } else {
                             FMLLog.log.error("[FRAGILITY CONFIG] '" + values[0] + "' should have the form modid:tileregistryname - ignoring");
                         }
