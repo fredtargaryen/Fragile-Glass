@@ -146,31 +146,38 @@ public class FragilityDataManager {
                     //Line is supposed to be read
                     String[] values = line.split(" ");
                     //Validation
-                    if(values[0].split(":").length == 2) {
-                        FragileBehaviour behaviour;
-                        if(values[1].equals("mod")) {
-                            behaviour = MOD;
-                        }
-                        else if(values[1].equals("stone")) {
-                            behaviour = STONE;
-                        }
-                        else {
-                            behaviour = GLASS;
-                            if (!values[1].equals("glass")) {
-                                FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'glass', 'stone' or 'mod'. Assuming you mean 'glass'");
-                            }
-                        }
-                        this.tileEntityData.put(values[0],
-                                new FragilityData(behaviour,
-                                        Double.parseDouble(values[2]),
-                                        Integer.parseInt(values[3]),
-                                        Arrays.copyOfRange(values, 4, values.length)));
+                    if(values.length < 4) {
+                        FMLLog.bigWarning("[FRAGILITY CONFIG] You need at least four values! Please check the file comments again.");
+                        throw new Exception();
                     }
                     else {
-                        FMLLog.log.error("[FRAGILITY CONFIG] '" + values[0] + "' should have the form modid:tileregistryname - ignoring");
+                        if (values[0].split(":").length == 2) {
+                            FragileBehaviour behaviour;
+                            if (values[1].equals("mod")) {
+                                behaviour = MOD;
+                            } else if (values[1].equals("stone")) {
+                                behaviour = STONE;
+                            } else {
+                                behaviour = GLASS;
+                                if (!values[1].equals("glass")) {
+                                    FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'glass', 'stone' or 'mod'. Assuming you mean 'glass'");
+                                }
+                            }
+                            this.tileEntityData.put(values[0],
+                                    new FragilityData(behaviour,
+                                            Double.parseDouble(values[2]),
+                                            Integer.parseInt(values[3]),
+                                            Arrays.copyOfRange(values, 4, values.length)));
+                        } else {
+                            FMLLog.log.error("[FRAGILITY CONFIG] '" + values[0] + "' should have the form modid:tileregistryname - ignoring");
+                        }
                     }
                 }
             }
+        }
+        catch(NumberFormatException nfe) {
+            FMLLog.bigWarning("[FRAGILITY CONFIG] One of your values is not the right kind of number! Please check the file comments again.");
+            this.handleConfigFileException(new Exception("One of your values is not the right kind of number"));
         }
         catch(Exception e) {
             this.handleConfigFileException(e);
