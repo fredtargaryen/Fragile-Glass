@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
  * FragilityDataManager fdm = FragilityDataManager.getInstance();
  * FragilityData data = fdm.getTileEntityFragilityData(te);
  * ICapabilityProvider icp = <construct your capability, with the FragilityData getters to access the values>
+ * event.addCapability(<capability location>, icp);
  */
 public interface IFragileCapability {
     /**
