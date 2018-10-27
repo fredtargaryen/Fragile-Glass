@@ -9,8 +9,10 @@ import net.minecraft.tileentity.TileEntity;
  * supplied as a String array in the file. Recommended usage in AttachCapabilitiesEvent<TileEntity> handler:
  * FragilityDataManager fdm = FragilityDataManager.getInstance();
  * FragilityData data = fdm.getTileEntityFragilityData(te);
- * ICapabilityProvider icp = <construct your capability, with the FragilityData getters to access the values>
- * event.addCapability(<capability location>, icp);
+ * if(data != null) {
+ *     ICapabilityProvider icp = <construct your capability, with the FragilityData getters to access the values>
+ *     event.addCapability(<capability location>, icp);
+ * }
  */
 public interface IFragileCapability {
     /**

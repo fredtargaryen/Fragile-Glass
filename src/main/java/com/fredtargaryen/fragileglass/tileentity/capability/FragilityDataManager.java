@@ -55,56 +55,57 @@ public class FragilityDataManager {
     }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
-        FragilityData fragData = this.getTileEntityFragilityData(te);
-        if(fragData.behaviour == FragileBehaviour.GLASS) {
-            ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                IFragileCapability inst = new IFragileCapability() {
-                    @Override
-                    public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                        if (speed > fragData.breakSpeed) {
-                            te.getWorld().destroyBlock(te.getPos(), false);
+        FragilityData fragData;
+        if ((fragData = this.getTileEntityFragilityData(te)) != null) {
+            if (fragData.behaviour == FragileBehaviour.GLASS) {
+                ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                    IFragileCapability inst = new IFragileCapability() {
+                        @Override
+                        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                            if (speed > fragData.breakSpeed) {
+                                te.getWorld().destroyBlock(te.getPos(), false);
+                            }
                         }
+                    };
+
+                    @Override
+                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP;
+                    }
+
+                    @Nullable
+                    @Override
+                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
                     }
                 };
-
-                @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP;
-                }
-
-                @Nullable
-                @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
-                }
-            };
-            evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-        }
-        else if(fragData.behaviour == FragileBehaviour.STONE) {
-            ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                IFragileCapability inst = new IFragileCapability() {
-                    @Override
-                    public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                        if (speed > fragData.breakSpeed) {
-                            World w = te.getWorld();
-                            BlockPos tilePos = te.getPos();
-                            w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+            } else if (fragData.behaviour == FragileBehaviour.STONE) {
+                ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                    IFragileCapability inst = new IFragileCapability() {
+                        @Override
+                        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                            if (speed > fragData.breakSpeed) {
+                                World w = te.getWorld();
+                                BlockPos tilePos = te.getPos();
+                                w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
+                            }
                         }
+                    };
+
+                    @Override
+                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP;
+                    }
+
+                    @Nullable
+                    @Override
+                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
                     }
                 };
-
-                @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP;
-                }
-
-                @Nullable
-                @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
-                }
-            };
-            evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+            }
         }
     }
 
