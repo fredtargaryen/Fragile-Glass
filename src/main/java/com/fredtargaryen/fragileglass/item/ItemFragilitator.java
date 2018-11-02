@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.item;
 
 import com.fredtargaryen.fragileglass.tileentity.TileEntityBlockMadeFragile;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumActionResult;
@@ -11,6 +12,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemFragilitator extends Item {
+    public ItemFragilitator() {
+        super();
+        this.setUnlocalizedName("fragilitator");
+        this.setCreativeTab(CreativeTabs.TOOLS);
+    }
+
     /**
      * Called when a Block is right-clicked with this Item
      */
