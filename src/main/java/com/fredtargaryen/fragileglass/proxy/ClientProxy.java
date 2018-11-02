@@ -53,6 +53,7 @@ public class ClientProxy extends CommonProxy
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 14, new ModelResourceLocation("red_stained_glass_pane", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.stainedFragilePane), 15, new ModelResourceLocation("black_stained_glass_pane", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FragileGlassBase.thinIce), 0, new ModelResourceLocation(DataReference.MODID+":thinice"));
+        ModelLoader.setCustomModelResourceLocation(FragileGlassBase.fragilitator, 0, new ModelResourceLocation(DataReference.MODID + ":fragilitator", "inventory"));
     }
 
     public void doStateMappings()
