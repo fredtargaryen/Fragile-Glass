@@ -2,16 +2,20 @@ package com.fredtargaryen.fragileglass.tileentity.capability;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityBlockMadeFragile;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +37,7 @@ public class FragilityDataManager {
     private File configFile;
 
     private HashMap<String, FragilityData> tileEntityData;
+    private HashMap<String, FragilityData> blockData;
 
     public enum FragileBehaviour {
         //Break if above the break speed
@@ -52,11 +57,18 @@ public class FragilityDataManager {
 
     public FragilityDataManager() {
         this.tileEntityData = new HashMap<>();
+        this.blockData = new HashMap<>();
     }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
         FragilityData fragData;
-        if ((fragData = this.getTileEntityFragilityData(te)) != null) {
+        if(te instanceof TileEntityBlockMadeFragile) {
+            fragData = this.getBlockFragilityData(te.getWorld().getBlockState(te.getPos()).getBlock());
+        }
+        else {
+            fragData = this.getTileEntityFragilityData(te);
+        }
+        if (fragData != null) {
             if (fragData.behaviour == FragileBehaviour.GLASS) {
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
@@ -109,6 +121,19 @@ public class FragilityDataManager {
         }
     }
 
+    public FragilityData getBlockFragilityData(Block b) {
+        //Use the block in the Forge Block registry to get its ResourceLocation
+        String resourceLocationString = ForgeRegistries.BLOCKS.getKey(b).toString();
+        //Check the ResourceLocation string is in the manager, i.e. if the cfg was valid, it was in the cfg
+        if(resourceLocationString != null) {
+            if(this.blockData.containsKey(resourceLocationString)) {
+                //If the cfg was valid and the string was in the cfg, there must be fragility data
+                return this.blockData.get(resourceLocationString);
+            }
+        }
+        return null;
+    }
+
     public FragilityData getTileEntityFragilityData(TileEntity te) {
         //Consider me the ambassador for using "clarse" instead of "clazz"
         Class<? extends TileEntity> clarse = te.getClass();
@@ -131,7 +156,12 @@ public class FragilityDataManager {
         this.loadDefaultData();
     }
 
+    private boolean isResourceLocationValidBlock(String resourceLocation) {
+        return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(resourceLocation));
+    }
+
     private void loadDefaultData() {
+        this.blockData.clear();
         this.tileEntityData.clear();
         this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(GLASS, 0.165, 0, new String[]{}));
         this.tileEntityData.put(DataReference.MODID + ":teti", new FragilityData(GLASS, 0.0, 0, new String[]{}));
@@ -164,15 +194,27 @@ public class FragilityDataManager {
                                     FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'glass', 'stone' or 'mod'. Assuming you mean 'glass'");
                                 }
                             }
-                            if(this.tileEntityData.containsKey(values[0])) {
+                            if(this.tileEntityData.containsKey(values[0]) || this.blockData.containsKey(values[0])) {
                                 FMLLog.log.warn("[FRAGILITY CONFIG] '" + values[0] + "' is already in the file - using the first entry only");
                             }
                             else {
-                                this.tileEntityData.put(values[0],
-                                        new FragilityData(behaviour,
-                                                Double.parseDouble(values[2]),
-                                                Integer.parseInt(values[3]),
-                                                Arrays.copyOfRange(values, 4, values.length)));
+                                if(this.isResourceLocationValidBlock(values[0])) {
+                                    //The ResourceLocation is for a block
+                                    this.blockData.put(values[0],
+                                            new FragilityData(behaviour,
+                                                    Double.parseDouble(values[2]),
+                                                    Integer.parseInt(values[3]),
+                                                    Arrays.copyOfRange(values, 4, values.length)));
+                                }
+                                else {
+                                    //Can't do the same check for tile entities, so add it anyway, and it simply won't
+                                    //be used if invalid.
+                                    this.tileEntityData.put(values[0],
+                                            new FragilityData(behaviour,
+                                                    Double.parseDouble(values[2]),
+                                                    Integer.parseInt(values[3]),
+                                                    Arrays.copyOfRange(values, 4, values.length)));
+                                }
                             }
                         } else {
                             FMLLog.log.error("[FRAGILITY CONFIG] '" + values[0] + "' should have the form modid:tileregistryname - ignoring");

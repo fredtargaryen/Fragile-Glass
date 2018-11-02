@@ -4,9 +4,11 @@ import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragileGlass;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragilePane;
+import com.fredtargaryen.fragileglass.item.ItemFragilitator;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
+import com.fredtargaryen.fragileglass.tileentity.TileEntityBlockMadeFragile;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
@@ -99,6 +101,7 @@ public class FragileGlassBase
     private static Item iThinIce;
     private static Item iSugarCauldron;
     private static Item iWeakStone;
+    public static Item fragilitator;
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
@@ -174,18 +177,22 @@ public class FragileGlassBase
                 .setRegistryName("sugarcauldron");
         iWeakStone = new ItemBlock(weakStone)
                 .setRegistryName("weakstone");
+        fragilitator = new ItemFragilitator()
+                .setRegistryName("fragilitator");
     }
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock, thinIce, sugarCauldron, weakStone);
+        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock,
+                thinIce, sugarCauldron, weakStone);
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane, iSugarBlock, iThinIce, iSugarCauldron, iWeakStone);
+        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane,
+                iSugarBlock, iThinIce, iSugarCauldron, iWeakStone, fragilitator);
     }
 
     @SubscribeEvent
@@ -201,6 +208,7 @@ public class FragileGlassBase
     	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, new ResourceLocation(DataReference.MODID+":tefg"));
     	GameRegistry.registerTileEntity(TileEntityThinIce.class, new ResourceLocation(DataReference.MODID+":teti"));
     	GameRegistry.registerTileEntity(TileEntityWeakStone.class, new ResourceLocation(DataReference.MODID+":tews"));
+    	GameRegistry.registerTileEntity(TileEntityBlockMadeFragile.class, new ResourceLocation(DataReference.MODID+":tebmf"));
 
         OreDictionary.registerOre("blockSugar", sugarBlock);
 
