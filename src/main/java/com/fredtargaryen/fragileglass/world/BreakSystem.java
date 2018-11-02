@@ -3,6 +3,7 @@ package com.fredtargaryen.fragileglass.world;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
+import com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -166,7 +167,10 @@ public class BreakSystem
                         //}
                         TileEntity te = e.world.getTileEntity(blockPos);
                         if(te != null) {
-                            if(te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
+                            if(te.hasCapability(FragileGlassBase.BLOCKMADEFRAGILECAP, null)) {
+                                te.getCapability(FragileGlassBase.BLOCKMADEFRAGILECAP, null).onCrash(state, te, e, speed);
+                            }
+                            else if(te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
                                 te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
                             }
                         }

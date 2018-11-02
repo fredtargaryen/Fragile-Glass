@@ -40,4 +40,5 @@ public class DataReference
     public static final ResourceLocation PLAYER_BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "IBreakCapability2");
 
     public static final ResourceLocation FRAGILE_CAP_LOCATION = new ResourceLocation(DataReference.MODID, "IFragileCapability");
+    public static final ResourceLocation BLOCK_MADE_FRAGILE_CAP_LOCATION = new ResourceLocation(DataReference.MODID, "IBlockMadeFragileCapability");
 }

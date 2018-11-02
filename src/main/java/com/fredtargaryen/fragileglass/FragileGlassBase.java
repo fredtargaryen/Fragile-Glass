@@ -12,10 +12,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityBlockMadeFragile;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
-import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
-import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
-import com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager;
-import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
+import com.fredtargaryen.fragileglass.tileentity.capability.*;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenIce;
@@ -116,6 +113,7 @@ public class FragileGlassBase
         CapabilityManager.INSTANCE.register(IBreakCapability.class, new BreakCapStorage(), new BreakCapFactory());
         CapabilityManager.INSTANCE.register(IPlayerBreakCapability.class, new PlayerBreakStorage(), new PlayerBreakFactory());
         CapabilityManager.INSTANCE.register(IFragileCapability.class, new FragileCapStorage(), new FragileCapFactory());
+        CapabilityManager.INSTANCE.register(IBlockMadeFragileCapability.class, new BlockMadeFragileCapStorage(), new BlockMadeFragileCapFactory());
         MinecraftForge.EVENT_BUS.register(this);
 
         //CONFIG SETUP
@@ -320,6 +318,8 @@ public class FragileGlassBase
     public static Capability<IPlayerBreakCapability> PLAYERBREAKCAP = null;
     @CapabilityInject(IFragileCapability.class)
     public static Capability<IFragileCapability> FRAGILECAP = null;
+    @CapabilityInject(IBlockMadeFragileCapability.class)
+    public static Capability<IBlockMadeFragileCapability> BLOCKMADEFRAGILECAP = null;
 
     @SubscribeEvent
     public void onBreakerConstruct(AttachCapabilitiesEvent<Entity> evt) {
