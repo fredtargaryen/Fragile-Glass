@@ -68,7 +68,7 @@ public class FragilityDataManager {
                         @Override
                         public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
                             if (speed > fragData.breakSpeed) {
-                                te.getWorld().destroyBlock(te.getPos(), false);
+                                te.getWorld().destroyBlock(te.getPos(), true);
                             }
                         }
                     };

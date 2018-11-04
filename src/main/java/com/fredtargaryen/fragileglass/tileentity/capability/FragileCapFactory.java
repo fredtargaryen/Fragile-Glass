@@ -17,7 +17,7 @@ public class FragileCapFactory implements Callable<IFragileCapability>
         //Breaks the block if the entity is currently able to break blocks. Enough for most blocks.
         //Effectively the default behaviour of Thin Ice. Use a speed check if you want the block to be tougher.
         public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-            te.getWorld().destroyBlock(te.getPos(), false);
+            te.getWorld().destroyBlock(te.getPos(), true);
         }
     }
 }
