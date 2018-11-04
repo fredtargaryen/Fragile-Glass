@@ -3,6 +3,7 @@ package com.fredtargaryen.fragileglass.world;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
+import com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -155,7 +156,7 @@ public class BreakSystem
                     IBlockState state = e.world.getBlockState(blockPos);
                     block = state.getBlock();
                     // Chances are the block will be an air block (pass through no question) so best check this first
-                    if (block != Blocks.AIR)
+                    if (!block.isAir(state, e.world, blockPos))
                     {
                         // Workaround - not all mods conform to the hasTileEntity->getTileEntity pattern
                         //if (block.hasTileEntity(state)) {
@@ -165,7 +166,19 @@ public class BreakSystem
                         //    }
                         //}
                         TileEntity te = e.world.getTileEntity(blockPos);
-                        if(te != null) {
+                        if(te == null) {
+                            //No tile entity; see if it's in the data
+                            FragilityDataManager.FragilityData fragilityData = FragilityDataManager.getInstance().getBlockFragilityData(block);
+                            if(fragilityData != null && speed > fragilityData.getBreakSpeed()) {
+                                FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
+                                if (fragileBehaviour == FragilityDataManager.FragileBehaviour.GLASS) {
+                                    e.world.destroyBlock(blockPos, true);
+                                } else {
+                                    e.world.scheduleUpdate(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                                }
+                            }
+                        }
+                        else {
                             if(te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
                                 te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
                             }

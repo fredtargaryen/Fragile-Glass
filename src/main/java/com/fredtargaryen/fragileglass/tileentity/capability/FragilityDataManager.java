@@ -2,16 +2,19 @@ package com.fredtargaryen.fragileglass.tileentity.capability;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +36,7 @@ public class FragilityDataManager {
     private File configFile;
 
     private HashMap<String, FragilityData> tileEntityData;
+    private HashMap<String, FragilityData> blockData;
 
     public enum FragileBehaviour {
         //Break if above the break speed
@@ -52,11 +56,12 @@ public class FragilityDataManager {
 
     public FragilityDataManager() {
         this.tileEntityData = new HashMap<>();
+        this.blockData = new HashMap<>();
     }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
-        FragilityData fragData;
-        if ((fragData = this.getTileEntityFragilityData(te)) != null) {
+        FragilityData fragData = this.getTileEntityFragilityData(te);
+        if (fragData != null) {
             if (fragData.behaviour == FragileBehaviour.GLASS) {
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
@@ -109,6 +114,19 @@ public class FragilityDataManager {
         }
     }
 
+    public FragilityData getBlockFragilityData(Block b) {
+        //Use the block in the Forge Block registry to get its ResourceLocation
+        String resourceLocationString = ForgeRegistries.BLOCKS.getKey(b).toString();
+        //Check the ResourceLocation string is in the manager, i.e. if the cfg was valid, it was in the cfg
+        if(resourceLocationString != null) {
+            if(this.blockData.containsKey(resourceLocationString)) {
+                //If the cfg was valid and the string was in the cfg, there must be fragility data
+                return this.blockData.get(resourceLocationString);
+            }
+        }
+        return null;
+    }
+
     public FragilityData getTileEntityFragilityData(TileEntity te) {
         //Consider me the ambassador for using "clarse" instead of "clazz"
         Class<? extends TileEntity> clarse = te.getClass();
@@ -131,7 +149,12 @@ public class FragilityDataManager {
         this.loadDefaultData();
     }
 
+    private boolean isResourceLocationValidBlock(String resourceLocation) {
+        return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(resourceLocation));
+    }
+
     private void loadDefaultData() {
+        this.blockData.clear();
         this.tileEntityData.clear();
         this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(GLASS, 0.165, 0, new String[]{}));
         this.tileEntityData.put(DataReference.MODID + ":teti", new FragilityData(GLASS, 0.0, 0, new String[]{}));
@@ -164,15 +187,27 @@ public class FragilityDataManager {
                                     FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'glass', 'stone' or 'mod'. Assuming you mean 'glass'");
                                 }
                             }
-                            if(this.tileEntityData.containsKey(values[0])) {
+                            if(this.tileEntityData.containsKey(values[0]) || this.blockData.containsKey(values[0])) {
                                 FMLLog.log.warn("[FRAGILITY CONFIG] '" + values[0] + "' is already in the file - using the first entry only");
                             }
                             else {
-                                this.tileEntityData.put(values[0],
-                                        new FragilityData(behaviour,
-                                                Double.parseDouble(values[2]),
-                                                Integer.parseInt(values[3]),
-                                                Arrays.copyOfRange(values, 4, values.length)));
+                                if(this.isResourceLocationValidBlock(values[0])) {
+                                    //The ResourceLocation is for a block
+                                    this.blockData.put(values[0],
+                                            new FragilityData(behaviour,
+                                                    Double.parseDouble(values[2]),
+                                                    Integer.parseInt(values[3]),
+                                                    Arrays.copyOfRange(values, 4, values.length)));
+                                }
+                                else {
+                                    //Can't do the same check for tile entities, so add it anyway, and it simply won't
+                                    //be used if invalid.
+                                    this.tileEntityData.put(values[0],
+                                            new FragilityData(behaviour,
+                                                    Double.parseDouble(values[2]),
+                                                    Integer.parseInt(values[3]),
+                                                    Arrays.copyOfRange(values, 4, values.length)));
+                                }
                             }
                         } else {
                             FMLLog.log.error("[FRAGILITY CONFIG] '" + values[0] + "' should have the form modid:tileregistryname - ignoring");
@@ -209,7 +244,7 @@ public class FragilityDataManager {
         }
     }
 
-    private class FragilityData {
+    public class FragilityData {
         private FragileBehaviour behaviour;
         private double breakSpeed;
         private int updateDelay;
@@ -236,28 +271,32 @@ public class FragilityDataManager {
             "########################################\n",
             "#FRAGILE GLASS AND THIN ICE CONFIG FILE#\n",
             "########################################\n",
+            "#THINK VERY CAREFULLY BEFORE ADDING ENTRIES HERE!\n",
+            "#(You probably don't really want to make ALL DIRT BLOCKS fragile, for example.)\n",
             "#Here is where you can configure which blocks are fragile and which are not, and modify basic behaviour.\n",
             "#--Limitations--\n",
-            "#There is currently no way to make a block fragile if it didn't have a tile entity to begin with,\n",
-            "#e.g. Dirt, Redstone Lamps, Doors, Trapdoors, Packed Ice, ordinary Glass, Prismarine.\n",
-            "#It should be possible to make any block fragile if it has a tile entity,\n",
-            "#e.g. Beds, Flower Pots, Beacons, Dispensers, Floower Pots, OpenBlocks Tanks.\n",
+            "#This will not work for blocks which are basically air blocks, e.g. Air blocks and 'logic' blocks.\n",
             "#--How to customise--\n",
             "#To add a comment to the file, start the line with a # symbol.\n",
-            "#To make a tile entity fragile, add a new row in this file following this format:\n",
-            "#<modid>:<tile entity id> <glass/stone/mod> <min speed> <update delay> <extra values>\n",
-            "#* modid and tile entity id are the ResourceLocation string used to register the tile entity with Forge.\n",
-            "#  You can find these by searching for \"GameRegistry.registerTileEntity\" in the mod's source code...\n",
-            "#  or by asking the developer.\n",
-            "#* You must choose one of 'glass', 'stone' or 'mod'; the tile entity will copy the behaviour of the\n",
+            "#To make a block fragile, add a new row in this file following this format:\n",
+            "#<modid>:<ID> <glass/stone/mod> <min speed> <update delay> <extra values>\n",
+            "#* 'modid:ID' is the ResourceLocation string used to register with Forge.\n",
+            "#  - 'modid' can be found by looking in the 'modid' entry of the mod's mcmod.info file.\n",
+            "#    For vanilla Minecraft this is just 'minecraft'.\n",
+            "#  - For blocks WITH tile entities 'ID' is the name used to register the Tile Entity with Forge.\n",
+            "#    You can find these by searching for 'GameRegistry.registerTileEntity' in the mod's source code...\n",
+            "#    or by asking the developer. These are easy to guess in vanilla Minecraft.\n",
+            "#  - For blocks WITHOUT tile entities you need the block's registry name. You can usually find this by\n",
+            "#    looking at the block in-game with the F3 menu on.\n",
+            "#* You must choose one of 'glass', 'stone' or 'mod'; the block will copy the behaviour of the\n",
             "#  corresponding block in Fragile Glass and Thin Ice. For more advanced behaviour the modder will have to\n",
             "#  code the Capability themselves.\n",
-            "#  * All blocks' 'crash behaviours' will trigger (but not necessarily break) when the 'breaker' is\n",
+            "#  - All blocks' 'crash behaviours' will trigger (but not necessarily break) when the 'breaker' is\n",
             "#    moving fast enough to be able to break things. If the breaker isn't fast enough, the block won't\n",
             "#    break. This 'breaking speed' depends on the breaker.\n",
-            "#  * 'glass' means the block will simply break.\n",
-            "#  * 'stone' means a block update will trigger, but it won't break unless that is in the update code.\n",
-            "#  * 'mod' is for a block that does something more advanced. It is completely up to the mod developer\n",
+            "#  - 'glass' means the block will simply break.\n",
+            "#  - 'stone' means a block update will trigger, but it won't break unless that is in the update code.\n",
+            "#  - 'mod' is for a block that does something more advanced. It is completely up to the mod developer\n",
             "#    what the break behaviour will be, but this mod will still load all the values you write here.\n",
             "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their breaking\n",
             "#  speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks per tick,\n",

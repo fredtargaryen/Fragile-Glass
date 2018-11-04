@@ -10,10 +10,7 @@ import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
-import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
-import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
-import com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager;
-import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
+import com.fredtargaryen.fragileglass.tileentity.capability.*;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenIce;
@@ -179,13 +176,15 @@ public class FragileGlassBase
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock, thinIce, sugarCauldron, weakStone);
+        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock,
+                thinIce, sugarCauldron, weakStone);
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane, iSugarBlock, iThinIce, iSugarCauldron, iWeakStone);
+        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane,
+                iSugarBlock, iThinIce, iSugarCauldron, iWeakStone);
     }
 
     @SubscribeEvent
