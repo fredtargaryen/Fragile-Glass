@@ -51,14 +51,6 @@ public class BlockWeakStone extends BlockFalling implements ITileEntityProvider 
     {
     }
 
-    /**
-     * How many world ticks before ticking
-     */
-    public int tickRate(World worldIn)
-    {
-        return 20;
-    }
-
     public void onEndFalling(World worldIn, BlockPos pos, IBlockState p_176502_3_, IBlockState p_176502_4_)
     {
         worldIn.setBlockState(pos, Blocks.GRAVEL.getDefaultState());
