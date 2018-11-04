@@ -2,7 +2,6 @@ package com.fredtargaryen.fragileglass.tileentity.capability;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityBlockMadeFragile;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -61,85 +60,57 @@ public class FragilityDataManager {
     }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
-        FragilityData fragData;
-        if(te instanceof TileEntityBlockMadeFragile) {
-                this.addCapsNoTileEntity(evt);
-        }
-        else {
-            fragData = this.getTileEntityFragilityData(te);
-            if (fragData != null) {
-                this.addCapsTileEntity(evt, fragData);
-            }
-        }
-    }
-
-    private void addCapsNoTileEntity(AttachCapabilitiesEvent<TileEntity> evt) {
-        ICapabilityProvider iCapProv = new ICapabilityProvider() {
-            IBlockMadeFragileCapability inst = FragileGlassBase.BLOCKMADEFRAGILECAP.getDefaultInstance();
-
-            @Override
-            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                return capability == FragileGlassBase.BLOCKMADEFRAGILECAP;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                return capability == FragileGlassBase.BLOCKMADEFRAGILECAP ? FragileGlassBase.BLOCKMADEFRAGILECAP.<T>cast(inst) : null;
-            }
-        };
-        evt.addCapability(DataReference.BLOCK_MADE_FRAGILE_CAP_LOCATION, iCapProv);
-    }
-
-    private void addCapsTileEntity(AttachCapabilitiesEvent<TileEntity> evt, FragilityData fragData) {
-        if (fragData.behaviour == FragileBehaviour.GLASS) {
-            ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                IFragileCapability inst = new IFragileCapability() {
-                    @Override
-                    public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                        if (speed > fragData.breakSpeed) {
-                            te.getWorld().destroyBlock(te.getPos(), false);
+        FragilityData fragData = this.getTileEntityFragilityData(te);
+        if (fragData != null) {
+            if (fragData.behaviour == FragileBehaviour.GLASS) {
+                ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                    IFragileCapability inst = new IFragileCapability() {
+                        @Override
+                        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                            if (speed > fragData.breakSpeed) {
+                                te.getWorld().destroyBlock(te.getPos(), false);
+                            }
                         }
+                    };
+
+                    @Override
+                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP;
+                    }
+
+                    @Nullable
+                    @Override
+                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
                     }
                 };
-
-                @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP;
-                }
-
-                @Nullable
-                @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
-                }
-            };
-            evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-        } else if (fragData.behaviour == FragileBehaviour.STONE) {
-            ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                IFragileCapability inst = new IFragileCapability() {
-                    @Override
-                    public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                        if (speed > fragData.breakSpeed) {
-                            World w = te.getWorld();
-                            BlockPos tilePos = te.getPos();
-                            w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+            } else if (fragData.behaviour == FragileBehaviour.STONE) {
+                ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                    IFragileCapability inst = new IFragileCapability() {
+                        @Override
+                        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                            if (speed > fragData.breakSpeed) {
+                                World w = te.getWorld();
+                                BlockPos tilePos = te.getPos();
+                                w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
+                            }
                         }
+                    };
+
+                    @Override
+                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP;
+                    }
+
+                    @Nullable
+                    @Override
+                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
                     }
                 };
-
-                @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP;
-                }
-
-                @Nullable
-                @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
-                }
-            };
-            evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+            }
         }
     }
 
@@ -300,28 +271,32 @@ public class FragilityDataManager {
             "########################################\n",
             "#FRAGILE GLASS AND THIN ICE CONFIG FILE#\n",
             "########################################\n",
+            "#THINK VERY CAREFULLY BEFORE ADDING ENTRIES HERE!\n",
+            "#(You probably don't really want to make ALL DIRT BLOCKS fragile, for example.)\n",
             "#Here is where you can configure which blocks are fragile and which are not, and modify basic behaviour.\n",
             "#--Limitations--\n",
-            "#There is currently no way to make a block fragile if it didn't have a tile entity to begin with,\n",
-            "#e.g. Dirt, Redstone Lamps, Doors, Trapdoors, Packed Ice, ordinary Glass, Prismarine.\n",
-            "#It should be possible to make any block fragile if it has a tile entity,\n",
-            "#e.g. Beds, Flower Pots, Beacons, Dispensers, Floower Pots, OpenBlocks Tanks.\n",
+            "#This will not work for blocks which are basically air blocks, e.g. Air blocks and 'logic' blocks.\n",
             "#--How to customise--\n",
             "#To add a comment to the file, start the line with a # symbol.\n",
-            "#To make a tile entity fragile, add a new row in this file following this format:\n",
-            "#<modid>:<tile entity id> <glass/stone/mod> <min speed> <update delay> <extra values>\n",
-            "#* modid and tile entity id are the ResourceLocation string used to register the tile entity with Forge.\n",
-            "#  You can find these by searching for \"GameRegistry.registerTileEntity\" in the mod's source code...\n",
-            "#  or by asking the developer.\n",
-            "#* You must choose one of 'glass', 'stone' or 'mod'; the tile entity will copy the behaviour of the\n",
+            "#To make a block fragile, add a new row in this file following this format:\n",
+            "#<modid>:<ID> <glass/stone/mod> <min speed> <update delay> <extra values>\n",
+            "#* 'modid:ID' is the ResourceLocation string used to register with Forge.\n",
+            "#  - 'modid' can be found by looking in the 'modid' entry of the mod's mcmod.info file.\n",
+            "#    For vanilla Minecraft this is just 'minecraft'.\n",
+            "#  - For blocks WITH tile entities 'ID' is the name used to register the Tile Entity with Forge.\n",
+            "#    You can find these by searching for 'GameRegistry.registerTileEntity' in the mod's source code...\n",
+            "#    or by asking the developer. These are easy to guess in vanilla Minecraft.\n",
+            "#  - For blocks WITHOUT tile entities you need the block's registry name. You can usually find this by\n",
+            "#    looking at the block in-game with the F3 menu on.\n",
+            "#* You must choose one of 'glass', 'stone' or 'mod'; the block will copy the behaviour of the\n",
             "#  corresponding block in Fragile Glass and Thin Ice. For more advanced behaviour the modder will have to\n",
             "#  code the Capability themselves.\n",
-            "#  * All blocks' 'crash behaviours' will trigger (but not necessarily break) when the 'breaker' is\n",
+            "#  - All blocks' 'crash behaviours' will trigger (but not necessarily break) when the 'breaker' is\n",
             "#    moving fast enough to be able to break things. If the breaker isn't fast enough, the block won't\n",
             "#    break. This 'breaking speed' depends on the breaker.\n",
-            "#  * 'glass' means the block will simply break.\n",
-            "#  * 'stone' means a block update will trigger, but it won't break unless that is in the update code.\n",
-            "#  * 'mod' is for a block that does something more advanced. It is completely up to the mod developer\n",
+            "#  - 'glass' means the block will simply break.\n",
+            "#  - 'stone' means a block update will trigger, but it won't break unless that is in the update code.\n",
+            "#  - 'mod' is for a block that does something more advanced. It is completely up to the mod developer\n",
             "#    what the break behaviour will be, but this mod will still load all the values you write here.\n",
             "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their breaking\n",
             "#  speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks per tick,\n",
