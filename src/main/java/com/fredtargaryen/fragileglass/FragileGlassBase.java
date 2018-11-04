@@ -4,11 +4,9 @@ import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragileGlass;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragilePane;
-import com.fredtargaryen.fragileglass.item.ItemFragilitator;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityBlockMadeFragile;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
@@ -98,7 +96,6 @@ public class FragileGlassBase
     private static Item iThinIce;
     private static Item iSugarCauldron;
     private static Item iWeakStone;
-    public static Item fragilitator;
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
@@ -113,7 +110,6 @@ public class FragileGlassBase
         CapabilityManager.INSTANCE.register(IBreakCapability.class, new BreakCapStorage(), new BreakCapFactory());
         CapabilityManager.INSTANCE.register(IPlayerBreakCapability.class, new PlayerBreakStorage(), new PlayerBreakFactory());
         CapabilityManager.INSTANCE.register(IFragileCapability.class, new FragileCapStorage(), new FragileCapFactory());
-        CapabilityManager.INSTANCE.register(IBlockMadeFragileCapability.class, new BlockMadeFragileCapStorage(), new BlockMadeFragileCapFactory());
         MinecraftForge.EVENT_BUS.register(this);
 
         //CONFIG SETUP
@@ -175,8 +171,6 @@ public class FragileGlassBase
                 .setRegistryName("sugarcauldron");
         iWeakStone = new ItemBlock(weakStone)
                 .setRegistryName("weakstone");
-        fragilitator = new ItemFragilitator()
-                .setRegistryName("fragilitator");
     }
 
     @SubscribeEvent
@@ -190,7 +184,7 @@ public class FragileGlassBase
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
         event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane,
-                iSugarBlock, iThinIce, iSugarCauldron, iWeakStone, fragilitator);
+                iSugarBlock, iThinIce, iSugarCauldron, iWeakStone);
     }
 
     @SubscribeEvent
@@ -206,7 +200,6 @@ public class FragileGlassBase
     	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, new ResourceLocation(DataReference.MODID+":tefg"));
     	GameRegistry.registerTileEntity(TileEntityThinIce.class, new ResourceLocation(DataReference.MODID+":teti"));
     	GameRegistry.registerTileEntity(TileEntityWeakStone.class, new ResourceLocation(DataReference.MODID+":tews"));
-    	GameRegistry.registerTileEntity(TileEntityBlockMadeFragile.class, new ResourceLocation(DataReference.MODID+":tebmf"));
 
         OreDictionary.registerOre("blockSugar", sugarBlock);
 
@@ -318,8 +311,6 @@ public class FragileGlassBase
     public static Capability<IPlayerBreakCapability> PLAYERBREAKCAP = null;
     @CapabilityInject(IFragileCapability.class)
     public static Capability<IFragileCapability> FRAGILECAP = null;
-    @CapabilityInject(IBlockMadeFragileCapability.class)
-    public static Capability<IBlockMadeFragileCapability> BLOCKMADEFRAGILECAP = null;
 
     @SubscribeEvent
     public void onBreakerConstruct(AttachCapabilitiesEvent<Entity> evt) {
