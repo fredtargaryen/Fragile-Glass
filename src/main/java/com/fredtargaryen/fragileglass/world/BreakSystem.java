@@ -171,7 +171,7 @@ public class BreakSystem
                             FragilityDataManager.FragilityData fragilityData = FragilityDataManager.getInstance().getBlockFragilityData(block);
                             if(fragilityData != null && speed > fragilityData.getBreakSpeed()) {
                                 FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
-                                if (fragileBehaviour == FragilityDataManager.FragileBehaviour.GLASS) {
+                                if (fragileBehaviour == FragilityDataManager.FragileBehaviour.BREAK) {
                                     e.world.destroyBlock(blockPos, true);
                                 } else {
                                     e.world.scheduleUpdate(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
