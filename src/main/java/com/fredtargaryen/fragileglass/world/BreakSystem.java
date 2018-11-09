@@ -22,13 +22,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.fredtargaryen.fragileglass.FragileGlassBase.BREAKCAP;
 
-public class BreakSystem
-{
+public class BreakSystem {
     private World world;
+    private FragilityDataManager fragilityDataManager;
+    private boolean hasTileEntityFragilityData;
+    private boolean hasBlockFragilityData;
+
     public void init(World world)
     {
         this.world = world;
         MinecraftForge.EVENT_BUS.register(this);
+        this.fragilityDataManager = FragilityDataManager.getInstance();
     }
 
     public void end(World world)
