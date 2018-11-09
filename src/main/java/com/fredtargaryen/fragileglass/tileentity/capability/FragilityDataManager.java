@@ -3,6 +3,10 @@ package com.fredtargaryen.fragileglass.tileentity.capability;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -19,8 +23,8 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
+import com.google.common.base.Optional;
 
 import static com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager.FragileBehaviour.BREAK;
 import static com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager.FragileBehaviour.MOD;
@@ -213,7 +217,15 @@ public class FragilityDataManager {
                                 FMLLog.log.warn("[FRAGILITY CONFIG] '" + values[0] + "' is already in the file - using the first entry only");
                             }
                             else {
-                                if(this.isResourceLocationValidBlock(values[0])) {
+                                IBlockState state = this.parseBlockState(values[0]);
+                                if(state != null) {
+                                    this.blockStateData.put(state,
+                                            new FragilityData(behaviour,
+                                                    Double.parseDouble(values[2]),
+                                                    Integer.parseInt(values[3]),
+                                                    Arrays.copyOfRange(values, 4, values.length)));
+                                }
+                                else if(this.isResourceLocationValidBlock(values[0])) {
                                     //The ResourceLocation is for a block
                                     this.blockData.put(values[0],
                                             new FragilityData(behaviour,
@@ -245,6 +257,54 @@ public class FragilityDataManager {
         catch(Exception e) {
             this.handleConfigFileException(e);
         }
+    }
+
+    /**
+     * Takes a String representing a BlockState (same format as that returned by BlockState#toString()) and tries to build a BlockState from it.
+     * @param blockData The string. Example: "minecraft:dirt[snowy=false]"
+     * @return null if the IBlockState could not be created
+     */
+    private IBlockState parseBlockState(String blockData) {
+        //{"minecraft:dirt","snowy=false]"}
+        String[] bracketSplit = blockData.split("\\[");
+        //"minecraft:dirt"
+        String blockName = bracketSplit[0];
+        if(this.isResourceLocationValidBlock(blockName)) {
+            IBlockState state = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName)).getDefaultState();
+            //{"snowy=false"}
+            String[] variantInfo = bracketSplit[1].split("\\]")[0].split(",");
+            Collection<IProperty<?>> keys = state.getPropertyKeys();
+            for(String variant : variantInfo) {
+                //{"snowy","false"}
+                String[] info = variant.split("=");
+                for(IProperty<?> iprop : keys) {
+                    if(iprop.getName().equals(info[0])) {
+                        state = this.parseAndSetProperty(state, iprop, info[1]);
+                    }
+                }
+            }
+            return state;
+        }
+        return null;
+    }
+
+    private <T extends Comparable<T>> IBlockState parseAndSetProperty(IBlockState state, IProperty<T> iprop, String value) {
+        if(iprop instanceof PropertyBool) {
+            PropertyBool pb = (PropertyBool) iprop;
+            Optional<Boolean> opt = pb.parseValue(value);
+            if(opt.isPresent()) return state.withProperty(pb, opt.get());
+        }
+        else if(iprop instanceof PropertyInteger) {
+            PropertyInteger pi = (PropertyInteger) iprop;
+            Optional<Integer> opt = pi.parseValue(value);
+            if(opt.isPresent()) return state.withProperty(pi, opt.get());
+        }
+        else if(iprop instanceof PropertyEnum) {
+            PropertyEnum pe = (PropertyEnum) iprop;
+            Optional<Enum> opt = pe.parseValue(value);
+            if(opt.isPresent()) return state.withProperty(pe, opt.get());
+        }
+        return state;
     }
 
     public void setupDirsAndFiles(File configDir) {
