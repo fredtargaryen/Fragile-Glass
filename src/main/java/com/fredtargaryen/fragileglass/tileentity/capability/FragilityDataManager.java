@@ -37,6 +37,8 @@ public class FragilityDataManager {
 
     private HashMap<String, FragilityData> tileEntityData;
     private HashMap<String, FragilityData> blockData;
+    //TODO
+    private HashMap<IBlockState, FragilityData> blockStateData;
 
     public enum FragileBehaviour {
         //Break if above the break speed
@@ -57,6 +59,7 @@ public class FragilityDataManager {
     public FragilityDataManager() {
         this.tileEntityData = new HashMap<>();
         this.blockData = new HashMap<>();
+        this.blockStateData = new HashMap<>();
     }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
@@ -127,6 +130,13 @@ public class FragilityDataManager {
         return null;
     }
 
+    public FragilityData getBlockStateFragilityData(IBlockState state) {
+        if(this.blockStateData.containsKey(state)) {
+            return this.blockStateData.get(state);
+        }
+        return null;
+    }
+
     public FragilityData getTileEntityFragilityData(TileEntity te) {
         //Consider me the ambassador for using "clarse" instead of "clazz"
         Class<? extends TileEntity> clarse = te.getClass();
@@ -151,6 +161,10 @@ public class FragilityDataManager {
 
     public boolean hasBlockFragilityData() {
         return !this.blockData.isEmpty();
+    }
+
+    public boolean hasBlockStateFragilityData() {
+        return !this.blockStateData.isEmpty();
     }
 
     public boolean hasTileEntityFragilityData() {

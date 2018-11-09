@@ -27,6 +27,7 @@ public class BreakSystem {
     private FragilityDataManager fragilityDataManager;
     private boolean hasTileEntityFragilityData;
     private boolean hasBlockFragilityData;
+    private boolean hasBlockStateFragilityData;
 
     public void init(World world) {
         this.world = world;
@@ -34,6 +35,7 @@ public class BreakSystem {
         this.fragilityDataManager = FragilityDataManager.getInstance();
         this.hasTileEntityFragilityData = this.fragilityDataManager.hasTileEntityFragilityData();
         this.hasBlockFragilityData = this.fragilityDataManager.hasBlockFragilityData();
+        this.hasBlockStateFragilityData = this.fragilityDataManager.hasBlockStateFragilityData();
     }
 
     public void end(World world) {
@@ -170,10 +172,26 @@ public class BreakSystem {
                         //}
                         TileEntity te = e.world.getTileEntity(blockPos);
                         if(te == null) {
-                            //No Tile Entity; see if it's in the Block fragility data
-                            if(this.hasBlockFragilityData) {
-                                FragilityDataManager.FragilityData fragilityData = this.fragilityDataManager.getBlockFragilityData(block);
-                                if (fragilityData != null && speed > fragilityData.getBreakSpeed()) {
+                            //No Tile Entity
+                            boolean foundBlockState = false;
+                            boolean foundBlock = false;
+                            FragilityDataManager.FragilityData fragilityData = null;
+                            if(this.hasBlockStateFragilityData) {
+                                //The specific BlockState might be covered in the fragility data
+                                fragilityData = this.fragilityDataManager.getBlockStateFragilityData(state);
+                                if(fragilityData != null) {
+                                    foundBlockState = true;
+                                }
+                            }
+                            if(!foundBlockState && this.hasBlockFragilityData) {
+                                //There was no BlockState in the data but there might be a block
+                                fragilityData = this.fragilityDataManager.getBlockFragilityData(block);
+                                if (fragilityData != null) {
+                                    foundBlock = true;
+                                }
+                            }
+                            if(foundBlock || foundBlockState) {
+                                if(speed > fragilityData.getBreakSpeed()) {
                                     FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
                                     if (fragileBehaviour == FragilityDataManager.FragileBehaviour.BREAK) {
                                         e.world.destroyBlock(blockPos, true);
@@ -185,6 +203,7 @@ public class BreakSystem {
                         }
                         else {
                             //Has a Tile Entity; check there's anything in the Tile Entity fragility data before continuing
+                            //Tile Entities are dealt with via Capabilities already; no need to obtain fragility data
                             if(this.hasTileEntityFragilityData && te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
                                 te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
                             }
