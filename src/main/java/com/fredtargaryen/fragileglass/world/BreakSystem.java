@@ -28,15 +28,15 @@ public class BreakSystem {
     private boolean hasTileEntityFragilityData;
     private boolean hasBlockFragilityData;
 
-    public void init(World world)
-    {
+    public void init(World world) {
         this.world = world;
         MinecraftForge.EVENT_BUS.register(this);
         this.fragilityDataManager = FragilityDataManager.getInstance();
+        this.hasTileEntityFragilityData = this.fragilityDataManager.hasTileEntityFragilityData();
+        this.hasBlockFragilityData = this.fragilityDataManager.hasBlockFragilityData();
     }
 
-    public void end(World world)
-    {
+    public void end(World world) {
         if(this.world == world) {
             MinecraftForge.EVENT_BUS.unregister(this);
         }
@@ -48,8 +48,7 @@ public class BreakSystem {
             //Intended to avoid ConcurrentModificationExceptions
             CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(event.world.loadedEntityList);
             Iterator<Entity> i = entityList.iterator();
-            while(i.hasNext())
-            {
+            while(i.hasNext()) {
                 Entity e = i.next();
                 if(!e.isDead) {
                     //Entities must have an instance of IBreakCapability or they will never be able to break blocks with
@@ -171,19 +170,22 @@ public class BreakSystem {
                         //}
                         TileEntity te = e.world.getTileEntity(blockPos);
                         if(te == null) {
-                            //No tile entity; see if it's in the data
-                            FragilityDataManager.FragilityData fragilityData = FragilityDataManager.getInstance().getBlockFragilityData(block);
-                            if(fragilityData != null && speed > fragilityData.getBreakSpeed()) {
-                                FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
-                                if (fragileBehaviour == FragilityDataManager.FragileBehaviour.BREAK) {
-                                    e.world.destroyBlock(blockPos, true);
-                                } else {
-                                    e.world.scheduleUpdate(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                            //No Tile Entity; see if it's in the Block fragility data
+                            if(this.hasBlockFragilityData) {
+                                FragilityDataManager.FragilityData fragilityData = this.fragilityDataManager.getBlockFragilityData(block);
+                                if (fragilityData != null && speed > fragilityData.getBreakSpeed()) {
+                                    FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
+                                    if (fragileBehaviour == FragilityDataManager.FragileBehaviour.BREAK) {
+                                        e.world.destroyBlock(blockPos, true);
+                                    } else {
+                                        e.world.scheduleUpdate(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                                    }
                                 }
                             }
                         }
                         else {
-                            if(te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
+                            //Has a Tile Entity; check there's anything in the Tile Entity fragility data before continuing
+                            if(this.hasTileEntityFragilityData && te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
                                 te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
                             }
                         }

@@ -149,6 +149,14 @@ public class FragilityDataManager {
         this.loadDefaultData();
     }
 
+    public boolean hasBlockFragilityData() {
+        return !this.blockData.isEmpty();
+    }
+
+    public boolean hasTileEntityFragilityData() {
+        return !this.tileEntityData.isEmpty();
+    }
+
     private boolean isResourceLocationValidBlock(String resourceLocation) {
         return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(resourceLocation));
     }
