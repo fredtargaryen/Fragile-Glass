@@ -193,10 +193,16 @@ public class BreakSystem {
                             if(foundBlock || foundBlockState) {
                                 if(speed > fragilityData.getBreakSpeed()) {
                                     FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
-                                    if (fragileBehaviour == FragilityDataManager.FragileBehaviour.BREAK) {
-                                        e.world.destroyBlock(blockPos, true);
-                                    } else {
-                                        e.world.scheduleUpdate(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                                    switch(fragileBehaviour) {
+                                        case BREAK:
+                                            e.world.destroyBlock(blockPos, true);
+                                            break;
+                                        case UPDATE:
+                                            e.world.scheduleUpdate(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                                            break;
+                                        case CHANGE:
+                                            e.world.setBlockState(blockPos, fragilityData.getNewBlockState());
+                                            break;
                                     }
                                 }
                             }
