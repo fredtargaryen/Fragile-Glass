@@ -176,8 +176,8 @@ public class FragilityConfigLoader {
      * @return true if the name represents the type asked for
      */
     private boolean isValidBlockOrBlockState(String name, boolean block) {
-        String resLocRegex = "[a-z]+:[a-z]+";
-        String variantRegex = "[a-z]+=([0-9]+|[a-z]+)";
+        String resLocRegex = "[a-z]+:[a-z|_]+";
+        String variantRegex = "[a-z]+=([0-9]+|[a-z|_]+)";
         String variantsRegex = "(" + variantRegex + ",)*(" + variantRegex + ")";
         String blockStateRegex = resLocRegex + "\\[" + variantsRegex + "\\]";
         return block ? name.matches(resLocRegex) : name.matches(blockStateRegex);
