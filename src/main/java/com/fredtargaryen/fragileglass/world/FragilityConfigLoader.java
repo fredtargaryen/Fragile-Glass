@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.world;
 
 import com.google.common.base.Optional;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
@@ -11,9 +12,8 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FragilityConfigLoader {
     private FragilityDataManager manager;
@@ -29,6 +29,25 @@ public class FragilityConfigLoader {
         this.blocks = blocks;
         this.blockStates = blockStates;
         this.tileEntities = tileEntities;
+    }
+
+    private void addBlockStates(String entryName, FragilityDataManager.FragileBehaviour behaviour,
+                                double breakSpeed, int updateDelay, IBlockState newState, String[] extraData) {
+        String[] splitEntryName = entryName.split("\\[");
+        Block b = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(entryName));
+        List<IBlockState> allOldStates = new ArrayList<>(b.getBlockState().getValidStates());
+        if(splitEntryName.length == 2) {
+            //Some properties were specified so change allOldStates
+            HashMap<IProperty<?>, ?> specifiedProperties = this.obtainSpecifiedProperties(b, splitEntryName[1].split("\\]")[0]);
+            for(IProperty<?> iprop : specifiedProperties.keySet()) {
+                allOldStates = allOldStates.stream()
+                        .filter(state -> state.getValue(iprop) == specifiedProperties.get(iprop))
+                        .collect(Collectors.toList());
+            }
+        }
+        for(IBlockState oldState : allOldStates) {
+            this.blockStates.put(oldState, new FragilityData(behaviour, breakSpeed, updateDelay, newState, extraData));
+        }
     }
 
     public void loadFile(BufferedReader br) throws FragilityConfigLoadException, IOException {
@@ -63,21 +82,14 @@ public class FragilityConfigLoader {
                                 }
                             }
                             //Determine which registry to add the data to
-                            if(this.manager.isResourceLocationValidBlock(values[0])) {
-                                //It's a block
-                                this.blocks.put(values[0], new FragilityData(
-                                        behaviour, minSpeed, updateDelay, newState,
-                                        Arrays.copyOfRange(values, 5, values.length)));
+                            if(this.manager.isResourceLocationValidBlock(values[0].split("\\[")[0])) {
+                                //It's a block or blockstate
+                                this.addBlockStates(values[0], behaviour, minSpeed, updateDelay, newState,
+                                        Arrays.copyOfRange(values, 5, values.length));
                             }
-                            else if(this.isValidBlockOrBlockState(values[0], true)) {
+                            else {
                                 //It may or may not be a tile entity, but cannot validate this at this point
                                 this.tileEntities.put(values[0], new FragilityData(
-                                        behaviour, minSpeed, updateDelay, newState,
-                                        Arrays.copyOfRange(values, 5, values.length)));
-                            }
-                            else if(this.isValidBlockOrBlockState(values[0], false)) {
-                                //It may or may not be a tile entity. TODO not validating this currently
-                                this.blockStates.put(this.parseBlockState(values[0]), new FragilityData(
                                         behaviour, minSpeed, updateDelay, newState,
                                         Arrays.copyOfRange(values, 5, values.length)));
                             }
@@ -109,6 +121,48 @@ public class FragilityConfigLoader {
         return block ? name.matches(resLocRegex) : name.matches(blockStateRegex);
     }
 
+    public class FragilityConfigLoadException extends Exception {
+        public FragilityConfigLoadException(String message, String badLine, int lineNumber) {
+            super("Could not load the .cfg file because of line "+lineNumber+":\n" + badLine +"\n" + message +
+                    "Default fragility data will be loaded. No changes to the file will take effect.");
+        }
+    }
+
+    private HashMap<IProperty<?>, ?> obtainSpecifiedProperties(Block block, String propertiesString) {
+        IBlockState state = block.getDefaultState();
+        String[] variantInfo = propertiesString.split(",");
+        Collection<IProperty<?>> keys = state.getPropertyKeys();
+        HashMap<IProperty<?>, ?> properties = new HashMap<>();
+        for (String variant : variantInfo) {
+            String[] info = variant.split("=");
+            for (IProperty<?> iprop : keys) {
+                if (iprop.getName().equals(info[0])) {
+                    state = this.parseAndAddProperty(properties, state, iprop, info[1]);
+                }
+            }
+        }
+        return properties;
+    }
+
+    private <T extends Comparable<T>> IBlockState parseAndAddProperty(HashMap properties, IBlockState state, IProperty<T> iprop, String value) {
+        if(iprop instanceof PropertyBool) {
+            PropertyBool pb = (PropertyBool) iprop;
+            Optional<Boolean> opt = pb.parseValue(value);
+            if(opt.isPresent()) properties.put(pb, opt.get());
+        }
+        else if(iprop instanceof PropertyInteger) {
+            PropertyInteger pi = (PropertyInteger) iprop;
+            Optional<Integer> opt = pi.parseValue(value);
+            if(opt.isPresent()) properties.put(pi, opt.get());
+        }
+        else if(iprop instanceof PropertyEnum) {
+            PropertyEnum pe = (PropertyEnum) iprop;
+            Optional<Enum> opt = pe.parseValue(value);
+            if(opt.isPresent()) properties.put(pe, opt.get());
+        }
+        return state;
+    }
+
     /**
      * Validate the TileEntity ResourceLocation String (for tile entities), Block ResourceLocation String (for blocks),
      * or string description of applicable BlockStates (for block states).
@@ -119,62 +173,5 @@ public class FragilityConfigLoader {
     private boolean validateEntryName(String entryName) {
         return this.isValidBlockOrBlockState(entryName, true)
                 || this.isValidBlockOrBlockState(entryName, false);
-    }
-
-    public class FragilityConfigLoadException extends Exception {
-        public FragilityConfigLoadException(String message, String badLine, int lineNumber) {
-            super("Could not load the .cfg file because of line "+lineNumber+":\n" + badLine +"\n" + message +
-                    "Default fragility data will be loaded. No changes to the file will take effect.");
-        }
-    }
-
-    /**
-     * Takes a String representing a BlockState (same format as that returned by BlockState#toString()) and tries to build a BlockState from it.
-     * @param blockData The string. Example: "minecraft:dirt[snowy=false]"
-     * @return null if the IBlockState could not be created
-     */
-    private IBlockState parseBlockState(String blockData) {
-        //{"minecraft:dirt","snowy=false]"}
-        String[] bracketSplit = blockData.split("\\[");
-        //"minecraft:dirt"
-        String blockName = bracketSplit[0];
-        if(this.manager.isResourceLocationValidBlock(blockName)) {
-            IBlockState state = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName)).getDefaultState();
-            if(bracketSplit.length > 1) {
-                //{"snowy=false"}
-                String[] variantInfo = bracketSplit[1].split("\\]")[0].split(",");
-                Collection<IProperty<?>> keys = state.getPropertyKeys();
-                for (String variant : variantInfo) {
-                    //{"snowy","false"}
-                    String[] info = variant.split("=");
-                    for (IProperty<?> iprop : keys) {
-                        if (iprop.getName().equals(info[0])) {
-                            state = this.parseAndSetProperty(state, iprop, info[1]);
-                        }
-                    }
-                }
-            }
-            return state;
-        }
-        return null;
-    }
-
-    private <T extends Comparable<T>> IBlockState parseAndSetProperty(IBlockState state, IProperty<T> iprop, String value) {
-        if(iprop instanceof PropertyBool) {
-            PropertyBool pb = (PropertyBool) iprop;
-            Optional<Boolean> opt = pb.parseValue(value);
-            if(opt.isPresent()) return state.withProperty(pb, opt.get());
-        }
-        else if(iprop instanceof PropertyInteger) {
-            PropertyInteger pi = (PropertyInteger) iprop;
-            Optional<Integer> opt = pi.parseValue(value);
-            if(opt.isPresent()) return state.withProperty(pi, opt.get());
-        }
-        else if(iprop instanceof PropertyEnum) {
-            PropertyEnum pe = (PropertyEnum) iprop;
-            Optional<Enum> opt = pe.parseValue(value);
-            if(opt.isPresent()) return state.withProperty(pe, opt.get());
-        }
-        return state;
     }
 }
