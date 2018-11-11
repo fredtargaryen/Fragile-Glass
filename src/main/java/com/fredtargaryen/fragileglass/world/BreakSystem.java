@@ -24,7 +24,6 @@ public class BreakSystem {
     private World world;
     private FragilityDataManager fragilityDataManager;
     private boolean hasTileEntityFragilityData;
-    private boolean hasBlockFragilityData;
     private boolean hasBlockStateFragilityData;
 
     public void init(World world) {
@@ -32,7 +31,6 @@ public class BreakSystem {
         MinecraftForge.EVENT_BUS.register(this);
         this.fragilityDataManager = FragilityDataManager.getInstance();
         this.hasTileEntityFragilityData = this.fragilityDataManager.hasTileEntityFragilityData();
-        this.hasBlockFragilityData = this.fragilityDataManager.hasBlockFragilityData();
         this.hasBlockStateFragilityData = this.fragilityDataManager.hasBlockStateFragilityData();
     }
 
@@ -171,24 +169,9 @@ public class BreakSystem {
                         TileEntity te = e.world.getTileEntity(blockPos);
                         if(te == null) {
                             //No Tile Entity
-                            boolean foundBlockState = false;
-                            boolean foundBlock = false;
-                            FragilityDataManager.FragilityData fragilityData = null;
                             if(this.hasBlockStateFragilityData) {
                                 //The specific BlockState might be covered in the fragility data
-                                fragilityData = this.fragilityDataManager.getBlockStateFragilityData(state);
-                                if(fragilityData != null) {
-                                    foundBlockState = true;
-                                }
-                            }
-                            if(!foundBlockState && this.hasBlockFragilityData) {
-                                //There was no BlockState in the data but there might be a block
-                                fragilityData = this.fragilityDataManager.getBlockFragilityData(block);
-                                if (fragilityData != null) {
-                                    foundBlock = true;
-                                }
-                            }
-                            if(foundBlock || foundBlockState) {
+                                FragilityData fragilityData = this.fragilityDataManager.getBlockStateFragilityData(state);
                                 if(speed > fragilityData.getBreakSpeed()) {
                                     FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
                                     switch(fragileBehaviour) {

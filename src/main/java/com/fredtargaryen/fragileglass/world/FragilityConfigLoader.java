@@ -17,16 +17,13 @@ import java.util.stream.Collectors;
 
 public class FragilityConfigLoader {
     private FragilityDataManager manager;
-    private HashMap<String, FragilityData> blocks;
     private HashMap<IBlockState, FragilityData> blockStates;
     private HashMap<String, FragilityData> tileEntities;
 
     public FragilityConfigLoader(FragilityDataManager manager,
-                                 HashMap<String, FragilityData> blocks,
                                  HashMap<IBlockState, FragilityData> blockStates,
                                  HashMap<String, FragilityData> tileEntities) {
         this.manager = manager;
-        this.blocks = blocks;
         this.blockStates = blockStates;
         this.tileEntities = tileEntities;
     }

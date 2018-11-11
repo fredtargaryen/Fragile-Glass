@@ -3,7 +3,6 @@ package com.fredtargaryen.fragileglass.world;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -34,7 +33,6 @@ public class FragilityDataManager {
     private File configFile;
 
     private HashMap<String, FragilityData> tileEntityData;
-    private HashMap<String, FragilityData> blockData;
     private HashMap<IBlockState, FragilityData> blockStateData;
 
     public enum FragileBehaviour {
@@ -57,7 +55,6 @@ public class FragilityDataManager {
 
     public FragilityDataManager() {
         this.tileEntityData = new HashMap<>();
-        this.blockData = new HashMap<>();
         this.blockStateData = new HashMap<>();
     }
 
@@ -140,19 +137,6 @@ public class FragilityDataManager {
         }
     }
 
-    public FragilityData getBlockFragilityData(Block b) {
-        //Use the block in the Forge Block registry to get its ResourceLocation
-        String resourceLocationString = ForgeRegistries.BLOCKS.getKey(b).toString();
-        //Check the ResourceLocation string is in the manager, i.e. if the cfg was valid, it was in the cfg
-        if(resourceLocationString != null) {
-            if(this.blockData.containsKey(resourceLocationString)) {
-                //If the cfg was valid and the string was in the cfg, there must be fragility data
-                return this.blockData.get(resourceLocationString);
-            }
-        }
-        return null;
-    }
-
     public FragilityData getBlockStateFragilityData(IBlockState state) {
         if(this.blockStateData.containsKey(state)) {
             return this.blockStateData.get(state);
@@ -182,10 +166,6 @@ public class FragilityDataManager {
         this.loadDefaultData();
     }
 
-    public boolean hasBlockFragilityData() {
-        return !this.blockData.isEmpty();
-    }
-
     public boolean hasBlockStateFragilityData() {
         return !this.blockStateData.isEmpty();
     }
@@ -199,7 +179,6 @@ public class FragilityDataManager {
     }
 
     private void loadDefaultData() {
-        this.blockData.clear();
         this.blockStateData.clear();
         this.tileEntityData.clear();
         this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, null, new String[]{}));
@@ -210,7 +189,7 @@ public class FragilityDataManager {
     public void loadBlockData() {
         try {
             BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-            new FragilityConfigLoader(this, this.blockData, this.blockStateData, this.tileEntityData).loadFile(br);
+            new FragilityConfigLoader(this, this.blockStateData, this.tileEntityData).loadFile(br);
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());
