@@ -29,6 +29,31 @@ public class FragilityConfigLoader {
     }
 
     /**
+     * From addBlockStates:
+     * If the (partially-specified) new BlockState has:
+     * * The same Block: each specified property has the specified value; each unspecified property
+     *   takes its value from the old BlockState.
+     * * A different Block: each specified property has the specified value; each unspecified
+     *   property has the default value.
+     * @return
+     */
+    private <P extends Comparable<P>> IBlockState applyPropertyValue(IBlockState oldState, IBlockState newState, IProperty<P> iprop, HashMap newProperties) {
+        if(newState.getBlock() == oldState.getBlock()) {
+            if(newProperties.containsKey(iprop)) {
+                newState = newState.withProperty(iprop, (P) newProperties.get(iprop));
+            }
+            else {
+                newState = newState.withProperty(iprop, oldState.getValue(iprop));
+            }
+        } else {
+            if(newProperties.containsKey(iprop)) {
+                newState = newState.withProperty(iprop, (P) newProperties.get(iprop));
+            }
+        }
+        return newState;
+    }
+
+    /**
      * Add entries to BlockStates for all applicable BlockStates.
      * @param entryName A String representing the Block, BlockState or partially-specified BlockState.
      *                  If entryName represents:
@@ -39,30 +64,50 @@ public class FragilityConfigLoader {
      * @param behaviour The crash behaviour of the above.
      * @param breakSpeed The minimum speed required to trigger the crash behaviour.
      * @param updateDelay If the crash behaviour is "update", the delay in ticks before a block update is triggered.
-     * @param newState If the crash behaviour is "change", the Block, BlockState or partially-specified BlockState
+     * @param newStateName If the crash behaviour is "change", the Block, BlockState or partially-specified BlockState
      *                     that a state will become.
      *                     If newStateName represents:
      *                     * A Block: the default BlockState of that Block.
      *                     * A BlockState: that exact BlockState.
      *                     * A partially-specified BlockState: a BlockState with the properties specified, but the
      *                       default value for any unspecified properties.
+     *                     If the (partially-specified) new BlockState has:
+     *                     * The same Block: each specified property has the specified value; each unspecified property
+     *                       takes its value from the old BlockState.
+     *                     * A different Block: each specified property has the specified value; each unspecified
+     *                       property has the default value.
      * @param extraData extra data only needed by mod Tile Entities.
      */
     private void addBlockStates(String entryName, FragilityDataManager.FragileBehaviour behaviour,
-                                double breakSpeed, int updateDelay, IBlockState newState, String[] extraData) {
+                                double breakSpeed, int updateDelay, String newStateName, String[] extraData) {
         String[] splitEntryName = entryName.split("\\[");
-        Block b = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(entryName));
-        List<IBlockState> allOldStates = new ArrayList<>(b.getBlockState().getValidStates());
+        //Get all BlockStates with the block named in splitEntryName[0]
+        Block oldBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(splitEntryName[0]));
+        List<IBlockState> allOldStates = new ArrayList<>(oldBlock.getBlockState().getValidStates());
+        //Regex ensures the length will be 1 or 2. If 1, no properties were specified so use all the states.
         if(splitEntryName.length == 2) {
             //Some properties were specified so change allOldStates
-            HashMap<IProperty<?>, ?> specifiedProperties = this.obtainSpecifiedProperties(b, splitEntryName[1].split("\\]")[0]);
-            for(IProperty<?> iprop : specifiedProperties.keySet()) {
+            HashMap<IProperty<?>, ?> oldSpecifiedProperties = this.obtainSpecifiedProperties(oldBlock, splitEntryName[1].split("\\]")[0]);
+            for(IProperty<?> iprop : oldSpecifiedProperties.keySet()) {
                 allOldStates = allOldStates.stream()
-                        .filter(state -> state.getValue(iprop) == specifiedProperties.get(iprop))
+                        .filter(state -> state.getValue(iprop) == oldSpecifiedProperties.get(iprop))
                         .collect(Collectors.toList());
             }
         }
         for(IBlockState oldState : allOldStates) {
+            //Compute new state, based on old state.
+            String[] splitNewStateName = newStateName.split("\\[");
+            //Regex ensures length will be 1 or 2
+            Block newBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(splitNewStateName[0]));
+            //If no properties were specified this value will be used.
+            IBlockState newState = newBlock.getDefaultState();
+            if(splitNewStateName.length == 2) {
+                //Properties were specified too.
+                HashMap newSpecifiedProperties = this.obtainSpecifiedProperties(newBlock, splitNewStateName[1].split("\\]")[0]);
+                for(IProperty iprop : newState.getPropertyKeys()) {
+                    newState = this.applyPropertyValue(oldState, newState, iprop, newSpecifiedProperties);
+                }
+            }
             this.blockStates.put(oldState, new FragilityData(behaviour, breakSpeed, updateDelay, newState, extraData));
         }
     }
@@ -101,7 +146,7 @@ public class FragilityConfigLoader {
                             //Determine which registry to add the data to
                             if(this.manager.isResourceLocationValidBlock(values[0].split("\\[")[0])) {
                                 //It's a block or blockstate
-                                this.addBlockStates(values[0], behaviour, minSpeed, updateDelay, newState,
+                                this.addBlockStates(values[0], behaviour, minSpeed, updateDelay, values[4],
                                         Arrays.copyOfRange(values, 5, values.length));
                             }
                             else {
