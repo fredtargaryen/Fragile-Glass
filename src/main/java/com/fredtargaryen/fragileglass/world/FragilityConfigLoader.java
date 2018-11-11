@@ -28,6 +28,26 @@ public class FragilityConfigLoader {
         this.tileEntities = tileEntities;
     }
 
+    /**
+     * Add entries to BlockStates for all applicable BlockStates.
+     * @param entryName A String representing the Block, BlockState or partially-specified BlockState.
+     *                  If entryName represents:
+     *                  * A Block: make an entry for every BlockState of that Block.
+     *                  * A BlockState: make one entry for that BlockState.
+     *                  * A partially-specified BlockState: make an entry for every BlockState with the properties
+     *                    specified.
+     * @param behaviour The crash behaviour of the above.
+     * @param breakSpeed The minimum speed required to trigger the crash behaviour.
+     * @param updateDelay If the crash behaviour is "update", the delay in ticks before a block update is triggered.
+     * @param newState If the crash behaviour is "change", the Block, BlockState or partially-specified BlockState
+     *                     that a state will become.
+     *                     If newStateName represents:
+     *                     * A Block: the default BlockState of that Block.
+     *                     * A BlockState: that exact BlockState.
+     *                     * A partially-specified BlockState: a BlockState with the properties specified, but the
+     *                       default value for any unspecified properties.
+     * @param extraData extra data only needed by mod Tile Entities.
+     */
     private void addBlockStates(String entryName, FragilityDataManager.FragileBehaviour behaviour,
                                 double breakSpeed, int updateDelay, IBlockState newState, String[] extraData) {
         String[] splitEntryName = entryName.split("\\[");
