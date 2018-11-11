@@ -172,7 +172,7 @@ public class BreakSystem {
                             if(this.hasBlockStateFragilityData) {
                                 //The specific BlockState might be covered in the fragility data
                                 FragilityData fragilityData = this.fragilityDataManager.getBlockStateFragilityData(state);
-                                if(speed > fragilityData.getBreakSpeed()) {
+                                if(fragilityData != null && speed > fragilityData.getBreakSpeed()) {
                                     FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
                                     switch(fragileBehaviour) {
                                         case BREAK:
