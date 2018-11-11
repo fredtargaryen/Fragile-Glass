@@ -114,7 +114,7 @@ public class FragilityConfigLoader {
 
     public void loadFile(BufferedReader br) throws FragilityConfigLoadException, IOException {
         String line;
-        int lineNumber = -1;
+        int lineNumber = 0;
         while ((line = br.readLine()) != null) {
             ++lineNumber;
             if(!line.equals("") && line.charAt(0) != '#') {
@@ -186,7 +186,7 @@ public class FragilityConfigLoader {
     public class FragilityConfigLoadException extends Exception {
         public FragilityConfigLoadException(String message, String badLine, int lineNumber) {
             super("Could not load the .cfg file because of line "+lineNumber+":\n" + badLine +"\n" + message +
-                    "Default fragility data will be loaded. No changes to the file will take effect.");
+                    " Default fragility data will be loaded. No changes to the file will take effect.");
         }
     }
 
