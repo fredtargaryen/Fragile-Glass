@@ -16,6 +16,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FragilityConfigLoader {
+    //REGEX CONSTANTS
+    private static final String RES_LOC_REGEX = "[a-z]+:[a-z|_]+";
+    private static final String VARIANT_REGEX = "[a-z]+=([0-9]+|[a-z|_]+)";
+    private static final String VARIANTS_REGEX = "(" + VARIANT_REGEX + ",)*(" + VARIANT_REGEX + ")";
+    private static final String BLOCK_STATE_REGEX = RES_LOC_REGEX + "\\[" + VARIANTS_REGEX + "\\]";
+
     private FragilityDataManager manager;
     private HashMap<IBlockState, FragilityData> blockStates;
     private HashMap<String, FragilityData> tileEntities;
@@ -176,11 +182,7 @@ public class FragilityConfigLoader {
      * @return true if the name represents the type asked for
      */
     private boolean isValidBlockOrBlockState(String name, boolean block) {
-        String resLocRegex = "[a-z]+:[a-z|_]+";
-        String variantRegex = "[a-z]+=([0-9]+|[a-z|_]+)";
-        String variantsRegex = "(" + variantRegex + ",)*(" + variantRegex + ")";
-        String blockStateRegex = resLocRegex + "\\[" + variantsRegex + "\\]";
-        return block ? name.matches(resLocRegex) : name.matches(blockStateRegex);
+        return block ? name.matches(RES_LOC_REGEX) : name.matches(BLOCK_STATE_REGEX);
     }
 
     public class FragilityConfigLoadException extends Exception {
