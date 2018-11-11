@@ -1,12 +1,9 @@
-package com.fredtargaryen.fragileglass.tileentity.capability;
+package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -24,9 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
-import com.google.common.base.Optional;
 
-import static com.fredtargaryen.fragileglass.tileentity.capability.FragilityDataManager.FragileBehaviour.*;
+import static com.fredtargaryen.fragileglass.world.FragilityDataManager.FragileBehaviour.*;
 
 /**
  * Responsible for everything to do with block fragility data from fragileglassft_blocklist.cfg.
@@ -68,12 +64,13 @@ public class FragilityDataManager {
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
         FragilityData fragData = this.getTileEntityFragilityData(te);
         if (fragData != null) {
-            if (fragData.behaviour == FragileBehaviour.BREAK) {
+            FragileBehaviour fb = fragData.getBehaviour();
+            if (fb == FragileBehaviour.BREAK) {
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
                         @Override
                         public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                            if (speed > fragData.breakSpeed) {
+                            if (speed > fragData.getBreakSpeed()) {
                                 te.getWorld().destroyBlock(te.getPos(), true);
                             }
                         }
@@ -91,15 +88,15 @@ public class FragilityDataManager {
                     }
                 };
                 evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-            } else if (fragData.behaviour == FragileBehaviour.UPDATE) {
+            } else if (fb == FragileBehaviour.UPDATE) {
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
                         @Override
                         public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                            if (speed > fragData.breakSpeed) {
+                            if (speed > fragData.getBreakSpeed()) {
                                 World w = te.getWorld();
                                 BlockPos tilePos = te.getPos();
-                                w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.updateDelay);
+                                w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.getUpdateDelay());
                             }
                         }
                     };
@@ -116,13 +113,13 @@ public class FragilityDataManager {
                     }
                 };
                 evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-            } else if(fragData.behaviour == CHANGE) {
+            } else if(fb == CHANGE) {
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
                         @Override
                         public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                            if (speed > fragData.breakSpeed) {
-                                te.getWorld().setBlockState(te.getPos(), fragData.newBlockState);
+                            if (speed > fragData.getBreakSpeed()) {
+                                te.getWorld().setBlockState(te.getPos(), fragData.getNewBlockState());
                             }
                         }
                     };
@@ -140,19 +137,6 @@ public class FragilityDataManager {
                 };
                 evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
             }
-        }
-    }
-
-    private <K> void addRegistryEntry(HashMap<K, FragilityData> registry, K key,
-                                      FragileBehaviour fragileBehaviour,
-                                      double minSpeed,
-                                      String intOrState, boolean useState,
-                                      String[] extraData) {
-        if(useState) {
-            registry.put(key, new FragilityData(fragileBehaviour, minSpeed, 0, this.parseBlockState(intOrState), extraData));
-        }
-        else {
-            registry.put(key, new FragilityData(fragileBehaviour, minSpeed, Integer.parseInt(intOrState), null, extraData));
         }
     }
 
@@ -210,12 +194,13 @@ public class FragilityDataManager {
         return !this.tileEntityData.isEmpty();
     }
 
-    private boolean isResourceLocationValidBlock(String resourceLocation) {
+    public boolean isResourceLocationValidBlock(String resourceLocation) {
         return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(resourceLocation));
     }
 
     private void loadDefaultData() {
         this.blockData.clear();
+        this.blockStateData.clear();
         this.tileEntityData.clear();
         this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, null, new String[]{}));
         this.tileEntityData.put(DataReference.MODID + ":teti", new FragilityData(BREAK, 0.0, 0, null, new String[]{}));
@@ -225,128 +210,14 @@ public class FragilityDataManager {
     public void loadBlockData() {
         try {
             BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-            String line;
-            while ((line = br.readLine()) != null) {
-                if(!line.equals("") && line.charAt(0) != '#') {
-                    //Line is supposed to be read
-                    String[] values = line.split(" ");
-                    //Validation
-                    if(values.length < 4) {
-                        FMLLog.bigWarning("[FRAGILITY CONFIG] You need at least four values! Please check the file comments again.");
-                        throw new Exception();
-                    }
-                    else {
-                        if (values[0].split(":").length == 2) {
-                            FragileBehaviour behaviour;
-                            if (values[1].equals("mod")) {
-                                behaviour = MOD;
-                            } else if(values[1].equals("change")) {
-                                behaviour = CHANGE;
-                            } else if (values[1].equals("update")) {
-                                behaviour = UPDATE;
-                            } else {
-                                behaviour = BREAK;
-                                if (!values[1].equals("break")) {
-                                    FMLLog.log.error("[FRAGILITY CONFIG] '" + values[1] + "' should be 'break', 'update' or 'mod'. Assuming you mean 'break'");
-                                }
-                            }
-                            if(this.tileEntityData.containsKey(values[0]) || this.blockData.containsKey(values[0])) {
-                                FMLLog.log.warn("[FRAGILITY CONFIG] '" + values[0] + "' is already in the file - using the first entry only");
-                            }
-                            else {
-                                IBlockState state = this.parseBlockState(values[0]);
-                                IBlockState newState = this.parseBlockState(values[3]);
-                                boolean useState = behaviour == CHANGE;
-                                if(state != null) {
-                                    //The "ResourceLocation" is for a BlockState
-                                    this.addRegistryEntry(this.blockStateData, state,
-                                            behaviour,
-                                            Double.parseDouble(values[2]),
-                                            values[3], useState,
-                                            Arrays.copyOfRange(values, 4, values.length));
-                                }
-                                else if(this.isResourceLocationValidBlock(values[0])) {
-                                    //The ResourceLocation is for a block
-                                    this.addRegistryEntry(this.blockData, values[0],
-                                            behaviour,
-                                            Double.parseDouble(values[2]),
-                                            values[3], useState,
-                                            Arrays.copyOfRange(values, 4, values.length));
-                                }
-                                else {
-                                    //Can't do the same check for tile entities, so add it anyway, and it simply won't
-                                    //be used if invalid.
-                                    this.addRegistryEntry(this.tileEntityData, values[0],
-                                            behaviour,
-                                            Double.parseDouble(values[2]),
-                                            values[3], useState,
-                                            Arrays.copyOfRange(values, 4, values.length));
-                                }
-                            }
-                        } else {
-                            FMLLog.log.error("[FRAGILITY CONFIG] '" + values[0] + "' should have the form modid:registryid - ignoring");
-                        }
-                    }
-                }
-            }
+            new FragilityConfigLoader(this, this.blockData, this.blockStateData, this.tileEntityData).loadFile(br);
         }
-        catch(NumberFormatException nfe) {
-            FMLLog.bigWarning("[FRAGILITY CONFIG] One of your values is not the right kind of number! Please check the file comments again.");
-            this.handleConfigFileException(new Exception("One of your values is not the right kind of number"));
+        catch(IOException ioe) {
+            this.handleConfigFileException(new Exception());
         }
-        catch(Exception e) {
-            this.handleConfigFileException(e);
+        catch(FragilityConfigLoader.FragilityConfigLoadException fcle) {
+            FMLLog.bigWarning(fcle.getMessage());
         }
-    }
-
-    /**
-     * Takes a String representing a BlockState (same format as that returned by BlockState#toString()) and tries to build a BlockState from it.
-     * @param blockData The string. Example: "minecraft:dirt[snowy=false]"
-     * @return null if the IBlockState could not be created
-     */
-    private IBlockState parseBlockState(String blockData) {
-        //{"minecraft:dirt","snowy=false]"}
-        String[] bracketSplit = blockData.split("\\[");
-        //"minecraft:dirt"
-        String blockName = bracketSplit[0];
-        if(this.isResourceLocationValidBlock(blockName)) {
-            IBlockState state = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName)).getDefaultState();
-            if(bracketSplit.length > 1) {
-                //{"snowy=false"}
-                String[] variantInfo = bracketSplit[1].split("\\]")[0].split(",");
-                Collection<IProperty<?>> keys = state.getPropertyKeys();
-                for (String variant : variantInfo) {
-                    //{"snowy","false"}
-                    String[] info = variant.split("=");
-                    for (IProperty<?> iprop : keys) {
-                        if (iprop.getName().equals(info[0])) {
-                            state = this.parseAndSetProperty(state, iprop, info[1]);
-                        }
-                    }
-                }
-            }
-            return state;
-        }
-        return null;
-    }
-
-    private <T extends Comparable<T>> IBlockState parseAndSetProperty(IBlockState state, IProperty<T> iprop, String value) {
-        if(iprop instanceof PropertyBool) {
-            PropertyBool pb = (PropertyBool) iprop;
-            Optional<Boolean> opt = pb.parseValue(value);
-            if(opt.isPresent()) return state.withProperty(pb, opt.get());
-        }
-        else if(iprop instanceof PropertyInteger) {
-            PropertyInteger pi = (PropertyInteger) iprop;
-            Optional<Integer> opt = pi.parseValue(value);
-            if(opt.isPresent()) return state.withProperty(pi, opt.get());
-        }
-        else if(iprop instanceof PropertyEnum) {
-            PropertyEnum pe = (PropertyEnum) iprop;
-            Optional<Enum> opt = pe.parseValue(value);
-            if(opt.isPresent()) return state.withProperty(pe, opt.get());
-        }
-        return state;
     }
 
     public void setupDirsAndFiles(File configDir) {
@@ -366,32 +237,6 @@ public class FragilityDataManager {
                 this.handleConfigFileException(ioe);
             }
         }
-    }
-
-    public class FragilityData {
-        private FragileBehaviour behaviour;
-        private double breakSpeed;
-        private int updateDelay;
-        private IBlockState newBlockState;
-        private String[] extraData;
-
-        public FragilityData(FragileBehaviour behaviour, double breakSpeed, int updateDelay, IBlockState newBlockState, String[] extraData) {
-            this.behaviour = behaviour;
-            this.breakSpeed = breakSpeed;
-            this.updateDelay = updateDelay;
-            this.newBlockState = newBlockState;
-            this.extraData = extraData;
-        }
-
-        public FragileBehaviour getBehaviour() { return this.behaviour; }
-
-        public double getBreakSpeed() { return this.breakSpeed; }
-
-        public int getUpdateDelay() { return this.updateDelay; }
-
-        public IBlockState getNewBlockState() { return this.newBlockState; }
-
-        public String[] getExtraData() { return this.extraData; }
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now
@@ -434,33 +279,33 @@ public class FragilityDataManager {
             "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their\n",
             "#  breaking speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks\n",
             "#  per tick, which is metres per second divided by 20.\n",
-            "#* The second number depends on behaviour:\n",
-            "#  - 'break': not used.\n",
-            "#  - 'update': must be an integer. Specifies the delay between the collision and the block update.\n",
-            "#    Delays are measured in ticks and there are 20 ticks per second.\n",
-            "#  - 'change': must be a blockstate (same format as the first value in each line). This is the state\n",
-            "#    the block will change into.\n",
+            "#* The second number is only used by the 'update' behaviour. It must be an integer. It specifies the\n",
+            "#  delay between the collision and the block update. Delays are measured in ticks and there are 20\n",
+            "#  ticks per second.\n",
+            "#* The value after the second number is only used by the 'change' behaviour. It must be a blockstate\n",
+            "#  (same format as the first value in each line). This is the state the block will change into. If you\n",
+            "#  aren't using this value you can leave a - here.\n",
             "#* You can add extra values of any format, separated by spaces, for any mod blocks that might require\n",
             "#  them.\n",
             "#\n--Fun lines you may wish to uncomment--\n",
             "#Make obsidian as fragile as it is IRL\n",
-            "#minecraft:obsidian break 0.165 0\n",
+            "#minecraft:obsidian break 0.165 0 -\n",
             "#Weak sandstone\n",
-            "#minecraft:sandstone change 0.0 minecraft:sand\n",
-            "#minecraft:red_sandstone change 0.0 minecraft:sand[variant=red_sand]\n",
+            "#minecraft:sandstone change 0.0 0 minecraft:sand\n",
+            "#minecraft:red_sandstone change 0.0 0 minecraft:sand[variant=red_sand]\n",
             "#Cause suspended sand to fall when you are near it\n",
-            "#minecraft:sand update 0.0 10\n",
+            "#minecraft:sand update 0.0 10 -\n",
             "#Safe lava that turns into slime at the last minute\n",
-            "#minecraft:lava change 0.0 minecraft:slime\n",
+            "#minecraft:lava change 0.0 0 minecraft:slime\n",
             "#\n--Default values, in case you break something--\n",
             "#All fragile glass blocks:\n",
-            "#fragileglassft:tefg break 0.165 0\n",
+            "#fragileglassft:tefg break 0.165 0 -\n",
             "#Thin ice:\n",
-            "#fragileglassft:teti break 0.0 0\n",
+            "#fragileglassft:teti break 0.0 0 -\n",
             "#Weak stone:\n",
-            "#fragileglassft:tews update 0.0 10\n",
-            "fragileglassft:tefg break 0.165 0\n",
-            "fragileglassft:teti break 0.0 0\n",
-            "fragileglassft:tews update 0.0 10\n",
+            "#fragileglassft:tews update 0.0 10 -\n",
+            "fragileglassft:tefg break 0.165 0 -\n",
+            "fragileglassft:teti break 0.0 0 -\n",
+            "fragileglassft:tews update 0.0 10 -\n",
     };
 }

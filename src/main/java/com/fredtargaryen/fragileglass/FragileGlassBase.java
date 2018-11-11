@@ -12,6 +12,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.*;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
+import com.fredtargaryen.fragileglass.world.FragilityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenIce;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenStone;
