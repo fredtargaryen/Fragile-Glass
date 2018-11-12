@@ -234,6 +234,8 @@ public class FragilityDataManager {
             "#* This will not work for blocks which are basically air blocks, e.g. Air blocks and 'logic' blocks.\n",
             "#* If you specify block states you should be as specific as possible; if you leave out a property it\n",
             "#  will only work for blocks with the properties you specified, and the default for everything else.\n",
+            "#* If your entry is not for a valid block, the mod will assume you entered a tile entity. However it\n",
+            "#  cannot check if tile entities are valid, so you won't be warned. Check your spellings carefully.\n",
             "#\n#--How to customise--\n",
             "#To add a comment to the file, start the line with a # symbol.\n",
             "#To make a block fragile, add a new row in this file following this format:\n",
