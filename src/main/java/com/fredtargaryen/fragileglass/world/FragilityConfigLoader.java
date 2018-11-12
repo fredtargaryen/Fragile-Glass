@@ -127,12 +127,12 @@ public class FragilityConfigLoader {
             Block newBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(splitNewStateName[0]));
             //If no properties were specified this value will be used.
             IBlockState newState = newBlock.getDefaultState();
+            HashMap newSpecifiedProperties = new HashMap();
             if(splitNewStateName.length == 2) {
-                //Properties were specified too.
-                HashMap newSpecifiedProperties = this.obtainSpecifiedProperties(newBlock, splitNewStateName[1].split("\\]")[0]);
-                for(IProperty iprop : newState.getPropertyKeys()) {
-                    newState = this.applyPropertyValue(oldState, newState, iprop, newSpecifiedProperties);
-                }
+                newSpecifiedProperties = this.obtainSpecifiedProperties(newBlock, splitNewStateName[1].split("\\]")[0]);
+            }
+            for(IProperty iprop : newState.getPropertyKeys()) {
+                newState = this.applyPropertyValue(oldState, newState, iprop, newSpecifiedProperties);
             }
             this.blockStates.put(oldState, new FragilityData(behaviour, breakSpeed, updateDelay, newState, extraData));
         }
@@ -212,16 +212,18 @@ public class FragilityConfigLoader {
         }
     }
 
-    private HashMap<IProperty<?>, ?> obtainSpecifiedProperties(Block block, String propertiesString) {
-        IBlockState state = block.getDefaultState();
-        String[] variantInfo = propertiesString.split(",");
-        Collection<IProperty<?>> keys = state.getPropertyKeys();
+    private HashMap<IProperty<?>, ?> obtainSpecifiedProperties(Block block, @Nullable String propertiesString) {
         HashMap<IProperty<?>, ?> properties = new HashMap<>();
-        for (String variant : variantInfo) {
-            String[] info = variant.split("=");
-            for (IProperty<?> iprop : keys) {
-                if (iprop.getName().equals(info[0])) {
-                    state = this.parseAndAddProperty(properties, state, iprop, info[1]);
+        if(propertiesString != null) {
+            IBlockState state = block.getDefaultState();
+            String[] variantInfo = propertiesString.split(",");
+            Collection<IProperty<?>> keys = state.getPropertyKeys();
+            for (String variant : variantInfo) {
+                String[] info = variant.split("=");
+                for (IProperty<?> iprop : keys) {
+                    if (iprop.getName().equals(info[0])) {
+                        state = this.parseAndAddProperty(properties, state, iprop, info[1]);
+                    }
                 }
             }
         }
