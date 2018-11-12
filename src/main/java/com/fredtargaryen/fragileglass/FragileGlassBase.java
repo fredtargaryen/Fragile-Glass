@@ -125,7 +125,6 @@ public class FragileGlassBase
         config.save();
         fragDataManager = FragilityDataManager.getInstance();
         fragDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
-        fragDataManager.loadBlockData();
 
         //BLOCK SETUP
     	fragileGlass = new BlockFragileGlass()
@@ -220,6 +219,7 @@ public class FragileGlassBase
     public void postInit(FMLPostInitializationEvent event) {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
+        fragDataManager.loadBlockData();
     }
 
     ////////////////////////

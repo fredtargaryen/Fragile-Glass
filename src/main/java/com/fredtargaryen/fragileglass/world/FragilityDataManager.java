@@ -186,6 +186,10 @@ public class FragilityDataManager {
         this.tileEntityData.put(DataReference.MODID + ":tews", new FragilityData(UPDATE, 0.0, 10, null, new String[]{}));
     }
 
+    /**
+     * Set up to read fragileglassft_blocklist.cfg. MUST be called in postInit, when all Blocks and Tile Entities have
+     * been created!
+     */
     public void loadBlockData() {
         try {
             BufferedReader br = new BufferedReader(new FileReader(this.configFile));
