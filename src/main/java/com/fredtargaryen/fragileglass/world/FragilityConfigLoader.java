@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -39,9 +40,10 @@ public class FragilityConfigLoader {
      * If the (partially-specified) new BlockState has:
      * * The same Block: each specified property has the specified value; each unspecified property
      *   takes its value from the old BlockState.
-     * * A different Block: each specified property has the specified value; each unspecified
-     *   property has the default value.
-     * @return
+     * * A different Block: each specified property has the specified value; for each unspecified
+     *   property, the value in the old BlockState is taken if the two properties have the same textual name AND the
+     *   value in the old BlockState is valid for the new BlockState.
+     * @return newState, with the given property set according to the rules above.
      */
     private <P extends Comparable<P>> IBlockState applyPropertyValue(IBlockState oldState, IBlockState newState, IProperty<P> iprop, HashMap newProperties) {
         if(newState.getBlock() == oldState.getBlock()) {
@@ -54,6 +56,23 @@ public class FragilityConfigLoader {
         } else {
             if(newProperties.containsKey(iprop)) {
                 newState = newState.withProperty(iprop, (P) newProperties.get(iprop));
+            }
+            else {
+                //Find a property in oldState with the same textual name as a property here. Works around blocks having
+                //different property objects which might be functionally identical.
+                String ipropstring = iprop.getName();
+                for(IProperty propkey : oldState.getPropertyKeys()) {
+                    if(propkey.getName().equals(ipropstring)) {
+                        //Found two properties with the same string name
+                        String propkeystring = oldState.getValue(propkey).toString();
+                        //Check if the value in oldState is valid in newState
+                        Optional<P> opt = iprop.parseValue(propkeystring);
+                        if(opt.isPresent()) {
+                            //Valid value; adjust newState
+                            newState = newState.withProperty(iprop, opt.get());
+                        }
+                    }
+                }
             }
         }
         return newState;
@@ -80,8 +99,9 @@ public class FragilityConfigLoader {
      *                     If the (partially-specified) new BlockState has:
      *                     * The same Block: each specified property has the specified value; each unspecified property
      *                       takes its value from the old BlockState.
-     *                     * A different Block: each specified property has the specified value; each unspecified
-     *                       property has the default value.
+     *                     * A different Block: each specified property has the specified value; for each unspecified
+     *                       property, the value in the old BlockState is taken if the two properties have the same
+     *                       textual name AND the value in the old BlockState is valid for the new BlockState.
      * @param extraData extra data only needed by mod Tile Entities.
      */
     private void addBlockStates(String entryName, FragilityDataManager.FragileBehaviour behaviour,
