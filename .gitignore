@@ -17,11 +17,10 @@ out
 build
 .gradle
 gradle
+gradle.properties
+gradlew*
 
 # other
-classes
+classes*
 eclipse
 run
-libs
-mods
-gradlew
