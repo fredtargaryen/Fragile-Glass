@@ -148,9 +148,11 @@ public class FragilityDataManager {
         //Consider me the ambassador for using "clarse" instead of "clazz"
         Class<? extends TileEntity> clarse = te.getClass();
         //Use the tile entity's class in the TileEntityRegistry to get its ResourceLocation
-        String resourceLocationString = TileEntity.getKey(clarse).toString();
-        //Check the ResourceLocation string is in the manager, i.e. if the cfg was valid, it was in the cfg
-        if(resourceLocationString != null) {
+        ResourceLocation resourceLocation = TileEntity.getKey(clarse);
+        if(resourceLocation != null) {
+            //The TileEntity is in the registry
+            String resourceLocationString = resourceLocation.toString();
+            //Check the ResourceLocation string is in the manager, i.e. if the cfg was valid, it was in the cfg
             if (this.tileEntityData.containsKey(resourceLocationString)) {
                 //If the cfg was valid and the string was in the cfg, there must be fragility data
                 return this.tileEntityData.get(resourceLocationString);
