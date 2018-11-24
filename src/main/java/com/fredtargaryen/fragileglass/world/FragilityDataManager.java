@@ -219,7 +219,7 @@ public class FragilityDataManager {
         this.blockStateData.clear();
         this.tileEntityData.clear();
         this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.tileEntityData.put(DataReference.MODID + ":teti", new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.tileEntityData.put(DataReference.MODID + ":thinice", new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
         this.tileEntityData.put(DataReference.MODID + ":tews", new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
     }
 
@@ -331,11 +331,11 @@ public class FragilityDataManager {
             "#All fragile glass blocks:\n",
             "#fragileglassft:tefg BREAK 0.165 0 -\n",
             "#Thin ice:\n",
-            "#fragileglassft:teti BREAK 0.0 0 -\n",
+            "#fragileglassft:thinice BREAK 0.0 0 -\n",
             "#Weak stone:\n",
             "#fragileglassft:tews UPDATE 0.0 10 -\n",
             "fragileglassft:tefg BREAK 0.165 0 -\n",
-            "fragileglassft:teti BREAK 0.0 0 -\n",
+            "fragileglassft:thinice BREAK 0.0 0 -\n",
             "fragileglassft:tews UPDATE 0.0 10 -\n"
     };
 }

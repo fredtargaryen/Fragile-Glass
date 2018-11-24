@@ -8,7 +8,6 @@ import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.*;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
@@ -198,7 +197,6 @@ public class FragileGlassBase
     public void load(FMLInitializationEvent event)
     {
     	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, new ResourceLocation(DataReference.MODID+":tefg"));
-    	GameRegistry.registerTileEntity(TileEntityThinIce.class, new ResourceLocation(DataReference.MODID+":teti"));
     	GameRegistry.registerTileEntity(TileEntityWeakStone.class, new ResourceLocation(DataReference.MODID+":tews"));
 
         OreDictionary.registerOre("blockSugar", sugarBlock);

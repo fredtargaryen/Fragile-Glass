@@ -1,17 +1,15 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityThinIce;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFrostedIce;
 import net.minecraft.block.BlockIce;
-import net.minecraft.block.BlockPackedIce;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
@@ -23,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class BlockThinIce extends AnyFragileBlock
+public class BlockThinIce extends Block
 {
     public BlockThinIce()
     {
@@ -32,6 +30,24 @@ public class BlockThinIce extends AnyFragileBlock
         this.slipperiness = 0.98F;
         this.setCreativeTab(CreativeTabs.MISC);
         this.setTickRandomly(true);
+        this.setSoundType(SoundType.GLASS);
+    }
+
+    @Override
+    public int quantityDropped(Random par1Random)
+    {
+        return 0;
+    }
+
+    /**
+     * Return true from this function if the player with silk touch can harvest this block directly, and not its normal drops.
+     * @param player The player doing the harvesting
+     * @return True if the block can be directly harvested using silk touch
+     */
+    @Override
+    public boolean canSilkHarvest(World world, BlockPos pos, IBlockState state, EntityPlayer player)
+    {
+        return false;
     }
 
     /**
@@ -68,17 +84,6 @@ public class BlockThinIce extends AnyFragileBlock
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.TRANSLUCENT;
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        try {
-            return new TileEntityThinIce();
-        }
-        catch(Exception e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     public BlockFaceShape getBlockFaceShape(IBlockAccess access, IBlockState state, BlockPos pos, EnumFacing facing)
