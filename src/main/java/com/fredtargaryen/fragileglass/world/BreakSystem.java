@@ -4,8 +4,11 @@ import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -183,6 +186,14 @@ public class BreakSystem {
                                             break;
                                         case CHANGE:
                                             e.world.setBlockState(blockPos, fragilityData.getNewBlockState());
+                                        case FALL:
+                                            if(BlockFalling.canFallThrough(e.world.getBlockState(blockPos.down()))) {
+                                                EntityFallingBlock efb = new EntityFallingBlock(e.world,
+                                                        blockPos.getX() + 0.5D,
+                                                        blockPos.getY(),
+                                                        blockPos.getZ() + 0.5D, e.world.getBlockState(blockPos));
+                                                e.world.spawnEntity(efb);
+                                            }
                                             break;
                                     }
                                 }

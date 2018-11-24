@@ -3,8 +3,12 @@ package com.fredtargaryen.fragileglass.world;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
+import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +46,8 @@ public class FragilityDataManager {
         UPDATE,
         //Change to a different BlockState
         CHANGE,
+        //Change to an EntityFallingBlock of the given BlockState
+        FALL,
         //Load the data but don't even construct the capability; let another mod deal with it all
         MOD
     }
@@ -133,6 +139,35 @@ public class FragilityDataManager {
                     }
                 };
                 evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+            } else if(fb == FALL) {
+                ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                    IFragileCapability inst = new IFragileCapability() {
+                        @Override
+                        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                            if (speed > fragData.getBreakSpeed()) {
+                                World w = te.getWorld();
+                                BlockPos pos = te.getPos();
+                                if(BlockFalling.canFallThrough(w.getBlockState(pos.down()))) {
+                                    EntityFallingBlock fallingBlock = new EntityFallingBlock(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
+                                    fallingBlock.tileEntityData = te.writeToNBT(new NBTTagCompound());
+                                    w.spawnEntity(fallingBlock);
+                                }
+                            }
+                        }
+                    };
+
+                    @Override
+                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP;
+                    }
+
+                    @Nullable
+                    @Override
+                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                        return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                    }
+                };
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
             }
         }
     }
@@ -183,9 +218,9 @@ public class FragilityDataManager {
     private void loadDefaultData() {
         this.blockStateData.clear();
         this.tileEntityData.clear();
-        this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, null, new String[]{}));
-        this.tileEntityData.put(DataReference.MODID + ":teti", new FragilityData(BREAK, 0.0, 0, null, new String[]{}));
-        this.tileEntityData.put(DataReference.MODID + ":tews", new FragilityData(UPDATE, 0.0, 10, null, new String[]{}));
+        this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.tileEntityData.put(DataReference.MODID + ":teti", new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.tileEntityData.put(DataReference.MODID + ":tews", new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
     }
 
     /**
@@ -241,7 +276,7 @@ public class FragilityDataManager {
             "#\n#--How to customise--\n",
             "#To add a comment to the file, start the line with a # symbol.\n",
             "#To make a block fragile, add a new row in this file following this format:\n",
-            "#<modid>:<ID>[properties] <BREAK/UPDATE/CHANGE/MOD> <min speed> <update delay/new state> <extra values>\n",
+            "#<modid>:<ID>[properties] <BREAK/UPDATE/CHANGE/FALL/MOD> <min speed> <update delay/new state> <extra values>\n",
             "#* 'modid:ID' is the ResourceLocation string used to register with Forge.\n",
             "#  - 'modid' can be found by looking in the 'modid' entry of the mod's mcmod.info file.\n",
             "#    For vanilla Minecraft this is just 'minecraft'.\n",
@@ -252,7 +287,7 @@ public class FragilityDataManager {
             "#    looking at the block in-game with the F3 menu on - below it are the blockstate properties.\n",
             "#    > Only add the properties if you are specifying behaviour for specific blockstates.\n",
             "#      Not all properties need to be specified; see the door example below.\n",
-            "#* You must choose one of 'BREAK', 'UPDATE', 'CHANGE' or 'MOD'; the block will have one of the\n",
+            "#* You must choose one of 'BREAK', 'UPDATE', 'CHANGE', 'FALL' or 'MOD'; the block will have one of the\n",
             "#  following 'crash behaviours':\n",
             "#  - For all crash behaviours, the 'breaker' entity must be travelling above its minimum speed. If so,\n",
             "#    it must then be above the speed defined for the block. Meeting both these conditions causes the\n",
@@ -260,9 +295,10 @@ public class FragilityDataManager {
             "#  - 'BREAK': the block breaks immediately.\n",
             "#  - 'UPDATE': a block update is triggered.\n",
             "#  - 'CHANGE': the block changes into a specified blockstate.\n",
+            "#  - 'FALL': the block falls immediately.\n",
             "#  - 'MOD': for mod tile entities with more advanced behaviours. Modders should make custom tile\n",
-            "#    entities and implement IFragileCapability with the behaviour they want. This mod loads all the\n",
-            "#    extra values and it is up to the modder how they are used.\n",
+            "#           entities and implement IFragileCapability with the behaviour they want. This mod loads all\n",
+            "#           the extra values and it is up to the modder how they are used.\n",
             "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their\n",
             "#  breaking speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks\n",
             "#  per tick, which is metres per second divided by 20.\n",
@@ -278,8 +314,8 @@ public class FragilityDataManager {
             "#Make obsidian as fragile as it is IRL\n",
             "#minecraft:obsidian BREAK 0.165 0 -\n",
             "#Weak sandstone\n",
-            "#minecraft:sandstone CHANGE 0.0 0 minecraft:sand\n",
-            "#minecraft:red_sandstone CHANGE 0.0 0 minecraft:sand[variant=red_sand]\n",
+            "#minecraft:sandstone FALL 0.0 0 minecraft:sandstone\n",
+            "#minecraft:red_sandstone FALL 0.0 0 minecraft:red_sandstone\n",
             "#Burst through doors when sprinting into them\n",
             "#minecraft:wooden_door[open=false] CHANGE 0.165 0 minecraft:wooden_door[open=true]\n",
             "#minecraft:birch_door[open=false] CHANGE 0.165 0 minecraft:birch_door[open=true]\n",
@@ -300,6 +336,6 @@ public class FragilityDataManager {
             "#fragileglassft:tews UPDATE 0.0 10 -\n",
             "fragileglassft:tefg BREAK 0.165 0 -\n",
             "fragileglassft:teti BREAK 0.0 0 -\n",
-            "fragileglassft:tews UPDATE 0.0 10 -\n",
+            "fragileglassft:tews UPDATE 0.0 10 -\n"
     };
 }

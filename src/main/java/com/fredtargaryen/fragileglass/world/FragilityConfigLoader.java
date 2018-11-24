@@ -7,6 +7,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -163,7 +164,7 @@ public class FragilityConfigLoader {
                             //Validate updateDelay and silently clamp to >= 0
                             int updateDelay = Math.max(Integer.parseInt(values[3]), 0);
                             //Validate newState
-                            IBlockState newState = null;
+                            IBlockState newState = Blocks.AIR.getDefaultState();
                             if(!values[4].equals("-")) {
                                 if(!this.validateEntryName(values[4])) {
                                     throw new FragilityConfigLoadException(values[4] + " has the wrong format; please see the examples.", line, lineNumber);
@@ -188,7 +189,7 @@ public class FragilityConfigLoader {
                         }
                         catch(IllegalArgumentException iae) {
                             //Thrown when the second value is not one of the supported ones
-                            throw new FragilityConfigLoadException(values[1] + " should be 'break', 'update', 'change' or 'mod'.", line, lineNumber);
+                            throw new FragilityConfigLoadException(values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.", line, lineNumber);
                         }
                     }
                 }
