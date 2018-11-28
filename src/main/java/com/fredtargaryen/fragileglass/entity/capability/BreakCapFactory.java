@@ -23,8 +23,8 @@ public class BreakCapFactory implements Callable<IBreakCapability> {
         }
 
         @Override
-        public boolean isAbleToBreak(Entity e, double speed) {
-            return speed >= DataReference.MINIMUM_ENTITY_SPEED;
+        public boolean isAbleToBreak(Entity e, double speedSq) {
+            return speedSq >= 0.01;
         }
 
         @Override

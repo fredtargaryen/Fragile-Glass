@@ -65,11 +65,11 @@ public class BreakSystem {
                         //Get the squared speed; just to avoid performing a sqrt operation more often than necessary
                         double speedSq = ibc.getSpeedSquared(e);
                         if (this.isValidMoveSpeedSquared(speedSq)) {
-                            double speed = Math.sqrt(speedSq);
                             //Check the entity is currently able to break blocks.
                             //Checking whether the block is currently able to break would happen in IFragileCapability#onCrash.
-                            if (ibc.isAbleToBreak(e, speed)) {
-                                this.breakBlocksInWay(e, ibc.getMotionX(e), ibc.getMotionY(e), ibc.getMotionZ(e), speed, ibc.getNoOfBreaks(e));
+                            if (ibc.isAbleToBreak(e, speedSq)) {
+                                this.breakBlocksInWay(e, ibc.getMotionX(e), ibc.getMotionY(e), ibc.getMotionZ(e),
+                                        Math.sqrt(speedSq), ibc.getNoOfBreaks(e));
                             }
                         }
                     }
