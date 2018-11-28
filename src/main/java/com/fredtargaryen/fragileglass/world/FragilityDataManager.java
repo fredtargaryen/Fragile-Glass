@@ -28,7 +28,7 @@ import java.util.*;
 import static com.fredtargaryen.fragileglass.world.FragilityDataManager.FragileBehaviour.*;
 
 /**
- * Responsible for everything to do with block fragility data from fragileglassft_blocklist.cfg.
+ * Responsible for everything to do with block fragility data from fragileglassft_blocks.cfg.
  */
 public class FragilityDataManager {
     private static FragilityDataManager INSTANCE;
@@ -197,7 +197,7 @@ public class FragilityDataManager {
     }
 
     private void handleConfigFileException(Exception e) {
-        FMLLog.bigWarning("Could not load "+DataReference.MODID+"_blocklist.cfg! " +
+        FMLLog.bigWarning("Could not load "+DataReference.MODID+"_blocks.cfg! " +
                 "Default block behaviour will be loaded. No custom data will take effect.");
         e.printStackTrace();
         this.loadDefaultData();
@@ -224,7 +224,7 @@ public class FragilityDataManager {
     }
 
     /**
-     * Set up to read fragileglassft_blocklist.cfg. MUST be called in postInit, when all Blocks and Tile Entities have
+     * Set up to read fragileglassft_blocks.cfg. MUST be called in postInit, when all Blocks and Tile Entities have
      * been created!
      */
     public void loadBlockData() {
@@ -242,7 +242,7 @@ public class FragilityDataManager {
 
     public void setupDirsAndFiles(File configDir) {
         this.configDir = configDir;
-        this.configFile = new File(this.configDir, DataReference.MODID + "_blocklist.cfg");
+        this.configFile = new File(this.configDir, DataReference.MODID + "_blocks.cfg");
         if(!this.configFile.exists()) {
             try {
                 //Config file is not in config folder! Write from defaultFileData (see bottom of file)
