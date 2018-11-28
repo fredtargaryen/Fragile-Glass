@@ -25,14 +25,18 @@ import static com.fredtargaryen.fragileglass.FragileGlassBase.BREAKCAP;
 
 public class BreakSystem {
     private World world;
+    private BreakerDataManager breakerDataManager;
     private FragilityDataManager fragilityDataManager;
     private boolean hasTileEntityFragilityData;
     private boolean hasBlockStateFragilityData;
+    private boolean hasEntityBreakerData;
 
     public void init(World world) {
         this.world = world;
         MinecraftForge.EVENT_BUS.register(this);
+        this.breakerDataManager = BreakerDataManager.getInstance();
         this.fragilityDataManager = FragilityDataManager.getInstance();
+        this.hasEntityBreakerData = this.breakerDataManager.hasEntityBreakerData();
         this.hasTileEntityFragilityData = this.fragilityDataManager.hasTileEntityFragilityData();
         this.hasBlockStateFragilityData = this.fragilityDataManager.hasBlockStateFragilityData();
     }

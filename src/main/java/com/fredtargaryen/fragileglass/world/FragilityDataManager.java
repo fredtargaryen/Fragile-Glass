@@ -261,9 +261,9 @@ public class FragilityDataManager {
 
     //Doesn't look like I can read from assets so sadly all this is needed for now
     private static final String[] defaultFileData = new String[] {
-            "########################################\n",
-            "#FRAGILE GLASS AND THIN ICE CONFIG FILE#\n",
-            "########################################\n",
+            "#################################################\n",
+            "#FRAGILE GLASS AND THIN ICE CONFIG FILE - BLOCKS#\n",
+            "#################################################\n",
             "#THINK VERY CAREFULLY AND BACK UP YOUR WORLDS BEFORE ADDING ENTRIES HERE!\n",
             "#(You probably don't really want to make ALL DIRT BLOCKS fragile, for example.)\n",
             "#Here is where you can configure which blocks are fragile and which are not, and modify basic behaviour.\n",

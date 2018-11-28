@@ -9,19 +9,18 @@ import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.CommonProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
-import com.fredtargaryen.fragileglass.tileentity.capability.*;
+import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
+import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
+import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
+import com.fredtargaryen.fragileglass.world.BreakerDataManager;
 import com.fredtargaryen.fragileglass.world.FragilityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenIce;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenStone;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -31,7 +30,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -70,6 +72,7 @@ public class FragileGlassBase
     public static int avePatchSizeStone;
     public static int genChanceStone;
 
+    private static BreakerDataManager breakerDataManager;
     private static FragilityDataManager fragDataManager;
 
     private static PatchGen patchGenIce;
@@ -122,6 +125,8 @@ public class FragileGlassBase
         avePatchSizeStone = config.getInt("avePatchSizeStone", "Worldgen - Weak Stone", 5, 1, 14, "Average patch diameter");
         genChanceStone = config.getInt("genChanceStone", "Worldgen - Weak Stone", 3, 1, 5, "1 in x chance of patch appearing");
         config.save();
+        breakerDataManager = BreakerDataManager.getInstance();
+        breakerDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
         fragDataManager = FragilityDataManager.getInstance();
         fragDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
 
@@ -217,6 +222,7 @@ public class FragileGlassBase
     public void postInit(FMLPostInitializationEvent event) {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
+        breakerDataManager.loadEntityData();
         fragDataManager.loadBlockData();
     }
 
@@ -367,30 +373,7 @@ public class FragileGlassBase
                             }
                     );
                 } else {
-                    if (e instanceof EntityLivingBase
-                            || e instanceof EntityArrow
-                            || e instanceof EntityFireball
-                            || e instanceof EntityMinecart
-                            || e instanceof EntityFireworkRocket
-                            || e instanceof EntityBoat
-                            || e instanceof EntityTNTPrimed
-                            || e instanceof EntityFallingBlock) {
-                        evt.addCapability(DataReference.BREAK_LOCATION,
-                                new ICapabilityProvider() {
-
-                                    IBreakCapability inst = BREAKCAP.getDefaultInstance();
-
-                                    @Override
-                                    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-                                        return capability == BREAKCAP;
-                                    }
-
-                                    @Override
-                                    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-                                        return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
-                                    }
-                                });
-                    }
+                    breakerDataManager.addCapabilityIfPossible(e, evt);
                 }
             }
         }
