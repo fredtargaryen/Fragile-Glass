@@ -4,6 +4,10 @@ import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.*;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -43,63 +47,86 @@ public class BreakerDataManager {
 
     public void addCapabilityIfPossible(Entity e, AttachCapabilitiesEvent<Entity> evt) {
         BreakerData breakerData = this.getEntityBreakerData(e);
-        if (breakerData != null) {
-                ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                    IBreakCapability inst = new IBreakCapability() {
-                        @Override
-                        public void init(Entity e) {
-
-                        }
-
-                        @Override
-                        public void update(Entity e) {
-
-                        }
-
-                        @Override
-                        public double getSpeedSquared(Entity e) {
-                            return e.motionX * e.motionX + e.motionY * e.motionY + e.motionZ * e.motionZ;
-                        }
-
-                        @Override
-                        public boolean isAbleToBreak(Entity e, double speedSq) {
-                            return speedSq >= breakerData.getMinSpeedSquared()
-                                    && speedSq <= breakerData.getMaxSpeedSquared();
-                        }
-
-                        @Override
-                        public double getMotionX(Entity e) {
-                            return e.motionX;
-                        }
-
-                        @Override
-                        public double getMotionY(Entity e) {
-                            return e.motionY;
-                        }
-
-                        @Override
-                        public double getMotionZ(Entity e) {
-                            return e.motionZ;
-                        }
-
-                        @Override
-                        public byte getNoOfBreaks(Entity e) {
-                            return 1;
-                        }
-                    };
+        if (breakerData == null) {
+            if (e instanceof EntityLivingBase
+                    || e instanceof EntityArrow
+                    || e instanceof EntityFireball
+                    || e instanceof EntityMinecart
+                    || e instanceof EntityFireworkRocket
+                    || e instanceof EntityBoat
+                    || e instanceof EntityTNTPrimed
+                    || e instanceof EntityFallingBlock) {
+                evt.addCapability(DataReference.BREAK_LOCATION, new ICapabilityProvider() {
+                    IBreakCapability inst = FragileGlassBase.BREAKCAP.getDefaultInstance();
 
                     @Override
-                    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
                         return capability == FragileGlassBase.BREAKCAP;
                     }
 
-                    @Nullable
                     @Override
-                    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
                         return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
                     }
+                });
+            }
+        } else {
+            ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                IBreakCapability inst = new IBreakCapability() {
+                    @Override
+                    public void init(Entity e) {
+
+                    }
+
+                    @Override
+                    public void update(Entity e) {
+
+                    }
+
+                    @Override
+                    public double getSpeedSquared(Entity e) {
+                        return e.motionX * e.motionX + e.motionY * e.motionY + e.motionZ * e.motionZ;
+                    }
+
+                    @Override
+                    public boolean isAbleToBreak(Entity e, double speedSq) {
+                        return speedSq >= breakerData.getMinSpeedSquared()
+                                && speedSq <= breakerData.getMaxSpeedSquared();
+                    }
+
+                    @Override
+                    public double getMotionX(Entity e) {
+                        return e.motionX;
+                    }
+
+                    @Override
+                    public double getMotionY(Entity e) {
+                        return e.motionY;
+                    }
+
+                    @Override
+                    public double getMotionZ(Entity e) {
+                        return e.motionZ;
+                    }
+
+                    @Override
+                    public byte getNoOfBreaks(Entity e) {
+                        return 1;
+                    }
                 };
-                evt.addCapability(DataReference.BREAK_LOCATION, iCapProv);
+
+                @Override
+                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.BREAKCAP;
+                }
+
+                @Nullable
+                @Override
+                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
+                }
+            };
+            evt.addCapability(DataReference.BREAK_LOCATION, iCapProv);
         }
     }
 
@@ -195,17 +222,17 @@ public class BreakerDataManager {
             "#* The second number is a maximum speed (must be decimal). The entity must be moving below this speed\n",
             "#  for a block to potentially break. Speed is measured in blocks per tick, which is metres per second\n",
             "#  divided by 20. The maximum for this value is 5.893: beyond this is faster than chunks can even load.\n",
+            "#* If the max speed is less than the min speed they will be switched around internally.\n",
             "#* You can add extra values of any format, separated by spaces, for any mod entities that might require\n",
             "#  them.\n",
-            "#\n#--Default values, in case you break something--\n",
-            "#All fragile glass blocks:\n",
-            "#fragileglassft:tefg BREAK 0.165 0 -\n",
-            "#Thin ice:\n",
-            "#fragileglassft:thinice BREAK 0.0 0 -\n",
-            "#Weak stone:\n",
-            "#fragileglassft:tews UPDATE 0.0 10 -\n",
-            "fragileglassft:tefg BREAK 0.165 0 -\n",
-            "fragileglassft:thinice BREAK 0.0 0 -\n",
-            "fragileglassft:tews UPDATE 0.0 10 -\n"
+            "#\n#--Tips--\n",
+            "#* Certain entities will get a default break speed if not in this file, just so that the file doesn't\n",
+            "#  become totally huge. This applies to: mobs and animals; arrows; fireballs; minecarts; firework\n",
+            "#  rockets; boats; primed TNT; falling blocks. Writing an entity in here will override the default.\n",
+            "#* It is more realistic if the smaller the mob, the larger the break speed.\n",
+            "#* Giving a mob a minimum speed of 0 is risky; a single step towards a fragile block will break it.\n",
+            "#\n#--Example lines which you might want to uncomment--\n",
+            "#Let zombies walk through fragile blocks\n",
+            "#minecraft:zombie 0.1 6.0\n",
     };
 }
