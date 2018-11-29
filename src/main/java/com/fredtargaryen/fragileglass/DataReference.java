@@ -16,7 +16,7 @@ public class DataReference
     //The minimum speed a permitted entity must be travelling to break a fragile glass block.
     //This should be sprinting, which is over 5.5 m/s.
     //Divided by 20: 0.275 blocks per tick.
-    public static final double MINIMUM_ENTITY_SPEED = 0.275;
+    public static final double MINIMUM_ENTITY_SPEED_SQUARED = 0.275 * 0.275;
 
     /**
      * On the client, for some reason walk speed is recorded as roughly 0.136.
