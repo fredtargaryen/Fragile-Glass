@@ -10,6 +10,15 @@ This is for versions of the mod for Minecraft 1.8 upwards.
 For Minecraft 1.7.10, see [the Fragile-Glass-1.7.10 repo](https://github.com/fredtargaryen/Fragile-Glass-1.7.10).
 
 ## Information for players
+### Customising Fragile Blocks
+Full information on how to customise blocks' behaviour on collision can be found in these places:
+* At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/master/src/main/java/com/fredtargaryen/fragileglass/world/FragilityDataManager.java).
+* In your game folder, under config/fragileglassft_blocks.cfg.
+### Customising Fragile Entities
+Full information on how to customise entities' minimum and maximum collision speed can be found in these places:
+* At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/blocklist/src/main/java/com/fredtargaryen/fragileglass/world/BreakerDataManager.java).
+* In your game folder, under config/fragileglassft_entities.cfg.
+
 ### Issues
 Please report any issues on [the Issues page](https://github.com/fredtargaryen/Fragile-Glass/issues).
 
