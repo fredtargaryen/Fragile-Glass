@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
 
 import static com.fredtargaryen.fragileglass.world.FragilityDataManager.FragileBehaviour.*;
 
