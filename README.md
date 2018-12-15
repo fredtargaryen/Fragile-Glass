@@ -24,21 +24,25 @@ Please report any issues on [the Issues page](https://github.com/fredtargaryen/F
 ## Information for mod developers
 ### Compatibility with your mod
 For your mod to work with Fragile Glass, add it as a dependency following the instructions [here](https://github.com/MinecraftForge/ForgeGradle/wiki/Dependencies). 
-You can find the latest files [here](https://minecraft.curseforge.com/projects/fragile-glass-and-thin-ice/files).
+
+If you want the dependency to be optional, you can check if Fragile Glass was loaded with `Loader.isModLoaded("fragileglassft")`.
+
+You can find the latest Fragile Glass files [here](https://minecraft.curseforge.com/projects/fragile-glass-and-thin-ice/files).
+
 To make a tile entity with custom collision behaviour, add the capability like this:
 ```
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber // Needed for static event handler; can be non-static if you wish
 public class YourBaseModClass {
     ...
     @SubscribeEvent
-    public void onTileEntityConstruct(AttachCapabilitiesEvent<TileEntity> evt) {
+    public static void onTileEntityConstruct(AttachCapabilitiesEvent<TileEntity> evt) {
         TileEntity te = evt.getObject();
         if(te instanceof TileEntityYourFragileTileEntity) {
-            ICapabilityProvider icp = new ICapabilityProvider() {
+            ICapabilityProvider icp = new ICapabilityProvider() { // Can use a serializable version as long as you implement the interface
                 IFragileCapability inst = new IFragileCapability() {
                     @Override
                     public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                        //Do whatever you like in here
+                        // Do whatever you like in here
                     }
                 };
                 
