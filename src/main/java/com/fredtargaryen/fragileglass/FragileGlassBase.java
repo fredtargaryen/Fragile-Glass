@@ -50,14 +50,15 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import static net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
 @Mod.EventBusSubscriber
-public class FragileGlassBase
-{
+@ObjectHolder(DataReference.MODID)
+public class FragileGlassBase {
 	// The instance of your mod that Forge uses.
     @Mod.Instance(DataReference.MODID)
     public static FragileGlassBase instance;
@@ -81,24 +82,40 @@ public class FragileGlassBase
     public static BreakSystem breakSystem;
 
     //Declare all blocks here
+    @ObjectHolder("fragileglass")
     public static Block fragileGlass;
+    @ObjectHolder("fragilepane")
 	public static Block fragilePane;
+    @ObjectHolder("stainedfragileglass")
     public static Block stainedFragileGlass;
+    @ObjectHolder("stainedfragilepane")
     public static Block stainedFragilePane;
+    @ObjectHolder("sugarblock")
 	public static Block sugarBlock;
+    @ObjectHolder("thinice")
     public static Block thinIce;
+    @ObjectHolder("sugarcauldron")
     public static Block sugarCauldron;
+    @ObjectHolder("weakstone")
     public static Block weakStone;
 
     //Declare all items here
-    private static Item iFragileGlass;
-    private static Item iFragilePane;
-    private static Item iStainedFragileGlass;
-    private static Item iStainedFragilePane;
-    private static Item iSugarBlock;
-    private static Item iThinIce;
-    private static Item iSugarCauldron;
-    private static Item iWeakStone;
+    @ObjectHolder("fragileglass")
+    public static Item iFragileGlass;
+    @ObjectHolder("fragilepane")
+    public static Item iFragilePane;
+    @ObjectHolder("stainedfragileglass")
+    public static Item iStainedFragileGlass;
+    @ObjectHolder("stainedfragilepane")
+    public static Item iStainedFragilePane;
+    @ObjectHolder("sugarblock")
+    public static Item iSugarBlock;
+    @ObjectHolder("thinice")
+    public static Item iThinIce;
+    @ObjectHolder("sugarcauldron")
+    public static Item iSugarCauldron;
+    @ObjectHolder("weakstone")
+    public static Item iWeakStone;
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
