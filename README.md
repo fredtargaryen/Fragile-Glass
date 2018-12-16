@@ -71,10 +71,12 @@ int updateDelay = fragData.getUpdateDelay();
 IBlockState state = fragData.getNewBlockState();
 String[] extraData = fragData.getExtraData(); //Extra values as unparsed strings
 ```
+* Fragile Glass is unable to overwrite collision behaviours, so if you attach a custom behaviour, it will be used regardless of the behaviour value in the config file.
+  * However, you can work around this by changing your custom behaviour depending on the value of `fragData.getBehaviour()`.
 * Because this is a custom behaviour you are free to use breakSpeed, updateDelay, state and extraData for any purpose,
-but the validation process can change or reject certain values so it is better to put values for custom behaviour in extraData.
-* It is your responsibility to explain to your users how each fragility value is used for your tile entity.
-* It is your users' responsibility to enter the fragility values correctly. If they enter a behaviour value other than MOD they will not see your custom behaviour on collision.
+but the validation process can change or reject certain values so it is better to put values for the custom behaviour in extraData.
+* It is your responsibility to explain to your users how each fragility value is used for your tile entity, and to validate the values.
+* It is your users' responsibility to enter the fragility values correctly.
 ### Pull Requests
 Any pull requests are very welcome. There are currently no standards for pull requests but clean code which
 follows the existing patterns is appreciated. If you are making a new feature, message me first to see
