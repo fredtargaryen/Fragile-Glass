@@ -30,9 +30,9 @@ public interface IBreakCapability
      * Return whether the entity is able to break fragile blocks at this particular tick.
      * Normally this is based on whether the entity is travelling at at least sprinting speed,
      * but could be conditioned on any other aspect of the entity.
-     * @param speed the distance the entity is supposed to travel this tick.
+     * @param speedSq the distance the entity is supposed to travel this tick, squared.
      */
-    boolean isAbleToBreak(Entity e, double speed);
+    boolean isAbleToBreak(Entity e, double speedSq);
 
     /**
      * @return the x motion of the entity, for the block break code.
