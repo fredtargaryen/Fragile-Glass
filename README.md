@@ -9,7 +9,7 @@ Fragile Glass and Thin Ice is a Minecraft Forge mod which does the following thi
 This is for versions of the mod for Minecraft 1.8 upwards.
 For Minecraft 1.7.10, see [the Fragile-Glass-1.7.10 repo](https://github.com/fredtargaryen/Fragile-Glass-1.7.10).
 
-## Information for players
+## Information for Players and Pack Developers
 ### Customising Fragile Blocks
 Full information on how to customise blocks' behaviour on collision can be found in these places:
 * At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/master/src/main/java/com/fredtargaryen/fragileglass/world/FragilityDataManager.java).
