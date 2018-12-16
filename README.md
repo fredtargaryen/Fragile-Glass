@@ -77,5 +77,5 @@ but the validation process can change or reject certain values so it is better t
 * It is your users' responsibility to enter the fragility values correctly. If they enter a behaviour value other than MOD they will not see your custom behaviour on collision.
 ### Pull Requests
 Any pull requests are very welcome. There are currently no standards for pull requests but clean code which
-follows the existing patterns is appreciated. If the pull request is a new feature, message me first to see
+follows the existing patterns is appreciated. If you are making a new feature, message me first to see
 if I will accept it!
