@@ -37,8 +37,8 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
         }
 
         @Override
-        public boolean isAbleToBreak(Entity e, double speed) {
-            return speed >= DataReference.PLAYER_WALK_SPEED;
+        public boolean isAbleToBreak(Entity e, double speedSq) {
+            return speedSq >= DataReference.PLAYER_WALK_SPEED_SQUARED && speedSq <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
         }
 
         @Override
