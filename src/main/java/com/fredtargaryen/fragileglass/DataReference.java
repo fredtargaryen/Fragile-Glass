@@ -21,12 +21,12 @@ public class DataReference
     /**
      * On the client, for some reason walk speed is recorded as roughly 0.136.
      */
-    public static final double PLAYER_WALK_SPEED = 0.135;
+    public static final double PLAYER_WALK_SPEED_SQUARED = 0.135 * 0.135;
 
     /**
      * On the client, for some reason sprint speed is recorded as roughly 0.1655.
      */
-    public static final double PLAYER_SPRINT_SPEED = 0.165;
+    public static final double PLAYER_SPRINT_SPEED_SQUARED = 0.165 * 0.165;
 
     //Arbitrary high speed.
     //A potion of Speed "increases walking speed by 20% × level" (Minecraft Wiki)
