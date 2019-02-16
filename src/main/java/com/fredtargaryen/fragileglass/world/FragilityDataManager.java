@@ -235,8 +235,27 @@ public class FragilityDataManager {
      */
     public void loadBlockData() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-            new FragilityConfigLoader(this, this.blockStateData, this.tileEntityData).loadFile(br);
+            FragilityConfigLoader fcl = new FragilityConfigLoader(this, this.blockStateData, this.tileEntityData);
+            File[] fileList = this.configDir.listFiles();
+            if(fileList != null) {
+                String fileName = this.configFile.getName();
+                System.out.println("Found file " + fileName + "; now loading");
+                BufferedReader br = new BufferedReader(new FileReader(this.configFile));
+                fcl.loadFile(br, fileName);
+                br.close();
+                for(File file : fileList) {
+                    fileName = file.getName();
+                    String[] fileNameParts = fileName.split("_");
+                    if(fileNameParts.length == 3) {
+                        System.out.println("Found file "+fileName+"; now loading");
+                        if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals("blocks")) {
+                            br = new BufferedReader(new FileReader(file));
+                            fcl.loadFile(br, fileName);
+                            br.close();
+                        }
+                    }
+                }
+            }
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());

@@ -139,7 +139,7 @@ public class FragilityConfigLoader {
         }
     }
 
-    public void loadFile(BufferedReader br) throws FragilityConfigLoadException, IOException {
+    public void loadFile(BufferedReader br, String filename) throws FragilityConfigLoadException, IOException {
         String line;
         int lineNumber = 0;
         while ((line = br.readLine()) != null) {
@@ -149,12 +149,12 @@ public class FragilityConfigLoader {
                 String[] values = line.split(" ");
                 //Validate number of values on row
                 if(values.length < 4) {
-                    throw new FragilityConfigLoadException("There must be at least 4 values here.", line, lineNumber);
+                    throw new FragilityConfigLoadException(filename, "There must be at least 4 values here.", line, lineNumber);
                 }
                 else {
                     //Validate first value
                     if(!this.validateEntryName(values[0])) {
-                        throw new FragilityConfigLoadException(values[0] + " has the wrong format; please see the examples.", line, lineNumber);
+                        throw new FragilityConfigLoadException(filename, values[0] + " has the wrong format; please see the examples.", line, lineNumber);
                     } else {
                         try {
                             //Validate behaviour value
@@ -167,7 +167,7 @@ public class FragilityConfigLoader {
                             IBlockState newState = Blocks.AIR.getDefaultState();
                             if(!values[4].equals("-")) {
                                 if(!this.validateEntryName(values[4])) {
-                                    throw new FragilityConfigLoadException(values[4] + " has the wrong format; please see the examples.", line, lineNumber);
+                                    throw new FragilityConfigLoadException(filename, values[4] + " has the wrong format; please see the examples.", line, lineNumber);
                                 }
                             }
                             //Determine which registry to add the data to
@@ -185,11 +185,11 @@ public class FragilityConfigLoader {
                         }
                         catch(NumberFormatException nfe) {
                             //Thrown when the third value can't be parsed as a Double
-                            throw new FragilityConfigLoadException(values[2] + " can't be read as a decimal number.", line, lineNumber);
+                            throw new FragilityConfigLoadException(filename, values[2] + " can't be read as a decimal number.", line, lineNumber);
                         }
                         catch(IllegalArgumentException iae) {
                             //Thrown when the second value is not one of the supported ones
-                            throw new FragilityConfigLoadException(values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.", line, lineNumber);
+                            throw new FragilityConfigLoadException(filename, values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.", line, lineNumber);
                         }
                     }
                 }
@@ -207,9 +207,9 @@ public class FragilityConfigLoader {
     }
 
     public class FragilityConfigLoadException extends Exception {
-        public FragilityConfigLoadException(String message, String badLine, int lineNumber) {
-            super("Could not load the .cfg file because of line "+lineNumber+":\n" + badLine +"\n" + message +
-                    " Default fragility data will be loaded. No changes to the file will take effect.");
+        public FragilityConfigLoadException(String filename, String message, String badLine, int lineNumber) {
+            super("Could not load " + filename + " because of line " + lineNumber + ":\n" + badLine +"\n" + message +
+                    " Default fragility data will be loaded. The file will not be changed.");
         }
     }
 

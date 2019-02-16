@@ -20,7 +20,7 @@ public class BreakerConfigLoader {
         this.entities = entities;
     }
 
-    public void loadFile(BufferedReader br) throws BreakerConfigLoadException, IOException {
+    public void loadFile(BufferedReader br, String filename) throws BreakerConfigLoadException, IOException {
         String line;
         int lineNumber = 0;
         while ((line = br.readLine()) != null) {
@@ -30,12 +30,12 @@ public class BreakerConfigLoader {
                 String[] values = line.split(" ");
                 //Validate number of values on row
                 if(values.length < 3) {
-                    throw new BreakerConfigLoadException("There must be at least 3 values here.", line, lineNumber);
+                    throw new BreakerConfigLoadException(filename, "There must be at least 3 values here.", line, lineNumber);
                 }
                 else {
                     //Validate first value
                     if(!this.validateEntryName(values[0])) {
-                        throw new BreakerConfigLoadException(values[0] + " has the wrong format; please see the examples.", line, lineNumber);
+                        throw new BreakerConfigLoadException(filename, values[0] + " has the wrong format; please see the examples.", line, lineNumber);
                     } else {
                         try {
                             //Validate minSpeed and silently clamp to >= 0
@@ -59,7 +59,7 @@ public class BreakerConfigLoader {
                         }
                         catch(NumberFormatException nfe) {
                             //Thrown when speed values can't be parsed as Doubles
-                            throw new BreakerConfigLoadException("One of your speed values can't be read as a decimal number.", line, lineNumber);
+                            throw new BreakerConfigLoadException(filename, "One of your speed values can't be read as a decimal number.", line, lineNumber);
                         }
                     }
                 }
@@ -68,9 +68,9 @@ public class BreakerConfigLoader {
     }
 
     public class BreakerConfigLoadException extends Exception {
-        public BreakerConfigLoadException(String message, String badLine, int lineNumber) {
-            super("Could not load the .cfg file because of line "+lineNumber+":\n" + badLine +"\n" + message +
-                    " Default breaker data will be loaded. No changes to the file will take effect.");
+        public BreakerConfigLoadException(String filename, String message, String badLine, int lineNumber) {
+            super("Could not load " + filename + " because of line " + lineNumber + ":\n" + badLine +"\n" + message +
+                    " Default breaker data will be loaded. The file will not be changed.");
         }
     }
 
