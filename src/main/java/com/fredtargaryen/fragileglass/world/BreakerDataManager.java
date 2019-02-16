@@ -166,8 +166,27 @@ public class BreakerDataManager {
      */
     public void loadEntityData() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-            new BreakerConfigLoader(this, this.entityData).loadFile(br);
+            BreakerConfigLoader bcl = new BreakerConfigLoader(this, this.entityData);
+            File[] fileList = this.configDir.listFiles();
+            if(fileList != null) {
+                String fileName = this.configFile.getName();
+                System.out.println("Found file "+fileName+"; now loading");
+                BufferedReader br = new BufferedReader(new FileReader(this.configFile));
+                bcl.loadFile(br, fileName);
+                br.close();
+                for (File file : fileList) {
+                    fileName = file.getName();
+                    String[] fileNameParts = fileName.split("_");
+                    if(fileNameParts.length == 3){
+                        System.out.println("Found file "+fileName+"; now loading");
+                        if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals("entities")) {
+                            br = new BufferedReader(new FileReader(file));
+                            bcl.loadFile(br, fileName);
+                            br.close();
+                        }
+                    }
+                }
+            }
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());
