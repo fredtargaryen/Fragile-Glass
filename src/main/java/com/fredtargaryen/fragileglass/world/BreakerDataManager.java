@@ -159,7 +159,6 @@ public class BreakerDataManager {
 
     private void loadDefaultData() {
         this.entityData.clear();
-        this.entityData.put(this.getEntityEntry("minecraft:sheep"), new BreakerData(0.165, 6.0, new String[]{}));
     }
 
     /**
