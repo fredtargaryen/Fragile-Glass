@@ -130,7 +130,7 @@ public class BlockSugarCauldron extends Block
     public void onBlockAdded(World w, BlockPos pos, IBlockState state)
     {
         w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 0), 3);
-        w.scheduleUpdate(pos, this, 50);
+        w.getPendingBlockTicks().scheduleTick(pos, this, 50);
     }
 
     @Override
@@ -140,24 +140,24 @@ public class BlockSugarCauldron extends Block
         int m = state.getValue(STAGE);
         if(m < 2 || m == 6)
         {
-            w.scheduleUpdate(pos, this, 50);
+            w.getPendingBlockTicks().scheduleTick(pos, this, 50);
         }
         else if(m == 2)
         {
             if(below == Blocks.LIT_FURNACE || below == Blocks.FIRE || below == Blocks.LAVA)
             {
-                w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 3), 3);
-                w.scheduleUpdate(pos, this, thirdOfCookTime);
+                w.setBlockState(pos, this.getDefaultState().with(STAGE, 3), 3);
+                w.getPendingBlockTicks().scheduleTick(pos, this, thirdOfCookTime);
             }
             else
             {
-                w.scheduleUpdate(pos, this, 10);
+                w.getPendingBlockTicks().scheduleTick(pos, this, 10);
             }
         }
         else if(m > 6)
         {
             w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, 0), 3);
-            w.scheduleUpdate(pos, this, 50);
+            w.getPendingBlockTicks().scheduleTick(pos, this, 50);
         }
         else
         {
@@ -165,13 +165,13 @@ public class BlockSugarCauldron extends Block
             {
                 ++m;
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, m), 3);
-                w.scheduleUpdate(pos, this, m == 6 ? 50 : thirdOfCookTime);
+                w.getPendingBlockTicks().scheduleTick(pos, this, m == 6 ? 50 : thirdOfCookTime);
             }
             else
             {
                 --m;
                 w.setBlockState(pos, this.getDefaultState().withProperty(STAGE, m), 3);
-                w.scheduleUpdate(pos, this, m == 2 ? 10 : thirdOfCookTime);
+                w.getPendingBlockTicks().scheduleTick(pos, this, m == 2 ? 10 : thirdOfCookTime);
             }
         }
     }

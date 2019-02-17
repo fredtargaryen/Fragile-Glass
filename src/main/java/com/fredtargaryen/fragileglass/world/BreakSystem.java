@@ -185,7 +185,7 @@ public class BreakSystem {
                                             e.world.destroyBlock(blockPos, true);
                                             break;
                                         case UPDATE:
-                                            e.world.scheduleUpdate(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                                            e.world.getPendingBlockTicks().scheduleTick(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
                                             break;
                                         case CHANGE:
                                             e.world.setBlockState(blockPos, fragilityData.getNewBlockState());

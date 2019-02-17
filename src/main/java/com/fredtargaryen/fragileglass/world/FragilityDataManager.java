@@ -103,7 +103,7 @@ public class FragilityDataManager {
                                     if (speed > fragData.getBreakSpeed()) {
                                         World w = te.getWorld();
                                         BlockPos tilePos = te.getPos();
-                                        w.scheduleUpdate(tilePos, w.getBlockState(tilePos).getBlock(), fragData.getUpdateDelay());
+                                        w.getPendingBlockTicks().scheduleTick(tilePos, w.getBlockState(tilePos).getBlock(), fragData.getUpdateDelay());
                                     }
                                 }
                             };
