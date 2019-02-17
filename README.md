@@ -25,7 +25,7 @@ Please report any issues on [the Issues page](https://github.com/fredtargaryen/F
 ### Compatibility with your mod
 For your mod to work with Fragile Glass, add it as a dependency following the instructions [here](https://github.com/MinecraftForge/ForgeGradle/wiki/Dependencies). 
 
-If you want the dependency to be optional, you can check if Fragile Glass was loaded with `Loader.isModLoaded("fragileglassft")`.
+If you want the dependency to be optional, you can check if Fragile Glass was loaded with `ModList.get().isLoaded("fragileglassft")`.
 
 You can find the latest Fragile Glass files [here](https://minecraft.curseforge.com/projects/fragile-glass-and-thin-ice/files).
 
