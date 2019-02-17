@@ -1,3 +1,7 @@
+/**
+ * TODO
+ * Need to flatten blocks and items
+ */
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
@@ -6,7 +10,9 @@ import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragileGlass;
 import com.fredtargaryen.fragileglass.item.ItemBlockStainedFragilePane;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
-import com.fredtargaryen.fragileglass.proxy.CommonProxy;
+import com.fredtargaryen.fragileglass.proxy.ClientProxy;
+import com.fredtargaryen.fragileglass.proxy.IProxy;
+import com.fredtargaryen.fragileglass.proxy.ServerProxy;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
@@ -21,10 +27,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,34 +40,33 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.oredict.OreDictionary;
-import static net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.ObjectHolder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-@Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
+@Mod(value = DataReference.MODID)
 @Mod.EventBusSubscriber
 @ObjectHolder(DataReference.MODID)
 public class FragileGlassBase {
-	// The instance of your mod that Forge uses.
-    @Mod.Instance(DataReference.MODID)
-    public static FragileGlassBase instance;
+    // Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ArrayList<Item> iceBlocks;
 
@@ -116,11 +123,24 @@ public class FragileGlassBase {
     public static Item iWeakStone;
 
     // Says where the client and server 'proxy' code is loaded.
-    @SidedProxy(clientSide=DataReference.CLIENTPROXYPATH, serverSide=DataReference.SERVERPROXYPATH)
-    private static CommonProxy proxy;
-        
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    private static IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+
+    public FragileGlassBase() {
+        IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus()
+        // Register the setup method for modloading
+        loadingBus.addListener(this::preInit);
+        // Register the enqueueIMC method for modloading
+        loadingBus.addListener(this::enqueueIMC);
+        // Register the processIMC method for modloading
+        loadingBus.addListener(this::processIMC);
+        // Register the doClientStuff method for modloading
+        loadingBus.addListener(this::doClientStuff);
+
+        // Register ourselves for server, registry and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    public void preInit(FMLCommonSetupEvent event)
     {
         PacketHandler.init();
 
@@ -128,10 +148,9 @@ public class FragileGlassBase {
         CapabilityManager.INSTANCE.register(IBreakCapability.class, new BreakCapStorage(), new BreakCapFactory());
         CapabilityManager.INSTANCE.register(IPlayerBreakCapability.class, new PlayerBreakStorage(), new PlayerBreakFactory());
         CapabilityManager.INSTANCE.register(IFragileCapability.class, new FragileCapStorage(), new FragileCapFactory());
-        MinecraftForge.EVENT_BUS.register(this);
 
         //CONFIG SETUP
-        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+        Confi config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
         genThinIce = config.getBoolean("genThinIce", "Worldgen - Thin Ice", true, "If true, thin ice patches will generate on frozen bodies of water");
         avePatchSizeIce = config.getInt("avePatchSizeIce", "Worldgen - Thin Ice", 5, 1, 14, "Average patch diameter");
@@ -174,9 +193,9 @@ public class FragileGlassBase {
                 .setRegistryName("weakstone");
 
         //ITEM SETUP
-        iFragileGlass = new ItemBlock(fragileGlass)
+        iFragileGlass = new ItemBlock(fragileGlass, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
                 .setRegistryName("fragileglass");
-        iFragilePane = new ItemBlock(fragilePane)
+        iFragilePane = new ItemBlock(fragilePane, new Item.Properties().group(ItemGroup.DECORATIONS))
                 .setRegistryName("fragilepane");
         iStainedFragileGlass = new ItemBlockStainedFragileGlass(stainedFragileGlass)
                 .setRegistryName("stainedfragileglass");
@@ -213,7 +232,6 @@ public class FragileGlassBase {
         proxy.doStateMappings();
     }
 
-    @Mod.EventHandler
     public void load(FMLInitializationEvent event)
     {
     	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, new ResourceLocation(DataReference.MODID+":tefg"));
@@ -233,7 +251,6 @@ public class FragileGlassBase {
         }
     }
 
-    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
@@ -250,8 +267,8 @@ public class FragileGlassBase {
         if(fullName.equals("minecraft:blocks")) {
             for(Object mapping : evt.getAllMappings()) {
                 RegistryEvent.MissingMappings.Mapping trueMapping = (RegistryEvent.MissingMappings.Mapping) mapping;
-                if(trueMapping.key.getResourceDomain().equals("ftfragileglass")) {
-                    switch (trueMapping.key.getResourcePath()) {
+                if(trueMapping.key.getNamespace().equals("ftfragileglass")) {
+                    switch (trueMapping.key.getPath()) {
                         case "ftfragileglass":
                             trueMapping.remap(fragileGlass);
                             break;
@@ -285,8 +302,8 @@ public class FragileGlassBase {
         else if(fullName.equals("minecraft:items")) {
             for(Object mapping : evt.getAllMappings()) {
                 RegistryEvent.MissingMappings.Mapping trueMapping = (RegistryEvent.MissingMappings.Mapping) mapping;
-                if (trueMapping.key.getResourceDomain().equals("ftfragileglass")) {
-                    switch (trueMapping.key.getResourcePath()) {
+                if (trueMapping.key.getNamespace().equals("ftfragileglass")) {
+                    switch (trueMapping.key.getPath()) {
                         case "ftfragileglass":
                             trueMapping.remap(iFragileGlass);
                             break;
@@ -419,8 +436,8 @@ public class FragileGlassBase {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void stopSystem(WorldEvent.Unload event) {
-        World w = event.getWorld();
-        if(!w.isRemote) {
+        IWorld w = event.getWorld();
+        if(!w.isSer) {
             if(breakSystem != null) {
                 breakSystem.end(w);
             }
