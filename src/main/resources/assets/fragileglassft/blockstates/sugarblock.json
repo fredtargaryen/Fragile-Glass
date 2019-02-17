@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "fragileglassft:sugarblock" }
+        "": { "model": "fragileglassft:block/sugarblock" }
     }
 }

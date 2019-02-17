@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "fragileglassft:blocks/sugarcauldron"
+    "layer0": "fragileglassft:block/sugarcauldron"
   },
   "display": {
     "thirdperson": {

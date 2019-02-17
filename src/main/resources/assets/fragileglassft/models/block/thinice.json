@@ -3,7 +3,7 @@
     "ambientocclusion":false,
     "textures":
     {
-        "particle": "blocks/ice"
+        "particle": "block/ice"
     },
     "elements":
     [

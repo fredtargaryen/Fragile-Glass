@@ -1,12 +1,12 @@
 {
   "variants":
   {
-    "stage=0": { "model": "fragileglassft:sc_empty" },
-    "stage=1": { "model": "fragileglassft:sc_water" },
-    "stage=2": { "model": "fragileglassft:sc_sugarwater" },
-    "stage=3": { "model": "fragileglassft:sc_sugarwater" },
-    "stage=4": { "model": "fragileglassft:sc_sugarwater" },
-    "stage=5": { "model": "fragileglassft:sc_sugarwater" },
-    "stage=6": { "model": "fragileglassft:sc_glass" }
+    "stage=0": { "model": "fragileglassft:block/sc_empty" },
+    "stage=1": { "model": "fragileglassft:block/sc_water" },
+    "stage=2": { "model": "fragileglassft:block/sc_sugarwater" },
+    "stage=3": { "model": "fragileglassft:block/sc_sugarwater" },
+    "stage=4": { "model": "fragileglassft:block/sc_sugarwater" },
+    "stage=5": { "model": "fragileglassft:block/sc_sugarwater" },
+    "stage=6": { "model": "fragileglassft:block/sc_glass" }
   }
 }

@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "fragileglassft:thinice" }
+        "": { "model": "fragileglassft:block/thinice" }
     }
 }

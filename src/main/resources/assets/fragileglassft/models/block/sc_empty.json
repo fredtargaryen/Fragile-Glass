@@ -1,10 +1,10 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "particle": "fragileglassft:blocks/sugarcauldron_wall",
-    "wall": "fragileglassft:blocks/sugarcauldron_wall",
-    "leg": "fragileglassft:blocks/sugarcauldron_leg",
-    "water": "fragileglassft:blocks/nothing"
+    "particle": "fragileglassft:block/sugarcauldron_wall",
+    "wall": "fragileglassft:block/sugarcauldron_wall",
+    "leg": "fragileglassft:block/sugarcauldron_leg",
+    "water": "fragileglassft:block/nothing"
   },
   "elements":
   [
