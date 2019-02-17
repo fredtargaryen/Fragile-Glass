@@ -1,0 +1,53 @@
+# mods.toml file for Fragile Glass and Thin Ice 1.13.2-2.0.0
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml"
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="[24,)" #(24 is current forge version)
+# A URL to refer people to when problems occur with this mod
+issueTrackerURL="https://github.com/fredtargaryen/Fragile-Glass/issues"
+# A URL for the "homepage" for this mod, displayed in the mod UI
+displayURL="https://minecraft.curseforge.com/projects/fragile-glass-and-thin-ice"
+# A file name (in the root of the mod JAR) containing a logo for display
+logoFile="assets/fragileglassft/textures/gui/banner.png"
+# A text field displayed in the mod UI
+credits="Thanks to Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12"
+# A text field displayed in the mod UI
+authors="FredTargaryen"
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]]
+# The modid of the mod
+modId="fragileglassft"
+# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
+version="${file.jarVersion}"
+ # A display name for the mod
+displayName="Fragile Glass and Thin Ice"
+# A URL to query for updates for this mod. See the JSON update specification <here>
+# updateJSONURL="http://myurl.me/" #optional
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+A Minecraft Forge mod which does the following things:
+* Adds Fragile Glass (including stained and pane versions), made with sugar and water
+* Adds Thin Ice which breaks underfoot unless stepped on carefully
+* Adds Weak Stone (disabled by default) which crumbles into gravel on contact
+* Adds configuration for practically any block (vanilla or any mod) so that it can break, update, change or fall down when something collides with it hard enough
+* Adds configuration for how fast different entities have to be travelling to break a fragile block
+'''
+# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[dependencies.examplemod]] #optional
+    # the modid of the dependency
+    modId="forge" #mandatory
+    # Does this dependency have to exist - if not, ordering below must be specified
+    mandatory=true #mandatory
+    # The version range of the dependency
+    versionRange="[24,)" #mandatory
+    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    ordering="NONE"
+    # Side this dependency is applied on - BOTH, CLIENT or SERVER
+    side="BOTH"
+# Here's another dependency
+[[dependencies.examplemod]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.13]"
+    ordering="NONE"
+    side="BOTH"
