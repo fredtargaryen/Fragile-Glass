@@ -1,0 +1,48 @@
+block.fragileglass.name=Fragile Glass
+block.fragilepane.name=Fragile Glass Pane
+block.thinice.name=Thin Ice
+block.sugarcauldron.name=Sugar Cauldron
+
+/STAINED FRAGILE GLASS
+block.stainedfragileglass.name=Stained Fragile Glass
+block.stainedfragileglass.black.name=Black Stained Fragile Glass
+block.stainedfragileglass.red.name=Red Stained Fragile Glass
+block.stainedfragileglass.green.name=Green Stained Fragile Glass
+block.stainedfragileglass.brown.name=Brown Stained Fragile Glass
+block.stainedfragileglass.blue.name=Blue Stained Fragile Glass
+block.stainedfragileglass.purple.name=Purple Stained Fragile Glass
+block.stainedfragileglass.cyan.name=Cyan Stained Fragile Glass
+block.stainedfragileglass.silver.name=Light Grey Stained Fragile Glass
+block.stainedfragileglass.gray.name=Grey Stained Fragile Glass
+block.stainedfragileglass.pink.name=Pink Stained Fragile Glass
+block.stainedfragileglass.lime.name=Lime Stained Fragile Glass
+block.stainedfragileglass.yellow.name=Yellow Stained Fragile Glass
+block.stainedfragileglass.lightBlue.name=Light Blue Stained Fragile Glass
+block.stainedfragileglass.magenta.name=Magenta Stained Fragile Glass
+block.stainedfragileglass.orange.name=Orange Stained Fragile Glass
+block.stainedfragileglass.white.name=White Stained Fragile Glass
+
+
+/STAINED FRAGILE GLASS PANE
+block.stainedfragilepane.name=Stained Fragile Glass Pane
+block.stainedfragilepane.black.name=Black Stained Fragile Glass Pane
+block.stainedfragilepane.red.name=Red Stained Fragile Glass Pane
+block.stainedfragilepane.green.name=Green Stained Fragile Glass Pane
+block.stainedfragilepane.brown.name=Brown Stained Fragile Glass Pane
+block.stainedfragilepane.blue.name=Blue Stained Fragile Glass Pane
+block.stainedfragilepane.purple.name=Purple Stained Fragile Glass Pane
+block.stainedfragilepane.cyan.name=Cyan Stained Fragile Glass Pane
+block.stainedfragilepane.silver.name=Light Grey Stained Fragile Glass Pane
+block.stainedfragilepane.gray.name=Grey Stained Fragile Glass Pane
+block.stainedfragilepane.pink.name=Pink Stained Fragile Glass Pane
+block.stainedfragilepane.lime.name=Lime Stained Fragile Glass Pane
+block.stainedfragilepane.yellow.name=Yellow Stained Fragile Glass Pane
+block.stainedfragilepane.lightBlue.name=Light Blue Stained Fragile Glass Pane
+block.stainedfragilepane.magenta.name=Magenta Stained Fragile Glass Pane
+block.stainedfragilepane.orange.name=Orange Stained Fragile Glass Pane
+block.stainedfragilepane.white.name=White Stained Fragile Glass Pane
+
+
+/OTHER BLOCKS
+block.sugarblock.name=Sugar Block
+block.weakstone.name=Weak Stone
