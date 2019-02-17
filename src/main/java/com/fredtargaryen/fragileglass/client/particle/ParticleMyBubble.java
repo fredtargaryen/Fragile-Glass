@@ -23,7 +23,7 @@ public class ParticleMyBubble extends ParticleBubble
         this.move(this.motionX, this.motionY, this.motionZ);
         this.motionY *= 0.8500000238418579D;
 
-        if (this.particleMaxAge-- <= 0)
+        if (this.maxAge-- <= 0)
         {
             this.setExpired();
         }

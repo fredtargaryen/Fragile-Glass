@@ -24,7 +24,7 @@ public class ParticleMySplash extends ParticleSplash
         this.motionY *= 0.9800000190734863D;
         this.motionZ *= 0.9800000190734863D;
 
-        if (this.particleMaxAge-- <= 0)
+        if (this.maxAge-- <= 0)
         {
             this.setExpired();
         }
