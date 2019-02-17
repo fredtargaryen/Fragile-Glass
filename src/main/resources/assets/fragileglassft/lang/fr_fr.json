@@ -1,48 +1,50 @@
-block.fragileglass.name=Verre fragile
-block.fragilepane.name=Vitre fragile
-block.thinice.name=Glace mince
-block.sugarcauldron.name=Chaudron pour sucre
+{
+  "block.fragileglass": "Verre fragile",
+  "block.fragilepane": "Vitre fragile",
+  "block.thinice": "Glace mince",
+  "block.sugarcauldron": "Chaudron pour sucre",
 
-/STAINED FRAGILE GLASS
-block.stainedfragileglass.name=Verre fragile coloré
-block.stainedfragileglass.black.name=Verre fragile noir
-block.stainedfragileglass.red.name=Verre fragile rouge
-block.stainedfragileglass.green.name=Verre fragile vert
-block.stainedfragileglass.brown.name=Verre fragile marron
-block.stainedfragileglass.blue.name=Verre fragile bleu
-block.stainedfragileglass.purple.name=Verre fragile violet
-block.stainedfragileglass.cyan.name=Verre fragile cyan
-block.stainedfragileglass.silver.name=Verre fragile gris clair
-block.stainedfragileglass.gray.name=Verre fragile gris
-block.stainedfragileglass.pink.name=Verre fragile rose
-block.stainedfragileglass.lime.name=Verre fragile vert clair
-block.stainedfragileglass.yellow.name=Verre fragile jaune
-block.stainedfragileglass.lightBlue.name=Verre fragile bleu clair
-block.stainedfragileglass.magenta.name=Verre fragile magenta
-block.stainedfragileglass.orange.name=Verre fragile orange
-block.stainedfragileglass.white.name=Verre fragile blanc
-
-
-/STAINED FRAGILE GLASS PANE
-block.stainedfragilepane.name=Vitre fragile coloré
-block.stainedfragilepane.black.name=Vitre fragile noir
-block.stainedfragilepane.red.name=Vitre fragile rouge
-block.stainedfragilepane.green.name=Vitre fragile vert
-block.stainedfragilepane.brown.name=Vitre fragile marron
-block.stainedfragilepane.blue.name=Vitre fragile bleu
-block.stainedfragilepane.purple.name=Vitre fragile violet
-block.stainedfragilepane.cyan.name=Vitre fragile cyan
-block.stainedfragilepane.silver.name=Vitre fragile gris clair
-block.stainedfragilepane.gray.name=Vitre fragile gris
-block.stainedfragilepane.pink.name=Vitre fragile rose
-block.stainedfragilepane.lime.name=Vitre fragile vert clair
-block.stainedfragilepane.yellow.name=Vitre fragile jaune
-block.stainedfragilepane.lightBlue.name=Vitre fragile bleu clair
-block.stainedfragilepane.magenta.name=Vitre fragile magenta
-block.stainedfragilepane.orange.name=Vitre fragile orange
-block.stainedfragilepane.white.name=Vitre fragile blanc
+  "": "STAINED FRAGILE GLASS",
+  "block.stainedfragileglass": "Verre fragile coloré",
+  "block.stainedfragileglass.black": "Verre fragile noir",
+  "block.stainedfragileglass.red": "Verre fragile rouge",
+  "block.stainedfragileglass.green": "Verre fragile vert",
+  "block.stainedfragileglass.brown": "Verre fragile marron",
+  "block.stainedfragileglass.blue": "Verre fragile bleu",
+  "block.stainedfragileglass.purple": "Verre fragile violet",
+  "block.stainedfragileglass.cyan": "Verre fragile cyan",
+  "block.stainedfragileglass.silver": "Verre fragile gris clair",
+  "block.stainedfragileglass.gray": "Verre fragile gris",
+  "block.stainedfragileglass.pink": "Verre fragile rose",
+  "block.stainedfragileglass.lime": "Verre fragile vert clair",
+  "block.stainedfragileglass.yellow": "Verre fragile jaune",
+  "block.stainedfragileglass.lightBlue": "Verre fragile bleu clair",
+  "block.stainedfragileglass.magenta": "Verre fragile magenta",
+  "block.stainedfragileglass.orange": "Verre fragile orange",
+  "block.stainedfragileglass.white": "Verre fragile blanc",
 
 
-/OTHER BLOCKS
-block.sugarblock.name=Bloc de sucre
-block.weakstone.name=Pierre faible
+  "": "STAINED FRAGILE GLASS PANE",
+  "block.stainedfragilepane": "Vitre fragile coloré",
+  "block.stainedfragilepane.black": "Vitre fragile noir",
+  "block.stainedfragilepane.red": "Vitre fragile rouge",
+  "block.stainedfragilepane.green": "Vitre fragile vert",
+  "block.stainedfragilepane.brown": "Vitre fragile marron",
+  "block.stainedfragilepane.blue": "Vitre fragile bleu",
+  "block.stainedfragilepane.purple": "Vitre fragile violet",
+  "block.stainedfragilepane.cyan": "Vitre fragile cyan",
+  "block.stainedfragilepane.silver": "Vitre fragile gris clair",
+  "block.stainedfragilepane.gray": "Vitre fragile gris",
+  "block.stainedfragilepane.pink": "Vitre fragile rose",
+  "block.stainedfragilepane.lime": "Vitre fragile vert clair",
+  "block.stainedfragilepane.yellow": "Vitre fragile jaune",
+  "block.stainedfragilepane.lightBlue": "Vitre fragile bleu clair",
+  "block.stainedfragilepane.magenta": "Vitre fragile magenta",
+  "block.stainedfragilepane.orange": "Vitre fragile orange",
+  "block.stainedfragilepane.white": "Vitre fragile blanc",
+
+
+  "": "OTHER BLOCKS",
+  "block.sugarblock": "Bloc de sucre",
+  "block.weakstone": "Pierre faible"
+}

@@ -1,48 +1,50 @@
-block.fragileglass.name=Vidro Frágil
-block.fragilepane.name=Painel de Vidro Frágil
-block.thinice.name=Gelo Fino
-block.sugarcauldron.name=Caldeirão para Açúcar
+{
+  "block.fragileglass": "Vidro Frágil",
+  "block.fragilepane": "Painel de Vidro Frágil",
+  "block.thinice": "Gelo Fino",
+  "block.sugarcauldron": "Caldeirão para Açúcar",
 
-/STAINED FRAGILE GLASS
-block.stainedfragileglass.name=Vidro Frágil Tingido
-block.stainedfragileglass.black.name=Vidro Frágil Tingido de Preto
-block.stainedfragileglass.red.name=Vidro Frágil Tingido de Vermelho
-block.stainedfragileglass.green.name=Vidro Frágil Tingido de Verde
-block.stainedfragileglass.brown.name=Vidro Frágil Tingido de Castanho
-block.stainedfragileglass.blue.name=Vidro Frágil Tingido de Azul
-block.stainedfragileglass.purple.name=Vidro Frágil Tingido de Roxo
-block.stainedfragileglass.cyan.name=Vidro Frágil Tingido de Azul Ciano
-block.stainedfragileglass.silver.name=Vidro Frágil Tingido de Cinzento Claro
-block.stainedfragileglass.gray.name=Vidro Frágil Tingido de Cinzento
-block.stainedfragileglass.pink.name=Vidro Frágil Tingido de Rosa
-block.stainedfragileglass.lime.name=Vidro Frágil Tingido de Verde Lima
-block.stainedfragileglass.yellow.name=Vidro Frágil Tingido de Amarelo
-block.stainedfragileglass.lightBlue.name=Vidro Frágil Tingido de Azul Claro
-block.stainedfragileglass.magenta.name=Vidro Frágil Tingido de Magenta
-block.stainedfragileglass.orange.name=Vidro Frágil Tingido de Laranja
-block.stainedfragileglass.white.name=Vidro Frágil Tingido de Branco
-
-
-/STAINED FRAGILE GLASS PANE
-block.stainedfragilepane.name=Painel de Vidro Frágil Tingido
-block.stainedfragilepane.black.name=Painel de Vidro Frágil Tingido de Preto
-block.stainedfragilepane.red.name=Painel de Vidro Frágil Tingido de Vermelho
-block.stainedfragilepane.green.name=Painel de Vidro Frágil Tingido de Verde
-block.stainedfragilepane.brown.name=Painel de Vidro Frágil Tingido de Castanho
-block.stainedfragilepane.blue.name=Painel de Vidro Frágil Tingido de Azul
-block.stainedfragilepane.purple.name=Painel de Vidro Frágil Tingido de Roxo
-block.stainedfragilepane.cyan.name=Painel de Vidro Frágil Tingido de Azul Ciano
-block.stainedfragilepane.silver.name=Painel de Vidro Frágil Tingido de Cinzento Claro
-block.stainedfragilepane.gray.name=Painel de Vidro Frágil Tingido de Cinzento
-block.stainedfragilepane.pink.name=Painel de Vidro Frágil Tingido de Rosa
-block.stainedfragilepane.lime.name=Painel de Vidro Frágil Tingido de Verde Lima
-block.stainedfragilepane.yellow.name=Painel de Vidro Frágil Tingido de Amarelo
-block.stainedfragilepane.lightBlue.name=Painel de Vidro Frágil Tingido de Azul Claro
-block.stainedfragilepane.magenta.name=Painel de Vidro Frágil Tingido de Magenta
-block.stainedfragilepane.orange.name=Painel de Vidro Frágil Tingido de Laranja
-block.stainedfragilepane.white.name=Painel de Vidro Frágil Tingido de Branco
+  "": "STAINED FRAGILE GLASS",
+  "block.stainedfragileglass": "Vidro Frágil Tingido",
+  "block.stainedfragileglass.black": "Vidro Frágil Tingido de Preto",
+  "block.stainedfragileglass.red": "Vidro Frágil Tingido de Vermelho",
+  "block.stainedfragileglass.green": "Vidro Frágil Tingido de Verde",
+  "block.stainedfragileglass.brown": "Vidro Frágil Tingido de Castanho",
+  "block.stainedfragileglass.blue": "Vidro Frágil Tingido de Azul",
+  "block.stainedfragileglass.purple": "Vidro Frágil Tingido de Roxo",
+  "block.stainedfragileglass.cyan": "Vidro Frágil Tingido de Azul Ciano",
+  "block.stainedfragileglass.silver": "Vidro Frágil Tingido de Cinzento Claro",
+  "block.stainedfragileglass.gray": "Vidro Frágil Tingido de Cinzento",
+  "block.stainedfragileglass.pink": "Vidro Frágil Tingido de Rosa",
+  "block.stainedfragileglass.lime": "Vidro Frágil Tingido de Verde Lima",
+  "block.stainedfragileglass.yellow": "Vidro Frágil Tingido de Amarelo",
+  "block.stainedfragileglass.lightBlue": "Vidro Frágil Tingido de Azul Claro",
+  "block.stainedfragileglass.magenta": "Vidro Frágil Tingido de Magenta",
+  "block.stainedfragileglass.orange": "Vidro Frágil Tingido de Laranja",
+  "block.stainedfragileglass.white": "Vidro Frágil Tingido de Branco",
 
 
-/OTHER BLOCKS
-block.sugarblock.name=Bloco de Açúcar
-block.weakstone.name=Pedra Fraca
+  "": "STAINED FRAGILE GLASS PANE",
+  "block.stainedfragilepane": "Painel de Vidro Frágil Tingido",
+  "block.stainedfragilepane.black": "Painel de Vidro Frágil Tingido de Preto",
+  "block.stainedfragilepane.red": "Painel de Vidro Frágil Tingido de Vermelho",
+  "block.stainedfragilepane.green": "Painel de Vidro Frágil Tingido de Verde",
+  "block.stainedfragilepane.brown": "Painel de Vidro Frágil Tingido de Castanho",
+  "block.stainedfragilepane.blue": "Painel de Vidro Frágil Tingido de Azul",
+  "block.stainedfragilepane.purple": "Painel de Vidro Frágil Tingido de Roxo",
+  "block.stainedfragilepane.cyan": "Painel de Vidro Frágil Tingido de Azul Ciano",
+  "block.stainedfragilepane.silver": "Painel de Vidro Frágil Tingido de Cinzento Claro",
+  "block.stainedfragilepane.gray": "Painel de Vidro Frágil Tingido de Cinzento",
+  "block.stainedfragilepane.pink": "Painel de Vidro Frágil Tingido de Rosa",
+  "block.stainedfragilepane.lime": "Painel de Vidro Frágil Tingido de Verde Lima",
+  "block.stainedfragilepane.yellow": "Painel de Vidro Frágil Tingido de Amarelo",
+  "block.stainedfragilepane.lightBlue": "Painel de Vidro Frágil Tingido de Azul Claro",
+  "block.stainedfragilepane.magenta": "Painel de Vidro Frágil Tingido de Magenta",
+  "block.stainedfragilepane.orange": "Painel de Vidro Frágil Tingido de Laranja",
+  "block.stainedfragilepane.white": "Painel de Vidro Frágil Tingido de Branco",
+
+
+  "": "OTHER BLOCKS",
+  "block.sugarblock": "Bloco de Açúcar",
+  "block.weakstone": "Pedra Fraca"
+}
