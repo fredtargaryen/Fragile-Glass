@@ -32,8 +32,9 @@ public class PatchGenIce extends PatchGen
      */
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         //145 is the TerraFirmaCraft sea level - guessing other mods don't go any higher than this
-        Biome b = world.getBiome(new BlockPos(chunkX, 145, chunkZ));
-        if (b.getEnableSnow()) {
+        BlockPos highBlockPos = new BlockPos(chunkX, 145, chunkZ);
+        Biome b = world.getBiome(highBlockPos);
+        if (b.doesSnowGenerate(world, highBlockPos)) {
             //Coords of "top left" blocks in chunk
             int chunkBlockX = chunkX * 16;
             int chunkBlockZ = chunkZ * 16;
@@ -47,20 +48,30 @@ public class PatchGenIce extends PatchGen
             //Whether to stop trying to generate a patch here. Does not imply any patches were generated.
             boolean done = false;
             while (!done) {
-                patchCentre = world.getTopSolidOrLiquidBlock(new BlockPos(candX, 0, candZ)).down();
-                candidate = world.getBlockState(patchCentre).getBlock();
-                if (this.isBlockValidToTransform(candidate)) {
-                    done = this.attemptPatch(random, chunkX, chunkZ, patchCentre, world);
+                //Loop down to first non-air block
+                BlockPos pos = new BlockPos(candX, 256, candZ);
+                boolean stop = false;
+                while(!stop) {
+                    pos = pos.down();
+                    if(!world.getBlockState(pos).isAir(world, pos) || pos.getY() == -1) {
+                        stop = true;
+                    }
                 }
-                if(candX > chunkBlockX + 15) {
-                    done = true;
-                }
-                else {
-                    if (candZ > chunkBlockZ + 15) {
-                        candX += 2;
-                        candZ = chunkBlockZ;
+                if(pos.getY() >= 0) {
+                    patchCentre = pos;
+                    candidate = world.getBlockState(patchCentre).getBlock();
+                    if (this.isBlockValidToTransform(candidate)) {
+                        done = this.attemptPatch(random, chunkX, chunkZ, patchCentre, world);
+                    }
+                    if (candX > chunkBlockX + 15) {
+                        done = true;
                     } else {
-                        candZ += 2;
+                        if (candZ > chunkBlockZ + 15) {
+                            candX += 2;
+                            candZ = chunkBlockZ;
+                        } else {
+                            candZ += 2;
+                        }
                     }
                 }
             }
