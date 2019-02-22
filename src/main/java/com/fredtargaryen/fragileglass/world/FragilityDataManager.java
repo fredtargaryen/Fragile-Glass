@@ -182,7 +182,7 @@ public class FragilityDataManager {
     }
 
     private void handleConfigFileException(Exception e) {
-        FMLLog.bigWarning("Could not load "+DataReference.MODID+"_blocks.cfg! " +
+        FragileGlassBase.warn("Could not load "+DataReference.MODID+"_blocks.cfg! " +
                 "Default block behaviour will be loaded. No custom data will take effect.");
         e.printStackTrace();
         this.loadDefaultData();
@@ -240,7 +240,7 @@ public class FragilityDataManager {
             this.handleConfigFileException(new Exception());
         }
         catch(FragilityConfigLoader.FragilityConfigLoadException fcle) {
-            FMLLog.bigWarning(fcle.getMessage());
+            FragileGlassBase.warn(fcle.getMessage());
         }
     }
 
@@ -250,7 +250,7 @@ public class FragilityDataManager {
         if(!this.configFile.exists()) {
             try {
                 //Config file is not in config folder! Write from defaultFileData (see bottom of file)
-                FMLLog.log.warn("[FRAGILITY CONFIG] No config file found! Writing a new one.");
+                FragileGlassBase.warn("[FRAGILITY CONFIG] No config file found! Writing a new one.");
                 FileWriter fw = new FileWriter(this.configFile);
                 for(String s : defaultFileData) {
                     fw.write(s);

@@ -139,8 +139,8 @@ public class BreakerDataManager {
     }
 
     private void handleConfigFileException(Exception e) {
-        FMLLog.bigWarning("Could not load "+DataReference.MODID+"_entities.cfg! " +
-                "Default entity crash behaviour will be loaded. No custom data will take effect.");
+        FragileGlassBase.warn("Could not load "+DataReference.MODID+"_entities.cfg! " +
+                "Default entity crash behaviour will be loaded. The file will not be changed.");
         e.printStackTrace();
         this.loadDefaultData();
     }
@@ -184,7 +184,7 @@ public class BreakerDataManager {
             this.handleConfigFileException(new Exception());
         }
         catch(BreakerConfigLoader.BreakerConfigLoadException bcle) {
-            FMLLog.bigWarning(bcle.getMessage());
+            FragileGlassBase.warn(bcle.getMessage());
         }
     }
 
@@ -194,7 +194,7 @@ public class BreakerDataManager {
         if(!this.configFile.exists()) {
             try {
                 //Config file is not in config folder! Write from defaultFileData (see bottom of file)
-                FMLLog.log.warn("[BREAKER CONFIG] No config file found! Writing a new one.");
+                FragileGlassBase.warn("[BREAKER CONFIG] No config file found! Writing a new one.");
                 FileWriter fw = new FileWriter(this.configFile);
                 for(String s : defaultFileData) {
                     fw.write(s);
