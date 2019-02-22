@@ -1,6 +1,10 @@
 /**
  * TODO
- * Need to flatten blocks and items
+ * Need to flatten blocks and items. Might need:
+ * EnumDyeColor[] aenumdyecolor = EnumDyeColor.values();
+ *         for (EnumDyeColor enumdyecolor : aenumdyecolor) {
+ *             list.add(new ItemStack(this, 1, enumdyecolor.getMetadata()));
+ *         }
  */
 package com.fredtargaryen.fragileglass;
 
