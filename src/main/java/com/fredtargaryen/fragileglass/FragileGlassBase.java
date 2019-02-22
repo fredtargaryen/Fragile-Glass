@@ -192,13 +192,6 @@ public class FragileGlassBase {
         IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the setup method for modloading
         loadingBus.addListener(this::postRegistration);
-        //TODO Needed?
-        // Register the enqueueIMC method for modloading
-        loadingBus.addListener(this::enqueueIMC);
-        // Register the processIMC method for modloading
-        loadingBus.addListener(this::processIMC);
-        // Register the doClientStuff method for modloading
-        loadingBus.addListener(this::doClientStuff);
 
         // Register ourselves for server, registry and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
