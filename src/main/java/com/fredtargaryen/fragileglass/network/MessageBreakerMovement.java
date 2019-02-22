@@ -21,7 +21,10 @@ public class MessageBreakerMovement
     {
         ctx.get().enqueueWork(() -> ctx.get().getSender().getCapability(FragileGlassBase.PLAYERBREAKCAP, null)
                 .ifPresent(pbc -> pbc.onMessage(this)));
+        ctx.get().setPacketHandled(true);
     }
+
+    public MessageBreakerMovement(){}
 
     /**
      * Effectively fromBytes from 1.12.2
