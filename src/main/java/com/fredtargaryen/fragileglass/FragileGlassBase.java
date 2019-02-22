@@ -527,7 +527,7 @@ public class FragileGlassBase {
                                     PacketHandler.INSTANCE.sendToServer(mbm);
                                     this.lastSpeed = speed;
                                 }
-                                if (ep.isDead) {
+                                if (ep.removed) {
                                     MinecraftForge.EVENT_BUS.unregister(this);
                                 }
                             }

@@ -54,7 +54,7 @@ public class BreakSystem {
             Iterator<Entity> i = entityList.iterator();
             while(i.hasNext()) {
                 Entity e = i.next();
-                if(!e.isDead) {
+                if(!e.removed) {
                     //Entities must have an instance of IBreakCapability or they will never be able to break blocks with
                     //IFragileCapability.
                     e.getCapability(BREAKCAP).ifPresent(ibc -> {
