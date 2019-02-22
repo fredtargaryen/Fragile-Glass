@@ -391,11 +391,6 @@ public class FragileGlassBase {
                                 IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
 
                                 @Override
-                                public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-                                    return capability == PLAYERBREAKCAP || capability == BREAKCAP;
-                                }
-
-                                @Override
                                 public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
                                     if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
                                         return PLAYERBREAKCAP.<T>cast(inst);
@@ -420,14 +415,12 @@ public class FragileGlassBase {
     @SubscribeEvent
     public void initPlayerBreakerCap(EntityJoinWorldEvent ejwe) {
         Entity e = ejwe.getEntity();
-        if(e.hasCapability(PLAYERBREAKCAP, null)) {
-            e.getCapability(PLAYERBREAKCAP, null).init(e);
-        }
+        e.getCapability(PLAYERBREAKCAP).ifPresent(pbc -> pbc.init(e));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void loadSystem(WorldEvent.Load event) {
-        World w = event.getWorld();
+        World w = (World) event.getWorld();
         if(!w.isRemote) {
             breakSystem = new BreakSystem();
             breakSystem.init(w);

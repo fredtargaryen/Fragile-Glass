@@ -57,8 +57,7 @@ public class BreakSystem {
                 if(!e.isDead) {
                     //Entities must have an instance of IBreakCapability or they will never be able to break blocks with
                     //IFragileCapability.
-                    if (e.hasCapability(BREAKCAP, null)) {
-                        IBreakCapability ibc = e.getCapability(BREAKCAP, null);
+                    e.getCapability(BREAKCAP).ifPresent(ibc -> {
                         //Update the capability before determining speed. Convenience method; not used by default
                         ibc.update(e);
                         //Get the squared speed; just to avoid performing a sqrt operation more often than necessary
@@ -71,7 +70,7 @@ public class BreakSystem {
                                         Math.sqrt(speedSq), ibc.getNoOfBreaks(e));
                             }
                         }
-                    }
+                    });
                 }
             }
         }
@@ -168,10 +167,7 @@ public class BreakSystem {
                         // Workaround - not all mods conform to the hasTileEntity->getTileEntity pattern
                         //if (block.hasTileEntity(state)) {
                         //    TileEntity te = e.world.getTileEntity(blockPos);
-                        //    if (te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
-                        //        te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
-                        //    }
-                        //}
+                        //    te.getCapability(FragileGlassBase.FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speed));
                         TileEntity te = e.world.getTileEntity(blockPos);
                         if(te == null) {
                             //No Tile Entity
@@ -205,8 +201,8 @@ public class BreakSystem {
                         else {
                             //Has a Tile Entity; check there's anything in the Tile Entity fragility data before continuing
                             //Tile Entities are dealt with via Capabilities already; no need to obtain fragility data
-                            if(this.hasTileEntityFragilityData && te.hasCapability(FragileGlassBase.FRAGILECAP, null)) {
-                                te.getCapability(FragileGlassBase.FRAGILECAP, null).onCrash(state, te, e, speed);
+                            if(this.hasTileEntityFragilityData) {
+                                te.getCapability(FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speed));
                             }
                         }
                     }

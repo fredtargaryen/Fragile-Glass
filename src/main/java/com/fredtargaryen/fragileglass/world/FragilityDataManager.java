@@ -83,11 +83,6 @@ public class FragilityDataManager {
                                 }
                             };
 
-                            @Override
-                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP;
-                            }
-
                             @Nullable
                             @Override
                             public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
@@ -108,11 +103,6 @@ public class FragilityDataManager {
                                 }
                             };
 
-                            @Override
-                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP;
-                            }
-
                             @Nullable
                             @Override
                             public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
@@ -130,11 +120,6 @@ public class FragilityDataManager {
                                     }
                                 }
                             };
-
-                            @Override
-                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP;
-                            }
 
                             @Nullable
                             @Override
@@ -159,11 +144,6 @@ public class FragilityDataManager {
                                     }
                                 }
                             };
-
-                            @Override
-                            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP;
-                            }
 
                             @Nullable
                             @Override

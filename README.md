@@ -45,11 +45,6 @@ public class YourBaseModClass {
                         // Do whatever you like in here
                     }
                 };
-                
-                @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP;
-                }
 
                 @Nullable
                 @Override
