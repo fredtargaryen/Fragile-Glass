@@ -591,4 +591,11 @@ public class FragileGlassBase {
             }
         }
     }
+
+    //////////////////
+    //LOGGER METHODS//
+    //////////////////
+    public static void warn(String message) {
+        LOGGER.warn(message);
+    }
 }
