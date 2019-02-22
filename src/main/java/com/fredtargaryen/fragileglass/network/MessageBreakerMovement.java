@@ -2,36 +2,31 @@ package com.fredtargaryen.fragileglass.network;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.IThreadListener;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Used to handle player movement. See IPlayerBreakCapability, PlayerBreakStorage and PlayerBreakFactory for more
  * information.
  */
-public class MessageBreakerMovement implements IMessage, IMessageHandler<MessageBreakerMovement, IMessage>
+public class MessageBreakerMovement
 {
     public double motionx;
     public double motiony;
     public double motionz;
     public double speed;
 
-    @Override
-    public IMessage onMessage(final MessageBreakerMovement message, MessageContext ctx)
+    public void onMessage(Supplier<NetworkEvent.Context> ctx)
     {
-        final EntityPlayerMP player = ctx.getServerHandler().player;
-        final IThreadListener serverWorld = player.getServerWorld();
-        serverWorld.addScheduledTask(() -> {
-            player.getCapability(FragileGlassBase.PLAYERBREAKCAP, null).onMessage(message);
-        });
-        return null;
+        ctx.get().enqueueWork(() -> ctx.get().getSender().getCapability(FragileGlassBase.PLAYERBREAKCAP, null)
+                .ifPresent(pbc -> pbc.onMessage(this)));
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    /**
+     * Effectively fromBytes from 1.12.2
+     */
+    public MessageBreakerMovement(ByteBuf buf)
     {
         this.motionx = buf.readDouble();
         this.motiony = buf.readDouble();
@@ -39,7 +34,6 @@ public class MessageBreakerMovement implements IMessage, IMessageHandler<Message
         this.speed = buf.readDouble();
     }
 
-    @Override
     public void toBytes(ByteBuf buf)
     {
         buf.writeDouble(this.motionx);
