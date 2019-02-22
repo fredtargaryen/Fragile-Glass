@@ -48,8 +48,8 @@ public class YourBaseModClass {
 
                 @Nullable
                 @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                public <T> LazyOptional <T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : null;
                 }
             };
             evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, icp);

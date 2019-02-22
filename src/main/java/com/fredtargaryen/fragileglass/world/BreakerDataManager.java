@@ -12,6 +12,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -60,13 +62,8 @@ public class BreakerDataManager {
                     IBreakCapability inst = FragileGlassBase.BREAKCAP.getDefaultInstance();
 
                     @Override
-                    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-                        return capability == FragileGlassBase.BREAKCAP;
-                    }
-
-                    @Override
-                    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-                        return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
+                    public <T> LazyOptional<T> getCapability(Capability<T> capability, EnumFacing facing) {
+                        return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : null;
                     }
                 });
             }
@@ -115,15 +112,10 @@ public class BreakerDataManager {
                     }
                 };
 
-                @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.BREAKCAP;
-                }
-
                 @Nullable
                 @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.BREAKCAP ? FragileGlassBase.BREAKCAP.<T>cast(inst) : null;
+                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : null;
                 }
             };
             evt.addCapability(DataReference.BREAK_LOCATION, iCapProv);

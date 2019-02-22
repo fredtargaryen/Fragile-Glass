@@ -16,9 +16,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,8 +84,8 @@ public class FragilityDataManager {
 
                             @Nullable
                             @Override
-                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : null;
                             }
                         };
                         evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
@@ -105,8 +104,8 @@ public class FragilityDataManager {
 
                             @Nullable
                             @Override
-                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : null;
                             }
                         };
                         evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
@@ -123,8 +122,8 @@ public class FragilityDataManager {
 
                             @Nullable
                             @Override
-                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : null;
                             }
                         };
                         evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
@@ -147,8 +146,8 @@ public class FragilityDataManager {
 
                             @Nullable
                             @Override
-                            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? FragileGlassBase.FRAGILECAP.<T>cast(inst) : null;
+                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : null;
                             }
                         };
                         evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
