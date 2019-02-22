@@ -131,9 +131,10 @@ public class FragileGlassBase {
     private static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
     public FragileGlassBase() {
-        IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus()
+        IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the setup method for modloading
-        loadingBus.addListener(this::preInit);
+        loadingBus.addListener(this::postRegistration);
+        //TODO Needed?
         // Register the enqueueIMC method for modloading
         loadingBus.addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
@@ -145,7 +146,34 @@ public class FragileGlassBase {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public void preInit(FMLCommonSetupEvent event)
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event)
+    {
+        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock,
+                thinIce, sugarCauldron, weakStone);
+    }
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event)
+    {
+        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane,
+                iSugarBlock, iThinIce, iSugarCauldron, iWeakStone);
+    }
+
+    @SubscribeEvent
+    public static void registerTileEntities(IForgeRegistry<TileEntityType<?>> registry)
+    {
+        registry.register(TileEntityType.Builder.create(TileEntityFragileGlass::new)
+                .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tefg")));
+        registry.register(TileEntityType.Builder.create(TileEntityWeakStone::new)
+                .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tews")));
+    }
+
+    /**
+     * Called after all registry events. Runs in parallel with other SetupEvent handlers.
+     * @param event
+     */
+    public void postRegistration(FMLCommonSetupEvent event)
     {
         PacketHandler.init();
 
@@ -198,44 +226,16 @@ public class FragileGlassBase {
                 .setRegistryName("stainedfragileglass");
         iStainedFragilePane = new ItemBlockStainedFragilePane(stainedFragilePane)
                 .setRegistryName("stainedfragilepane");
-        iSugarBlock = new ItemBlock(sugarBlock)
+        iSugarBlock = new ItemBlock(sugarBlock, new Item.Properties().group(ItemGroup.FOOD))
                 .setRegistryName("sugarblock");
-        iThinIce = new ItemBlock(thinIce)
+        iThinIce = new ItemBlock(thinIce, new Item.Properties().group(ItemGroup.MISC))
                 .setRegistryName("thinice");
-        iSugarCauldron = new ItemBlock(sugarCauldron)
+        iSugarCauldron = new ItemBlock(sugarCauldron, new Item.Properties().group(ItemGroup.TOOLS))
                 .setRegistryName("sugarcauldron");
-        iWeakStone = new ItemBlock(weakStone)
+        iWeakStone = new ItemBlock(weakStone, new Item.Properties().group(ItemGroup.MISC))
                 .setRegistryName("weakstone");
-    }
 
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event)
-    {
-        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock,
-                thinIce, sugarCauldron, weakStone);
-    }
-
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event)
-    {
-        event.getRegistry().registerAll(iFragileGlass, iFragilePane, iStainedFragileGlass, iStainedFragilePane,
-                iSugarBlock, iThinIce, iSugarCauldron, iWeakStone);
-    }
-
-    @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event)
-    {
-        proxy.registerModels();
-        proxy.doStateMappings();
-    }
-
-    public void load(FMLInitializationEvent event)
-    {
-    	GameRegistry.registerTileEntity(TileEntityFragileGlass.class, new ResourceLocation(DataReference.MODID+":tefg"));
-    	GameRegistry.registerTileEntity(TileEntityWeakStone.class, new ResourceLocation(DataReference.MODID+":tews"));
-
-        OreDictionary.registerOre("blockSugar", sugarBlock);
-
+        //WORLDGEN SETUP
         if(genThinIce)
         {
             patchGenIce = new PatchGenIce();
@@ -246,11 +246,13 @@ public class FragileGlassBase {
             patchGenStone = new PatchGenStone();
             GameRegistry.registerWorldGenerator(patchGenStone, 1);
         }
-    }
 
-    public void postInit(FMLPostInitializationEvent event) {
+        //ORE DICTIONARY
+        OreDictionary.registerOre("blockSugar", sugarBlock);
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
+
+        //LOAD FRAGILITY AND BREAKER CONFIGS
         breakerDataManager.loadEntityData();
         fragDataManager.loadBlockData();
     }
