@@ -546,9 +546,9 @@ public class FragileGlassBase {
                                 IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
 
                                 @Override
-                                public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+                                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
                                     if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
-                                        return PLAYERBREAKCAP.<T>cast(inst);
+                                        return LazyOptional.of(() -> (T) inst);
                                     }
                                     return null;
                                 }
