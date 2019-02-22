@@ -170,30 +170,22 @@ public class FragileGlassBase {
 
         //BLOCK SETUP
     	fragileGlass = new BlockFragileGlass()
-                .setUnlocalizedName("fragileglass")
                 .setRegistryName("fragileglass");
     	fragilePane = new BlockFragilePane()
-    			.setUnlocalizedName("fragilepane")
                 .setRegistryName("fragilepane");
         stainedFragileGlass = new BlockStainedFragileGlass()
-                .setUnlocalizedName("stainedfragileglass")
                 .setRegistryName("stainedfragileglass");
         stainedFragilePane = new BlockStainedFragilePane()
-                .setUnlocalizedName("stainedfragilepane")
                 .setRegistryName("stainedfragilepane");
     	sugarBlock = new SugarBlock()
-                .setUnlocalizedName("sugarblock")
                 .setRegistryName("sugarblock");
         thinIce = new BlockThinIce()
-                .setUnlocalizedName("thinice")
                 .setRegistryName("thinice");
         sugarCauldron = new BlockSugarCauldron()
-                .setUnlocalizedName("sugarcauldron")
                 .setHardness(5.0F)
                 .setResistance(10.0F)
                 .setRegistryName("sugarcauldron");
         weakStone = new BlockWeakStone()
-                .setUnlocalizedName("weakstone")
                 .setRegistryName("weakstone");
 
         //ITEM SETUP
