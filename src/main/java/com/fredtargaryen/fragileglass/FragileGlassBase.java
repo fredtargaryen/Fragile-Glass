@@ -34,11 +34,11 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -58,6 +58,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +67,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Mod(value = DataReference.MODID)
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(DataReference.MODID)
 public class FragileGlassBase {
     // Directly reference a log4j logger.
@@ -127,7 +128,7 @@ public class FragileGlassBase {
     public static Item iWeakStone;
 
     // Says where the client and server 'proxy' code is loaded.
-    private static IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    private static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
     public FragileGlassBase() {
         IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus()
@@ -425,7 +426,7 @@ public class FragileGlassBase {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void stopSystem(WorldEvent.Unload event) {
-        IWorld w = event.getWorld();
+        World w = (World) event.getWorld();
         if(!w.isSer) {
             if(breakSystem != null) {
                 breakSystem.end(w);
