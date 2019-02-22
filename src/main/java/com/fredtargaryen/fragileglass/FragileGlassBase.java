@@ -1,10 +1,6 @@
 /**
  * TODO
- * Need to flatten blocks and items. Might need:
- * EnumDyeColor[] aenumdyecolor = EnumDyeColor.values();
- *         for (EnumDyeColor enumdyecolor : aenumdyecolor) {
- *             list.add(new ItemStack(this, 1, enumdyecolor.getMetadata()));
- *         }
+ * Need to flatten items
  */
 package com.fredtargaryen.fragileglass;
 
@@ -29,21 +25,18 @@ import com.fredtargaryen.fragileglass.worldgen.PatchGenStone;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -63,6 +56,8 @@ import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -91,23 +86,86 @@ public class FragileGlassBase {
 
     public static BreakSystem breakSystem;
 
-    //Declare all blocks here
+    //Declare all blocks here. The Flattening: oh no
     @ObjectHolder("fragileglass")
-    public static Block fragileGlass;
+    public static Block FRAGILE_GLASS;
     @ObjectHolder("fragilepane")
-	public static Block fragilePane;
-    @ObjectHolder("stainedfragileglass")
-    public static Block stainedFragileGlass;
-    @ObjectHolder("stainedfragilepane")
-    public static Block stainedFragilePane;
+	public static Block FRAGILE_PANE;
+    //Stained glass
+    @ObjectHolder("whitestainedfragileglass")
+    public static Block WHITE_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("orangestainedfragileglass")
+    public static Block ORANGE_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("magentastainedfragileglass")
+    public static Block MAGENTA_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("lightbluestainedfragileglass")
+    public static Block LIGHT_BLUE_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("yellowstainedfragileglass")
+    public static Block YELLOW_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("limestainedfragileglass")
+    public static Block LIME_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("pinkstainedfragileglass")
+    public static Block PINK_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("graystainedfragileglass")
+    public static Block GRAY_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("lightgraystainedfragileglass")
+    public static Block LIGHT_GRAY_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("cyanstainedfragileglass")
+    public static Block CYAN_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("purplestainedfragileglass")
+    public static Block PURPLE_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("bluestainedfragileglass")
+    public static Block BLUE_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("brownstainedfragileglass")
+    public static Block BROWN_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("greenstainedfragileglass")
+    public static Block GREEN_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("redstainedfragileglass")
+    public static Block RED_STAINED_FRAGILE_GLASS;
+    @ObjectHolder("blackstainedfragileglass")
+    public static Block BLACK_STAINED_FRAGILE_GLASS;
+    //Stained glass panes
+    @ObjectHolder("whitestainedfragileglasspane")
+    public static Block WHITE_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("orangestainedfragileglasspane")
+    public static Block ORANGE_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("magentastainedfragileglasspane")
+    public static Block MAGENTA_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("lightbluestainedfragileglasspane")
+    public static Block LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("yellowstainedfragileglasspane")
+    public static Block YELLOW_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("limestainedfragileglasspane")
+    public static Block LIME_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("pinkstainedfragileglasspane")
+    public static Block PINK_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("graystainedfragileglasspane")
+    public static Block GRAY_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("lightgraystainedfragileglasspane")
+    public static Block LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("cyanstainedfragileglasspane")
+    public static Block CYAN_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("purplestainedfragileglasspane")
+    public static Block PURPLE_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("bluestainedfragileglasspane")
+    public static Block BLUE_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("brownstainedfragileglasspane")
+    public static Block BROWN_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("greenstainedfragileglasspane")
+    public static Block GREEN_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("redstainedfragileglasspane")
+    public static Block RED_STAINED_FRAGILE_GLASS_PANE;
+    @ObjectHolder("blackstainedfragileglasspane")
+    public static Block BLACK_STAINED_FRAGILE_GLASS_PANE;
+    //Other blocks
     @ObjectHolder("sugarblock")
-	public static Block sugarBlock;
+	public static Block SUGAR_BLOCK;
     @ObjectHolder("thinice")
-    public static Block thinIce;
+    public static Block THIN_ICE;
     @ObjectHolder("sugarcauldron")
-    public static Block sugarCauldron;
+    public static Block SUGAR_CAULDRON;
     @ObjectHolder("weakstone")
-    public static Block weakStone;
+    public static Block WEAK_STONE;
 
     //Declare all items here
     @ObjectHolder("fragileglass")
@@ -149,8 +207,45 @@ public class FragileGlassBase {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(fragileGlass, fragilePane, stainedFragileGlass, stainedFragilePane, sugarBlock,
-                thinIce, sugarCauldron, weakStone);
+        event.getRegistry().registerAll(
+                FRAGILE_GLASS,
+                FRAGILE_PANE,
+                WHITE_STAINED_FRAGILE_GLASS,
+                ORANGE_STAINED_FRAGILE_GLASS,
+                MAGENTA_STAINED_FRAGILE_GLASS,
+                LIGHT_BLUE_STAINED_FRAGILE_GLASS,
+                YELLOW_STAINED_FRAGILE_GLASS,
+                LIME_STAINED_FRAGILE_GLASS,
+                PINK_STAINED_FRAGILE_GLASS,
+                GRAY_STAINED_FRAGILE_GLASS,
+                LIGHT_GRAY_STAINED_FRAGILE_GLASS,
+                CYAN_STAINED_FRAGILE_GLASS,
+                PURPLE_STAINED_FRAGILE_GLASS,
+                BLUE_STAINED_FRAGILE_GLASS,
+                BROWN_STAINED_FRAGILE_GLASS,
+                GREEN_STAINED_FRAGILE_GLASS,
+                RED_STAINED_FRAGILE_GLASS,
+                BLACK_STAINED_FRAGILE_GLASS,
+                WHITE_STAINED_FRAGILE_GLASS_PANE,
+                ORANGE_STAINED_FRAGILE_GLASS_PANE,
+                MAGENTA_STAINED_FRAGILE_GLASS_PANE,
+                LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE,
+                YELLOW_STAINED_FRAGILE_GLASS_PANE,
+                LIME_STAINED_FRAGILE_GLASS_PANE,
+                PINK_STAINED_FRAGILE_GLASS_PANE,
+                GRAY_STAINED_FRAGILE_GLASS_PANE,
+                LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE,
+                CYAN_STAINED_FRAGILE_GLASS_PANE,
+                PURPLE_STAINED_FRAGILE_GLASS_PANE,
+                BLUE_STAINED_FRAGILE_GLASS_PANE,
+                BROWN_STAINED_FRAGILE_GLASS_PANE,
+                GREEN_STAINED_FRAGILE_GLASS_PANE,
+                RED_STAINED_FRAGILE_GLASS_PANE,
+                BLACK_STAINED_FRAGILE_GLASS_PANE,
+                SUGAR_BLOCK,
+                THIN_ICE,
+                SUGAR_CAULDRON,
+                WEAK_STONE);
     }
 
     @SubscribeEvent
@@ -198,41 +293,102 @@ public class FragileGlassBase {
 //        fragDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
 
         //BLOCK SETUP
-    	fragileGlass = new BlockFragileGlass()
+    	FRAGILE_GLASS = new BlockFragileGlass()
                 .setRegistryName("fragileglass");
-    	fragilePane = new BlockFragilePane()
+    	FRAGILE_PANE = new BlockFragilePane()
                 .setRegistryName("fragilepane");
-        stainedFragileGlass = new BlockStainedFragileGlass()
-                .setRegistryName("stainedfragileglass");
-        stainedFragilePane = new BlockStainedFragilePane()
+
+    	WHITE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+            .setRegistryName("whitestainedfragileglass");
+        ORANGE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        MAGENTA_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        LIGHT_BLUE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        YELLOW_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        LIME_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        PINK_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        GRAY_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        LIGHT_GRAY_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        CYAN_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        PURPLE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        BLUE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        BROWN_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        GREEN_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        RED_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+        BLACK_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
+                .setRegistryName("whitestainedfragileglass");
+
+        WHITE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
                 .setRegistryName("stainedfragilepane");
-    	sugarBlock = new SugarBlock()
+        ORANGE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        MAGENTA_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        YELLOW_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        LIME_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        PINK_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        GRAY_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        CYAN_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        PURPLE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        BLUE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        BROWN_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        GREEN_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        RED_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+        BLACK_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
+                .setRegistryName("stainedfragilepane");
+
+    	SUGAR_BLOCK = new SugarBlock()
                 .setRegistryName("sugarblock");
-        thinIce = new BlockThinIce()
+        THIN_ICE = new BlockThinIce()
                 .setRegistryName("thinice");
-        sugarCauldron = new BlockSugarCauldron()
-                .setHardness(5.0F)
-                .setResistance(10.0F)
+        SUGAR_CAULDRON = new BlockSugarCauldron()
                 .setRegistryName("sugarcauldron");
-        weakStone = new BlockWeakStone()
+        WEAK_STONE = new BlockWeakStone()
                 .setRegistryName("weakstone");
 
         //ITEM SETUP
-        iFragileGlass = new ItemBlock(fragileGlass, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+        iFragileGlass = new ItemBlock(FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
                 .setRegistryName("fragileglass");
-        iFragilePane = new ItemBlock(fragilePane, new Item.Properties().group(ItemGroup.DECORATIONS))
+        iFragilePane = new ItemBlock(FRAGILE_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
                 .setRegistryName("fragilepane");
-        iStainedFragileGlass = new ItemBlockStainedFragileGlass(stainedFragileGlass)
+        iStainedFragileGlass = new ItemBlockStainedFragileGlass(WHITE_STAINED_FRAGILE_GLASS)
                 .setRegistryName("stainedfragileglass");
-        iStainedFragilePane = new ItemBlockStainedFragilePane(stainedFragilePane)
+        iStainedFragilePane = new ItemBlockStainedFragilePane(WHITE_STAINED_FRAGILE_GLASS_PANE)
                 .setRegistryName("stainedfragilepane");
-        iSugarBlock = new ItemBlock(sugarBlock, new Item.Properties().group(ItemGroup.FOOD))
+        iSugarBlock = new ItemBlock(SUGAR_BLOCK, new Item.Properties().group(ItemGroup.FOOD))
                 .setRegistryName("sugarblock");
-        iThinIce = new ItemBlock(thinIce, new Item.Properties().group(ItemGroup.MISC))
+        iThinIce = new ItemBlock(THIN_ICE, new Item.Properties().group(ItemGroup.MISC))
                 .setRegistryName("thinice");
-        iSugarCauldron = new ItemBlock(sugarCauldron, new Item.Properties().group(ItemGroup.TOOLS))
+        iSugarCauldron = new ItemBlock(SUGAR_CAULDRON, new Item.Properties().group(ItemGroup.TOOLS))
                 .setRegistryName("sugarcauldron");
-        iWeakStone = new ItemBlock(weakStone, new Item.Properties().group(ItemGroup.MISC))
+        iWeakStone = new ItemBlock(WEAK_STONE, new Item.Properties().group(ItemGroup.MISC))
                 .setRegistryName("weakstone");
 
         //WORLDGEN SETUP
@@ -269,28 +425,28 @@ public class FragileGlassBase {
                 if(trueMapping.key.getNamespace().equals("ftfragileglass")) {
                     switch (trueMapping.key.getPath()) {
                         case "ftfragileglass":
-                            trueMapping.remap(fragileGlass);
+                            trueMapping.remap(FRAGILE_GLASS);
                             break;
                         case "ftfragilepane":
-                            trueMapping.remap(fragilePane);
+                            trueMapping.remap(FRAGILE_PANE);
                             break;
                         case "ftstainedfragileglass":
-                            trueMapping.remap(stainedFragileGlass);
+                            trueMapping.remap(WHITE_STAINED_FRAGILE_GLASS);
                             break;
                         case "ftstainedfragilepane":
-                            trueMapping.remap(stainedFragilePane);
+                            trueMapping.remap(WHITE_STAINED_FRAGILE_GLASS_PANE);
                             break;
                         case "ftthinice":
-                            trueMapping.remap(thinIce);
+                            trueMapping.remap(THIN_ICE);
                             break;
                         case "ftweakstone":
-                            trueMapping.remap(weakStone);
+                            trueMapping.remap(WEAK_STONE);
                             break;
                         case "ftsugarcauldron":
-                            trueMapping.remap(sugarCauldron);
+                            trueMapping.remap(SUGAR_CAULDRON);
                             break;
                         case "ftsugarblock":
-                            trueMapping.remap(sugarBlock);
+                            trueMapping.remap(SUGAR_BLOCK);
                             break;
                         default:
                             break;
