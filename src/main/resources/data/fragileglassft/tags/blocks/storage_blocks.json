@@ -1,0 +1,6 @@
+{
+  "replace": false,
+  "optional": [
+    "#forge:storage_blocks/sugar"
+  ]
+}

@@ -26,6 +26,9 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
@@ -50,16 +53,16 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.resource.IResourceType;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 @Mod(value = DataReference.MODID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -68,7 +71,7 @@ public class FragileGlassBase {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ArrayList<Item> iceBlocks;
+    public static Tag<Block> ICE_BLOCKS;
 
     //Config vars - worldgen
     private static boolean genThinIce;
@@ -396,15 +399,22 @@ public class FragileGlassBase {
             GameRegistry.registerWorldGenerator(patchGenStone, 1);
         }
 
-        //ORE DICTIONARY
-        OreDictionary.registerOre("blockSugar", sugarBlock);
-        iceBlocks = new ArrayList<>();
-        iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
+        //TAGS
+        MinecraftForge.EVENT_BUS.register(new ISelectiveResourceReloadListener() {
+            private final ResourceLocation ICE_BLOCK_GROUP = new ResourceLocation(DataReference.MODID, "ice");
+
+            @Override
+            public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+                ICE_BLOCKS = BlockTags.getCollection().getOrCreate(ICE_BLOCK_GROUP);
+            }
+        });
 
         //LOAD FRAGILITY AND BREAKER CONFIGS
         breakerDataManager.loadEntityData();
         fragDataManager.loadBlockData();
     }
+
+    public void onBlocksRefresh(ISelectiveResourceReloadListener vent)
 
     ////////////////////////
     //FOR THE MODID CHANGE//

@@ -16,7 +16,7 @@ public class PatchGenIce extends PatchGen
 {
     public PatchGenIce()
     {
-        super(FragileGlassBase.genChanceIce, FragileGlassBase.avePatchSizeIce, FragileGlassBase.thinIce);
+        super(FragileGlassBase.genChanceIce, FragileGlassBase.avePatchSizeIce, FragileGlassBase.THIN_ICE);
     }
 
     /**
@@ -80,6 +80,6 @@ public class PatchGenIce extends PatchGen
 
     protected boolean isBlockValidToTransform(Block b)
     {
-        return b instanceof BlockIce || FragileGlassBase.iceBlocks.contains(Item.getItemFromBlock(b));
+        return FragileGlassBase.ICE_BLOCKS.contains(b);
     }
 }
