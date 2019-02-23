@@ -188,6 +188,12 @@ public class FragileGlassBase {
     @ObjectHolder("weakstone")
     public static Item iWeakStone;
 
+    //Declare TileEntityTypes here
+    public static TileEntityType TEFG_TYPE = TileEntityType.Builder.create(TileEntityFragileGlass::new)
+            .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tefg"));
+    public static TileEntityType TEWS_TYPE = TileEntityType.Builder.create(TileEntityWeakStone::new)
+            .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tews"));
+
     // Says where the client and server 'proxy' code is loaded.
     private static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
@@ -254,10 +260,8 @@ public class FragileGlassBase {
     @SubscribeEvent
     public static void registerTileEntities(IForgeRegistry<TileEntityType<?>> registry)
     {
-        registry.register(TileEntityType.Builder.create(TileEntityFragileGlass::new)
-                .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tefg")));
-        registry.register(TileEntityType.Builder.create(TileEntityWeakStone::new)
-                .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tews")));
+        registry.register(TEFG_TYPE);
+        registry.register(TEWS_TYPE);
     }
 
     /**
