@@ -56,6 +56,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -270,8 +271,8 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public static void registerBlocks(IForgeRegistry<Block> registry) {
-        registry.registerAll(
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        event.getRegistry().registerAll(
                 FRAGILE_GLASS,
                 FRAGILE_PANE,
                 WHITE_STAINED_FRAGILE_GLASS,
@@ -313,9 +314,8 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public static void registerItems(IForgeRegistry<Item> registry)
-    {
-        registry.registerAll(
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().registerAll(
                 ITEM_FRAGILE_GLASS,
                 ITEM_FRAGILE_PANE,
                 ITEM_WHITE_STAINED_FRAGILE_GLASS,
@@ -357,9 +357,8 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public static void registerTileEntities(IForgeRegistry<TileEntityType<?>> registry) {
-        registry.register(TEFG_TYPE);
-        registry.register(TEWS_TYPE);
+    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
+        event.getRegistry().registerAll(TEFG_TYPE, TEWS_TYPE);
     }
 
     /**
