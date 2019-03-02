@@ -1,7 +1,6 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.config.Config;
 import com.fredtargaryen.fragileglass.config.WorldgenConfig;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;

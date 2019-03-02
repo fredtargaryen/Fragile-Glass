@@ -2,7 +2,6 @@ package com.fredtargaryen.fragileglass.network;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
