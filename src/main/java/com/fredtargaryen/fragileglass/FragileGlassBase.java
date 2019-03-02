@@ -246,10 +246,8 @@ public class FragileGlassBase {
     public static Item ITEM_WEAK_STONE;
 
     //Declare TileEntityTypes here
-    public static TileEntityType TEFG_TYPE = TileEntityType.Builder.create(TileEntityFragileGlass::new)
-            .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tefg"));
-    public static TileEntityType TEWS_TYPE = TileEntityType.Builder.create(TileEntityWeakStone::new)
-            .build(null).setRegistryName(new ResourceLocation(DataReference.MODID, "tews"));
+    public static TileEntityType TEFG_TYPE;
+    public static TileEntityType TEWS_TYPE;
 
     // Says where the client and server 'proxy' code is loaded.
     private static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
@@ -273,92 +271,183 @@ public class FragileGlassBase {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
-                FRAGILE_GLASS,
-                FRAGILE_PANE,
-                WHITE_STAINED_FRAGILE_GLASS,
-                ORANGE_STAINED_FRAGILE_GLASS,
-                MAGENTA_STAINED_FRAGILE_GLASS,
-                LIGHT_BLUE_STAINED_FRAGILE_GLASS,
-                YELLOW_STAINED_FRAGILE_GLASS,
-                LIME_STAINED_FRAGILE_GLASS,
-                PINK_STAINED_FRAGILE_GLASS,
-                GRAY_STAINED_FRAGILE_GLASS,
-                LIGHT_GRAY_STAINED_FRAGILE_GLASS,
-                CYAN_STAINED_FRAGILE_GLASS,
-                PURPLE_STAINED_FRAGILE_GLASS,
-                BLUE_STAINED_FRAGILE_GLASS,
-                BROWN_STAINED_FRAGILE_GLASS,
-                GREEN_STAINED_FRAGILE_GLASS,
-                RED_STAINED_FRAGILE_GLASS,
-                BLACK_STAINED_FRAGILE_GLASS,
-                WHITE_STAINED_FRAGILE_GLASS_PANE,
-                ORANGE_STAINED_FRAGILE_GLASS_PANE,
-                MAGENTA_STAINED_FRAGILE_GLASS_PANE,
-                LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE,
-                YELLOW_STAINED_FRAGILE_GLASS_PANE,
-                LIME_STAINED_FRAGILE_GLASS_PANE,
-                PINK_STAINED_FRAGILE_GLASS_PANE,
-                GRAY_STAINED_FRAGILE_GLASS_PANE,
-                LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE,
-                CYAN_STAINED_FRAGILE_GLASS_PANE,
-                PURPLE_STAINED_FRAGILE_GLASS_PANE,
-                BLUE_STAINED_FRAGILE_GLASS_PANE,
-                BROWN_STAINED_FRAGILE_GLASS_PANE,
-                GREEN_STAINED_FRAGILE_GLASS_PANE,
-                RED_STAINED_FRAGILE_GLASS_PANE,
-                BLACK_STAINED_FRAGILE_GLASS_PANE,
-                SUGAR_BLOCK,
-                THIN_ICE,
-                SUGAR_CAULDRON,
-                WEAK_STONE);
+                //Non-stained blocks
+                new BlockFragileGlass()
+                        .setRegistryName("fragileglass"),
+                new BlockFragilePane()
+                        .setRegistryName("fragilepane"),
+                new SugarBlock()
+                        .setRegistryName("sugarblock"),
+                new BlockThinIce()
+                        .setRegistryName("thinice"),
+                new BlockSugarCauldron()
+                        .setRegistryName("sugarcauldron"),
+                new BlockWeakStone()
+                        .setRegistryName("weakstone"),
+                //Stained Fragile Glass blocks
+                new BlockStainedFragileGlass()
+                        .setRegistryName("whitestainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("orangestainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("magentastainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("lightbluestainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("yellowstainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("limestainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("pinkstainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("graystainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("lightgraystainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("cyanstainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("purplestainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("bluestainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("brownstainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("greenstainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("redstainedfragileglass"),
+                new BlockStainedFragileGlass()
+                        .setRegistryName("blackstainedfragileglass"),
+                //Stained fragile glass panes
+                new BlockStainedFragilePane()
+                        .setRegistryName("whitestainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("orangestainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("magentastainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("lightbluestainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("yellowstainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("limestainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("pinkstainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("graystainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("lightgraystainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("cyanstainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("purplestainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("bluestainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("brownstainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("greenstainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("redstainedfragilepane"),
+                new BlockStainedFragilePane()
+                        .setRegistryName("blackstainedfragilepane")
+        );
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                ITEM_FRAGILE_GLASS,
-                ITEM_FRAGILE_PANE,
-                ITEM_WHITE_STAINED_FRAGILE_GLASS,
-                ITEM_ORANGE_STAINED_FRAGILE_GLASS,
-                ITEM_MAGENTA_STAINED_FRAGILE_GLASS,
-                ITEM_LIGHT_BLUE_STAINED_FRAGILE_GLASS,
-                ITEM_YELLOW_STAINED_FRAGILE_GLASS,
-                ITEM_LIME_STAINED_FRAGILE_GLASS,
-                ITEM_PINK_STAINED_FRAGILE_GLASS,
-                ITEM_GRAY_STAINED_FRAGILE_GLASS,
-                ITEM_LIGHT_GRAY_STAINED_FRAGILE_GLASS,
-                ITEM_CYAN_STAINED_FRAGILE_GLASS,
-                ITEM_PURPLE_STAINED_FRAGILE_GLASS,
-                ITEM_BLUE_STAINED_FRAGILE_GLASS,
-                ITEM_BROWN_STAINED_FRAGILE_GLASS,
-                ITEM_GREEN_STAINED_FRAGILE_GLASS,
-                ITEM_RED_STAINED_FRAGILE_GLASS,
-                ITEM_BLACK_STAINED_FRAGILE_GLASS,
-                ITEM_WHITE_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_ORANGE_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_MAGENTA_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_YELLOW_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_LIME_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_PINK_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_GRAY_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_CYAN_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_PURPLE_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_BLUE_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_BROWN_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_GREEN_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_RED_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_BLACK_STAINED_FRAGILE_GLASS_PANE,
-                ITEM_SUGAR_BLOCK,
-                ITEM_THIN_ICE,
-                ITEM_SUGAR_CAULDRON,
-                ITEM_WEAK_STONE);
+                //Non-stained blocks
+                new ItemBlock(FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("fragileglass"),
+                new ItemBlock(FRAGILE_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("fragilepane"),
+                new ItemBlock(SUGAR_BLOCK, new Item.Properties().group(ItemGroup.FOOD))
+                        .setRegistryName("sugarblock"),
+                new ItemBlock(THIN_ICE, new Item.Properties().group(ItemGroup.MISC))
+                        .setRegistryName("thinice"),
+                new ItemBlock(SUGAR_CAULDRON, new Item.Properties().group(ItemGroup.TOOLS))
+                        .setRegistryName("sugarcauldron"),
+                new ItemBlock(WEAK_STONE, new Item.Properties().group(ItemGroup.MISC))
+                        .setRegistryName("weakstone"),
+                //Stained Fragile Glass blocks
+                new ItemBlock(WHITE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("whitestainedfragileglass"),
+                new ItemBlock(ORANGE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("orangestainedfragileglass"),
+                new ItemBlock(MAGENTA_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("magentastainedfragileglass"),
+                new ItemBlock(LIGHT_BLUE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("lightbluestainedfragileglass"),
+                new ItemBlock(YELLOW_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("yellowstainedfragileglass"),
+                new ItemBlock(LIME_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("limestainedfragileglass"),
+                new ItemBlock(PINK_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("pinkstainedfragileglass"),
+                new ItemBlock(GRAY_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("graystainedfragileglass"),
+                new ItemBlock(LIGHT_GRAY_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("lightgraystainedfragileglass"),
+                new ItemBlock(CYAN_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("cyanstainedfragileglass"),
+                new ItemBlock(PURPLE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("purplestainedfragileglass"),
+                new ItemBlock(BLUE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("bluestainedfragileglass"),
+                new ItemBlock(BROWN_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("brownstainedfragileglass"),
+                new ItemBlock(GREEN_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("greenstainedfragileglass"),
+                new ItemBlock(RED_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("redstainedfragileglass"),
+                new ItemBlock(BLACK_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+                        .setRegistryName("blackstainedfragileglass"),
+                //Stained Fragile Glass panes
+                new ItemBlock(WHITE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("whitestainedfragilepane"),
+                new ItemBlock(ORANGE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("orangestainedfragileglass"),
+                new ItemBlock(MAGENTA_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("magentastainedfragileglass"),
+                new ItemBlock(LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("lightbluestainedfragileglass"),
+                new ItemBlock(YELLOW_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("yellowstainedfragileglass"),
+                new ItemBlock(LIME_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("limestainedfragileglass"),
+                new ItemBlock(PINK_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("pinkstainedfragileglass"),
+                new ItemBlock(GRAY_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("graystainedfragileglass"),
+                new ItemBlock(LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("lightgraystainedfragileglass"),
+                new ItemBlock(CYAN_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("cyanstainedfragileglass"),
+                new ItemBlock(PURPLE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("purplestainedfragileglass"),
+                new ItemBlock(BLUE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("bluestainedfragileglass"),
+                new ItemBlock(BROWN_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("brownstainedfragileglass"),
+                new ItemBlock(GREEN_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("greenstainedfragileglass"),
+                new ItemBlock(RED_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("redstainedfragileglass"),
+                new ItemBlock(BLACK_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
+                        .setRegistryName("blackstainedfragileglass")
+        );
     }
 
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().registerAll(TEFG_TYPE, TEWS_TYPE);
+        event.getRegistry().registerAll(
+                TileEntityType.Builder.create(TileEntityFragileGlass::new)
+                        .build(null)
+                        .setRegistryName(new ResourceLocation(DataReference.MODID, "tefg")),
+                TileEntityType.Builder.create(TileEntityWeakStone::new)
+                        .build(null)
+                        .setRegistryName(new ResourceLocation(DataReference.MODID, "tews"))
+        );
     }
 
     /**
@@ -379,168 +468,6 @@ public class FragileGlassBase {
 //        breakerDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
 //        fragDataManager = FragilityDataManager.getInstance();
 //        fragDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
-
-        //BLOCK SETUP
-    	FRAGILE_GLASS = new BlockFragileGlass()
-                .setRegistryName("fragileglass");
-    	FRAGILE_PANE = new BlockFragilePane()
-                .setRegistryName("fragilepane");
-
-    	WHITE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        ORANGE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        MAGENTA_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        LIGHT_BLUE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        YELLOW_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        LIME_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        PINK_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        GRAY_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        LIGHT_GRAY_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        CYAN_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        PURPLE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        BLUE_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        BROWN_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        GREEN_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        RED_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-        BLACK_STAINED_FRAGILE_GLASS = new BlockStainedFragileGlass()
-                .setRegistryName("whitestainedfragileglass");
-
-        WHITE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        ORANGE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        MAGENTA_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        YELLOW_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        LIME_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        PINK_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        GRAY_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        CYAN_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        PURPLE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        BLUE_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        BROWN_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        GREEN_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        RED_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-        BLACK_STAINED_FRAGILE_GLASS_PANE = new BlockStainedFragilePane()
-                .setRegistryName("stainedfragilepane");
-
-    	SUGAR_BLOCK = new SugarBlock()
-                .setRegistryName("sugarblock");
-        THIN_ICE = new BlockThinIce()
-                .setRegistryName("thinice");
-        SUGAR_CAULDRON = new BlockSugarCauldron()
-                .setRegistryName("sugarcauldron");
-        WEAK_STONE = new BlockWeakStone()
-                .setRegistryName("weakstone");
-
-        //ITEM SETUP
-        ITEM_FRAGILE_GLASS = new ItemBlock(FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("fragileglass");
-        ITEM_FRAGILE_PANE = new ItemBlock(FRAGILE_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("fragilepane");
-
-        ITEM_WHITE_STAINED_FRAGILE_GLASS = new ItemBlock(WHITE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("whitestainedfragileglass");
-        ITEM_ORANGE_STAINED_FRAGILE_GLASS = new ItemBlock(ORANGE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("orangestainedfragileglass");
-        ITEM_MAGENTA_STAINED_FRAGILE_GLASS = new ItemBlock(MAGENTA_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("magentastainedfragileglass");
-        ITEM_LIGHT_BLUE_STAINED_FRAGILE_GLASS = new ItemBlock(LIGHT_BLUE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("lightbluestainedfragileglass");
-        ITEM_YELLOW_STAINED_FRAGILE_GLASS = new ItemBlock(YELLOW_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("yellowstainedfragileglass");
-        ITEM_LIME_STAINED_FRAGILE_GLASS = new ItemBlock(LIME_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("limestainedfragileglass");
-        ITEM_PINK_STAINED_FRAGILE_GLASS = new ItemBlock(PINK_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("pinkstainedfragileglass");
-        ITEM_GRAY_STAINED_FRAGILE_GLASS = new ItemBlock(GRAY_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("graystainedfragileglass");
-        ITEM_LIGHT_GRAY_STAINED_FRAGILE_GLASS = new ItemBlock(LIGHT_GRAY_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("lightgraystainedfragileglass");
-        ITEM_CYAN_STAINED_FRAGILE_GLASS = new ItemBlock(CYAN_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("cyanstainedfragileglass");
-        ITEM_PURPLE_STAINED_FRAGILE_GLASS = new ItemBlock(PURPLE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("purplestainedfragileglass");
-        ITEM_BLUE_STAINED_FRAGILE_GLASS = new ItemBlock(BLUE_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("bluestainedfragileglass");
-        ITEM_BROWN_STAINED_FRAGILE_GLASS = new ItemBlock(BROWN_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("brownstainedfragileglass");
-        ITEM_GREEN_STAINED_FRAGILE_GLASS = new ItemBlock(GREEN_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("greenstainedfragileglass");
-        ITEM_RED_STAINED_FRAGILE_GLASS = new ItemBlock(RED_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("redstainedfragileglass");
-        ITEM_BLACK_STAINED_FRAGILE_GLASS = new ItemBlock(BLACK_STAINED_FRAGILE_GLASS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
-                .setRegistryName("blackstainedfragileglass");
-
-        ITEM_WHITE_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(WHITE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("whitestainedfragilepane");
-        ITEM_ORANGE_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(ORANGE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("orangestainedfragileglass");
-        ITEM_MAGENTA_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(MAGENTA_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("magentastainedfragileglass");
-        ITEM_LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(LIGHT_BLUE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("lightbluestainedfragileglass");
-        ITEM_YELLOW_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(YELLOW_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("yellowstainedfragileglass");
-        ITEM_LIME_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(LIME_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("limestainedfragileglass");
-        ITEM_PINK_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(PINK_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("pinkstainedfragileglass");
-        ITEM_GRAY_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(GRAY_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("graystainedfragileglass");
-        ITEM_LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(LIGHT_GRAY_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("lightgraystainedfragileglass");
-        ITEM_CYAN_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(CYAN_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("cyanstainedfragileglass");
-        ITEM_PURPLE_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(PURPLE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("purplestainedfragileglass");
-        ITEM_BLUE_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(BLUE_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("bluestainedfragileglass");
-        ITEM_BROWN_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(BROWN_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("brownstainedfragileglass");
-        ITEM_GREEN_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(GREEN_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("greenstainedfragileglass");
-        ITEM_RED_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(RED_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("redstainedfragileglass");
-        ITEM_BLACK_STAINED_FRAGILE_GLASS_PANE = new ItemBlock(BLACK_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
-                .setRegistryName("blackstainedfragileglass");
-
-        ITEM_SUGAR_BLOCK = new ItemBlock(SUGAR_BLOCK, new Item.Properties().group(ItemGroup.FOOD))
-                .setRegistryName("sugarblock");
-        ITEM_THIN_ICE = new ItemBlock(THIN_ICE, new Item.Properties().group(ItemGroup.MISC))
-                .setRegistryName("thinice");
-        ITEM_SUGAR_CAULDRON = new ItemBlock(SUGAR_CAULDRON, new Item.Properties().group(ItemGroup.TOOLS))
-                .setRegistryName("sugarcauldron");
-        ITEM_WEAK_STONE = new ItemBlock(WEAK_STONE, new Item.Properties().group(ItemGroup.MISC))
-                .setRegistryName("weakstone");
 
         //TODO WORLDGEN SETUP
         if(WorldgenConfig.GEN_THIN_ICE.get())
