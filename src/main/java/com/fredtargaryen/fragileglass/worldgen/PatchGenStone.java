@@ -1,6 +1,8 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.Config;
+import com.fredtargaryen.fragileglass.config.WorldgenConfig;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +16,7 @@ public class PatchGenStone extends PatchGen
 {
     public PatchGenStone()
     {
-        super(FragileGlassBase.genChanceStone, FragileGlassBase.avePatchSizeStone, FragileGlassBase.weakStone);
+        super(WorldgenConfig.GEN_CHANCE_STONE, WorldgenConfig.AVG_PATCH_SIZE_STONE, FragileGlassBase.WEAK_STONE);
     }
 
     /**

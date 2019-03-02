@@ -5,6 +5,8 @@
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
+import com.fredtargaryen.fragileglass.config.Config;
+import com.fredtargaryen.fragileglass.config.WorldgenConfig;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
@@ -46,11 +48,13 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.resource.IResourceType;
@@ -70,14 +74,6 @@ public class FragileGlassBase {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static Tag<Block> ICE_BLOCKS;
-
-    //Config vars - worldgen
-    private static boolean genThinIce;
-    public static int avePatchSizeIce;
-    public static int genChanceIce;
-    private static boolean genWeakStone;
-    public static int avePatchSizeStone;
-    public static int genChanceStone;
 
     private static BreakerDataManager breakerDataManager;
     private static FragilityDataManager fragDataManager;
@@ -258,12 +254,19 @@ public class FragileGlassBase {
     private static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
     public FragileGlassBase() {
+        //Register the config
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG_SPEC);
+
+        //Event bus
         IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the setup method for modloading
         loadingBus.addListener(this::postRegistration);
 
         // Register ourselves for server, registry and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        //Load the config
+        Config.loadConfig(FMLPaths.CONFIGDIR.get().resolve(DataReference.MODID + ".toml"));
     }
 
     @SubscribeEvent
@@ -551,16 +554,16 @@ public class FragileGlassBase {
         ITEM_WEAK_STONE = new ItemBlock(WEAK_STONE, new Item.Properties().group(ItemGroup.MISC))
                 .setRegistryName("weakstone");
 
-        //WORLDGEN SETUP
-        if(genThinIce)
+        //TODO WORLDGEN SETUP
+        if(WorldgenConfig.GEN_THIN_ICE.get())
         {
             patchGenIce = new PatchGenIce();
-            GameRegistry.registerWorldGenerator(patchGenIce, 1);
+            //GameRegistry.registerWorldGenerator(patchGenIce, 1);
         }
-        if(genWeakStone)
+        if(WorldgenConfig.GEN_WEAK_STONE.get())
         {
             patchGenStone = new PatchGenStone();
-            GameRegistry.registerWorldGenerator(patchGenStone, 1);
+            //GameRegistry.registerWorldGenerator(patchGenStone, 1);
         }
 
         //TAGS

@@ -5,6 +5,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraftforge.common.ForgeConfig;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
@@ -20,12 +22,12 @@ public abstract class PatchGen implements IWorldGenerator
     private static final double piFraction = Math.PI / 6;
     private static final double twoPi = Math.PI * 2;
 
-    public PatchGen (int genChance, int avePatchSize, Block blockToSet) {
-        this.genChance = genChance;
-        this.avePatchSize = avePatchSize;
+    public PatchGen (ForgeConfigSpec.IntValue genChance, ForgeConfigSpec.IntValue avePatchSize, Block blockToSet) {
+        this.genChance = genChance.get();
+        this.avePatchSize = avePatchSize.get();
         this.blockToSet =  blockToSet;
         this.timeSinceLastPatch = 0;
-        this.timeToWaitBeforeBonusPatch = genChance + 1;
+        this.timeToWaitBeforeBonusPatch = this.genChance + 1;
     }
 
     /**

@@ -1,9 +1,8 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.Config;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockIce;
-import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -16,7 +15,7 @@ public class PatchGenIce extends PatchGen
 {
     public PatchGenIce()
     {
-        super(FragileGlassBase.genChanceIce, FragileGlassBase.avePatchSizeIce, FragileGlassBase.THIN_ICE);
+        super(WorldgenConfig.GEN_CHANCE_ICE, WorldgenConfig.AVG_PATCH_SIZE_ICE, FragileGlassBase.THIN_ICE);
     }
 
     /**
