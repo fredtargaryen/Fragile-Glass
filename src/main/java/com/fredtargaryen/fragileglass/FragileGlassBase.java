@@ -570,8 +570,6 @@ public class FragileGlassBase {
         fragDataManager.loadBlockData();
     }
 
-    public void onBlocksRefresh(ISelectiveResourceReloadListener vent)
-
     ////////////////////////
     //FOR THE MODID CHANGE//
     ////////////////////////
@@ -692,10 +690,13 @@ public class FragileGlassBase {
                             }
                         }
 
-                        @SubscribeEvent
-                        public void killObject(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-                            MinecraftForge.EVENT_BUS.unregister(this);
-                        }
+                        /**
+                         * TODO
+                         */
+//                        @SubscribeEvent
+//                        public void killObject(Discon event) {
+//                            MinecraftForge.EVENT_BUS.unregister(this);
+//                        }
                     });
                 }
             } else {
@@ -744,7 +745,7 @@ public class FragileGlassBase {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void stopSystem(WorldEvent.Unload event) {
         World w = (World) event.getWorld();
-        if(!w.isSer) {
+        if(!w.isRemote) {
             if(breakSystem != null) {
                 breakSystem.end(w);
             }
