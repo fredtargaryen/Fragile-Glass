@@ -1,7 +1,7 @@
 package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
-import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraft.entity.EntityType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +13,9 @@ public class BreakerConfigLoader {
     private static final String RES_LOC_REGEX = "[a-z]+:[a-z|_]+";
 
     private BreakerDataManager manager;
-    private HashMap<EntityEntry, BreakerData> entities;
+    private HashMap<EntityType, BreakerData> entities;
 
-    public BreakerConfigLoader(BreakerDataManager manager, HashMap<EntityEntry, BreakerData> entities) {
+    public BreakerConfigLoader(BreakerDataManager manager, HashMap<EntityType, BreakerData> entities) {
         this.manager = manager;
         this.entities = entities;
     }
@@ -50,7 +50,7 @@ public class BreakerConfigLoader {
                                 minSpeedSquared = maxSpeedSquared;
                                 maxSpeedSquared = temp;
                             }
-                            EntityEntry entry = this.manager.getEntityEntry(values[0]);
+                            EntityType entry = this.manager.getEntityType(values[0]);
                             if(entry != null) {
                                 //It's a valid entity
                                 this.entities.put(entry, new BreakerData(minSpeedSquared, maxSpeedSquared,

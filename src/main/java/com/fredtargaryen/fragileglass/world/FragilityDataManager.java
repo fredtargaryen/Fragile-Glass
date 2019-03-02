@@ -10,6 +10,7 @@ import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -137,7 +139,7 @@ public class FragilityDataManager {
                                         BlockPos pos = te.getPos();
                                         if (BlockFalling.canFallThrough(w.getBlockState(pos.down()))) {
                                             EntityFallingBlock fallingBlock = new EntityFallingBlock(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
-                                            fallingBlock.tileEntityData = te.writeToNBT(new NBTTagCompound());
+                                            fallingBlock.tileEntityData = te.write(new NBTTagCompound());
                                             w.spawnEntity(fallingBlock);
                                         }
                                     }
@@ -165,10 +167,8 @@ public class FragilityDataManager {
     }
 
     public FragilityData getTileEntityFragilityData(TileEntity te) {
-        //Consider me the ambassador for using "clarse" instead of "clazz"
-        Class<? extends TileEntity> clarse = te.getClass();
         //Use the tile entity's class in the TileEntityRegistry to get its ResourceLocation
-        ResourceLocation resourceLocation = TileEntity.getKey(clarse);
+        ResourceLocation resourceLocation = ForgeRegistries.TILE_ENTITIES.getKey(te.getType());
         if(resourceLocation != null) {
             //The TileEntity is in the registry
             String resourceLocationString = resourceLocation.toString();

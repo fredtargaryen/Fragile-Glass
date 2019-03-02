@@ -5,6 +5,7 @@ import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
@@ -13,12 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +31,7 @@ public class BreakerDataManager {
     private File configDir;
     private File configFile;
 
-    private HashMap<EntityEntry, BreakerData> entityData;
+    private HashMap<EntityType, BreakerData> entityData;
 
     public static BreakerDataManager getInstance() {
         if(INSTANCE == null) {
@@ -62,7 +59,7 @@ public class BreakerDataManager {
                     IBreakCapability inst = FragileGlassBase.BREAKCAP.getDefaultInstance();
 
                     @Override
-                    public <T> LazyOptional<T> getCapability(Capability<T> capability, EnumFacing facing) {
+                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
                         return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : null;
                     }
                 });
@@ -123,14 +120,14 @@ public class BreakerDataManager {
     }
 
     public BreakerData getEntityBreakerData(Entity e) {
-        EntityEntry entry = EntityRegistry.getEntry(e.getClass());
+        EntityType entry = e.getType();
         if(this.entityData.containsKey(entry)) {
             return this.entityData.get(entry);
         }
         return null;
     }
 
-    public EntityEntry getEntityEntry(String s) {
+    public EntityType getEntityType(String s) {
         ResourceLocation rl = new ResourceLocation(s);
         if(ForgeRegistries.ENTITIES.containsKey(rl)) {
             return ForgeRegistries.ENTITIES.getValue(rl);

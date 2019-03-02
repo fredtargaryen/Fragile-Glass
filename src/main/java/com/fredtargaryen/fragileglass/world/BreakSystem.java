@@ -1,8 +1,6 @@
 package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
-import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
@@ -13,14 +11,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.fredtargaryen.fragileglass.FragileGlassBase.BREAKCAP;
+import static com.fredtargaryen.fragileglass.FragileGlassBase.FRAGILECAP;
 
 public class BreakSystem {
     private World world;
@@ -118,7 +117,7 @@ public class BreakSystem {
      */
     private void breakBlocksInWay(Entity e, double xToUse, double yToUse, double zToUse, double distance, byte noOfBreaks)
     {
-        AxisAlignedBB originalAABB = e.getEntityBoundingBox();
+        AxisAlignedBB originalAABB = e.getCollisionBoundingBox();
         AxisAlignedBB aabb;
         for(byte breaks = 0; breaks < noOfBreaks; ++breaks) {
             aabb = originalAABB;

@@ -1,15 +1,14 @@
 package com.fredtargaryen.fragileglass.world;
 
-import com.google.common.base.Optional;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -49,28 +48,28 @@ public class FragilityConfigLoader {
     private <P extends Comparable<P>> IBlockState applyPropertyValue(IBlockState oldState, IBlockState newState, IProperty<P> iprop, HashMap newProperties) {
         if(newState.getBlock() == oldState.getBlock()) {
             if(newProperties.containsKey(iprop)) {
-                newState = newState.withProperty(iprop, (P) newProperties.get(iprop));
+                newState = newState.with(iprop, (P) newProperties.get(iprop));
             }
             else {
-                newState = newState.withProperty(iprop, oldState.getValue(iprop));
+                newState = newState.with(iprop, oldState.get(iprop));
             }
         } else {
             if(newProperties.containsKey(iprop)) {
-                newState = newState.withProperty(iprop, (P) newProperties.get(iprop));
+                newState = newState.with(iprop, (P) newProperties.get(iprop));
             }
             else {
                 //Find a property in oldState with the same textual name as a property here. Works around blocks having
                 //different property objects which might be functionally identical.
                 String ipropstring = iprop.getName();
-                for(IProperty propkey : oldState.getPropertyKeys()) {
+                for(IProperty propkey : oldState.getProperties()) {
                     if(propkey.getName().equals(ipropstring)) {
                         //Found two properties with the same string name
-                        String propkeystring = oldState.getValue(propkey).toString();
+                        String propkeystring = oldState.get(propkey).toString();
                         //Check if the value in oldState is valid in newState
                         Optional<P> opt = iprop.parseValue(propkeystring);
                         if(opt.isPresent()) {
                             //Valid value; adjust newState
-                            newState = newState.withProperty(iprop, opt.get());
+                            newState = newState.with(iprop, opt.get());
                         }
                     }
                 }
@@ -110,14 +109,14 @@ public class FragilityConfigLoader {
         String[] splitEntryName = entryName.split("\\[");
         //Get all BlockStates with the block named in splitEntryName[0]
         Block oldBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(splitEntryName[0]));
-        List<IBlockState> allOldStates = new ArrayList<>(oldBlock.getBlockState().getValidStates());
+        List<IBlockState> allOldStates = new ArrayList<>(oldBlock.getStateContainer().getValidStates());
         //Regex ensures the length will be 1 or 2. If 1, no properties were specified so use all the states.
         if(splitEntryName.length == 2) {
             //Some properties were specified so change allOldStates
             HashMap<IProperty<?>, ?> oldSpecifiedProperties = this.obtainSpecifiedProperties(oldBlock, splitEntryName[1].split("\\]")[0]);
             for(IProperty<?> iprop : oldSpecifiedProperties.keySet()) {
                 allOldStates = allOldStates.stream()
-                        .filter(state -> state.getValue(iprop) == oldSpecifiedProperties.get(iprop))
+                        .filter(state -> state.get(iprop) == oldSpecifiedProperties.get(iprop))
                         .collect(Collectors.toList());
             }
         }
@@ -132,7 +131,7 @@ public class FragilityConfigLoader {
             if(splitNewStateName.length == 2) {
                 newSpecifiedProperties = this.obtainSpecifiedProperties(newBlock, splitNewStateName[1].split("\\]")[0]);
             }
-            for(IProperty iprop : newState.getPropertyKeys()) {
+            for(IProperty iprop : newState.getProperties()) {
                 newState = this.applyPropertyValue(oldState, newState, iprop, newSpecifiedProperties);
             }
             this.blockStates.put(oldState, new FragilityData(behaviour, breakSpeed, updateDelay, newState, extraData));
@@ -218,7 +217,7 @@ public class FragilityConfigLoader {
         if(propertiesString != null) {
             IBlockState state = block.getDefaultState();
             String[] variantInfo = propertiesString.split(",");
-            Collection<IProperty<?>> keys = state.getPropertyKeys();
+            Collection<IProperty<?>> keys = state.getProperties();
             for (String variant : variantInfo) {
                 String[] info = variant.split("=");
                 for (IProperty<?> iprop : keys) {
@@ -232,18 +231,18 @@ public class FragilityConfigLoader {
     }
 
     private <T extends Comparable<T>> IBlockState parseAndAddProperty(HashMap properties, IBlockState state, IProperty<T> iprop, String value) {
-        if(iprop instanceof PropertyBool) {
-            PropertyBool pb = (PropertyBool) iprop;
+        if(iprop instanceof BooleanProperty) {
+            BooleanProperty pb = (BooleanProperty) iprop;
             Optional<Boolean> opt = pb.parseValue(value);
             if(opt.isPresent()) properties.put(pb, opt.get());
         }
-        else if(iprop instanceof PropertyInteger) {
-            PropertyInteger pi = (PropertyInteger) iprop;
+        else if(iprop instanceof IntegerProperty) {
+            IntegerProperty pi = (IntegerProperty) iprop;
             Optional<Integer> opt = pi.parseValue(value);
             if(opt.isPresent()) properties.put(pi, opt.get());
         }
-        else if(iprop instanceof PropertyEnum) {
-            PropertyEnum pe = (PropertyEnum) iprop;
+        else if(iprop instanceof EnumProperty) {
+            EnumProperty pe = (EnumProperty) iprop;
             Optional<Enum> opt = pe.parseValue(value);
             if(opt.isPresent()) properties.put(pe, opt.get());
         }
