@@ -5,13 +5,14 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPane;
+import net.minecraft.block.BlockStainedGlass;
+import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -19,10 +20,11 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.chunk.BlockStateContainer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,22 +32,20 @@ import java.util.List;
 
 public class BlockFragilePane extends AnyFragileBlock
 {
-    static final PropertyBool NORTH = PropertyBool.create("north");
-    static final PropertyBool EAST = PropertyBool.create("east");
-    static final PropertyBool SOUTH = PropertyBool.create("south");
-    static final PropertyBool WEST = PropertyBool.create("west");
+    static final BooleanProperty NORTH = BooleanProperty.create("north");
+    static final BooleanProperty EAST = BooleanProperty.create("east");
+    static final BooleanProperty SOUTH = BooleanProperty.create("south");
+    static final BooleanProperty WEST = BooleanProperty.create("west");
     private static final AxisAlignedBB[] AABB_BY_INDEX = new AxisAlignedBB[] {new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5625D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5625D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.4375D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.4375D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.4375D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5625D), new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D)};
 
-	public BlockFragilePane()
-	{
-		super(Material.GLASS);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, false).withProperty(EAST, false).withProperty(SOUTH, false).withProperty(WEST, false));
-		this.setCreativeTab(CreativeTabs.DECORATIONS);
+	public BlockFragilePane() {
+		super(Properties.create(Material.GLASS));
+        this.setDefaultState(this.stateContainer.getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false));
 	}
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
@@ -54,42 +54,18 @@ public class BlockFragilePane extends AnyFragileBlock
     {
         return blockIn == this
                 || blockIn == Blocks.GLASS
-                || blockIn == FragileGlassBase.fragileGlass
-                || blockIn == Blocks.STAINED_GLASS
-                || blockIn == FragileGlassBase.stainedFragileGlass
-                || blockIn == Blocks.STAINED_GLASS_PANE
-                || blockIn == FragileGlassBase.stainedFragilePane
+                || blockIn == FragileGlassBase.FRAGILE_GLASS
+                || blockIn instanceof BlockStainedGlass
+                || blockIn instanceof BlockStainedFragileGlass
+                || blockIn instanceof BlockStainedGlassPane
+                || blockIn instanceof BlockStainedFragilePane
                 || blockIn instanceof BlockPane;
     }
 
-    private boolean canPaneConnectTo(IBlockAccess world, BlockPos pos, EnumFacing dir)
-    {
-        BlockPos off = pos.offset(dir);
-        IBlockState state = world.getBlockState(off);
-        return canPaneConnectToBlock(state.getBlock()) || state.isSideSolid(world, off, dir.getOpposite());
-    }
-    /**
-     * Convert the BlockState into the correct metadata value
-     */
     @Override
-    public int getMetaFromState(IBlockState state)
+    protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder)
     {
-        return 0;
-    }
-
-    @Override
-    @MethodsReturnNonnullByDefault
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH);
-    }
-
-    @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
-    {
-        Block near = world.getBlockState(pos.offset(face)).getBlock();
-        return near == FragileGlassBase.fragilePane || near == FragileGlassBase.stainedFragilePane
-                || near == Blocks.GLASS_PANE || near == Blocks.STAINED_GLASS_PANE;
+        builder.add(NORTH).add(EAST).add(SOUTH).add(WEST);
     }
 
     //////////////////////////
@@ -111,11 +87,11 @@ public class BlockFragilePane extends AnyFragileBlock
         switch (rot)
         {
             case CLOCKWISE_180:
-                return state.withProperty(NORTH, state.getValue(SOUTH)).withProperty(EAST, state.getValue(WEST)).withProperty(SOUTH, state.getValue(NORTH)).withProperty(WEST, state.getValue(EAST));
+                return state.with(NORTH, state.get(SOUTH)).with(EAST, state.get(WEST)).with(SOUTH, state.get(NORTH)).with(WEST, state.get(EAST));
             case COUNTERCLOCKWISE_90:
-                return state.withProperty(NORTH, state.getValue(EAST)).withProperty(EAST, state.getValue(SOUTH)).withProperty(SOUTH, state.getValue(WEST)).withProperty(WEST, state.getValue(NORTH));
+                return state.with(NORTH, state.get(EAST)).with(EAST, state.get(SOUTH)).with(SOUTH, state.get(WEST)).with(WEST, state.get(NORTH));
             case CLOCKWISE_90:
-                return state.withProperty(NORTH, state.getValue(WEST)).withProperty(EAST, state.getValue(NORTH)).withProperty(SOUTH, state.getValue(EAST)).withProperty(WEST, state.getValue(SOUTH));
+                return state.with(NORTH, state.get(WEST)).with(EAST, state.get(NORTH)).with(SOUTH, state.get(EAST)).with(WEST, state.get(SOUTH));
             default:
                 return state;
         }
@@ -130,39 +106,11 @@ public class BlockFragilePane extends AnyFragileBlock
         switch (mirrorIn)
         {
             case LEFT_RIGHT:
-                return state.withProperty(NORTH, state.getValue(SOUTH)).withProperty(SOUTH, state.getValue(NORTH));
+                return state.with(NORTH, state.get(SOUTH)).with(SOUTH, state.get(NORTH));
             case FRONT_BACK:
-                return state.withProperty(EAST, state.getValue(WEST)).withProperty(WEST, state.getValue(EAST));
+                return state.with(EAST, state.get(WEST)).with(WEST, state.get(EAST));
             default:
-                return super.withMirror(state, mirrorIn);
-        }
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
-    {
-        state = this.getActualState(state, worldIn, pos);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[0]);
-
-        if (state.getValue(NORTH))
-        {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.NORTH)]);
-        }
-
-        if (state.getValue(SOUTH))
-        {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.SOUTH)]);
-        }
-
-        if (state.getValue(EAST))
-        {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.EAST)]);
-        }
-
-        if (state.getValue(WEST))
-        {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, AABB_BY_INDEX[getBoundingBoxIndex(EnumFacing.WEST)]);
+                return super.mirror(state, mirrorIn);
         }
     }
 
@@ -171,7 +119,7 @@ public class BlockFragilePane extends AnyFragileBlock
         return 1 << p_185729_0_.getHorizontalIndex();
     }
 
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockReader source, BlockPos pos)
     {
         state = this.getActualState(state, source, pos);
         return AABB_BY_INDEX[getBoundingBoxIndex(state)];
@@ -181,22 +129,22 @@ public class BlockFragilePane extends AnyFragileBlock
     {
         int i = 0;
 
-        if (state.getValue(NORTH))
+        if (state.get(NORTH))
         {
             i |= getBoundingBoxIndex(EnumFacing.NORTH);
         }
 
-        if (state.getValue(EAST))
+        if (state.get(EAST))
         {
             i |= getBoundingBoxIndex(EnumFacing.EAST);
         }
 
-        if (state.getValue(SOUTH))
+        if (state.get(SOUTH))
         {
             i |= getBoundingBoxIndex(EnumFacing.SOUTH);
         }
 
-        if (state.getValue(WEST))
+        if (state.get(WEST))
         {
             i |= getBoundingBoxIndex(EnumFacing.WEST);
         }
@@ -208,28 +156,17 @@ public class BlockFragilePane extends AnyFragileBlock
      * Get the actual Block state of this Block at the given position. This applies properties not visible in the
      * metadata, such as fence connections.
      */
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    public IBlockState getActualState(IBlockState state, IBlockReader worldIn, BlockPos pos)
     {
-        return state.withProperty(NORTH, canPaneConnectTo(worldIn, pos, EnumFacing.NORTH))
-                .withProperty(SOUTH, canPaneConnectTo(worldIn, pos, EnumFacing.SOUTH))
-                .withProperty(WEST, canPaneConnectTo(worldIn, pos, EnumFacing.WEST))
-                .withProperty(EAST, canPaneConnectTo(worldIn, pos, EnumFacing.EAST));
-    }
-    ///////////////////////////////
-    //METHODS FROM BLOCKBREAKABLE//
-    ///////////////////////////////
-    /**
-     * Used to determine ambient occlusion and culling when rebuilding chunks for render
-     */
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
+        Block b = worldIn.getBlockState(pos).getBlock();
+        return state.with(NORTH, canPaneConnectToBlock(b))
+                .with(SOUTH, canPaneConnectToBlock(b))
+                .with(WEST, canPaneConnectToBlock(b))
+                .with(EAST, canPaneConnectToBlock(b));
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createTileEntity(IBlockState state, IBlockReader world) {
         try {
             return new TileEntityFragileGlass();
         }

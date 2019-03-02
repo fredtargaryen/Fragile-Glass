@@ -7,35 +7,34 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.EnumLightType;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.extensions.IForgeBlock;
 
 import java.util.Random;
 
-public class BlockThinIce extends Block
+public class BlockThinIce extends Block implements IForgeBlock
 {
     public BlockThinIce()
     {
-        super(Material.ICE);
-        this.lightOpacity = 0;
-        this.slipperiness = 0.98F;
-        this.setCreativeTab(CreativeTabs.MISC);
-        this.setTickRandomly(true);
-        this.setSoundType(SoundType.GLASS);
+        super(Properties.create(Material.ICE).slipperiness(0.98F).sound(SoundType.GLASS).needsRandomTick());
+    }
+
+    public int getOpacity(IBlockState state, IBlockReader worldIn, BlockPos pos) {
+        return Blocks.WATER.getDefaultState().getOpacity(worldIn, pos);
     }
 
     @Override
-    public int quantityDropped(Random par1Random)
-    {
+    public int getItemsToDropCount(IBlockState state, int fortune, World worldIn, BlockPos pos, Random random) {
         return 0;
     }
 
@@ -45,7 +44,7 @@ public class BlockThinIce extends Block
      * @return True if the block can be directly harvested using silk touch
      */
     @Override
-    public boolean canSilkHarvest(World world, BlockPos pos, IBlockState state, EntityPlayer player)
+    public boolean canSilkHarvest(IBlockState state, IWorldReader world, BlockPos pos, EntityPlayer player)
     {
         return false;
     }
@@ -53,17 +52,14 @@ public class BlockThinIce extends Block
     /**
      * Ticks the block if it's been scheduled
      */
-    @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
-    {
-        if (worldIn.getLightFor(EnumSkyBlock.BLOCK, pos) > 11 - this.getLightOpacity(state, worldIn, pos))
-        {
-            worldIn.setBlockToAir(pos);
+    public void tick(IBlockState state, World worldIn, BlockPos pos, Random random) {
+        if (worldIn.getLightFor(EnumLightType.BLOCK, pos) > 11 - state.getOpacity(worldIn, pos)) {
+            worldIn.removeBlock(pos);
         }
     }
 
-    @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
+    //TODO @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockReader world, BlockPos pos, EnumFacing face)
     {
         if(face == EnumFacing.DOWN)
         {
@@ -76,34 +72,34 @@ public class BlockThinIce extends Block
         else
         {
             Block near = world.getBlockState(pos.offset(face)).getBlock();
-            return near == FragileGlassBase.thinIce || near == Blocks.ICE;
+            return near == FragileGlassBase.THIN_ICE || near == Blocks.ICE;
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public BlockRenderLayer getBlockLayer()
+    @OnlyIn(Dist.CLIENT)
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.TRANSLUCENT;
     }
 
-    public BlockFaceShape getBlockFaceShape(IBlockAccess access, IBlockState state, BlockPos pos, EnumFacing facing)
+    public BlockFaceShape getBlockFaceShape(IBlockReader access, IBlockState state, BlockPos pos, EnumFacing facing)
     {
         return BlockFaceShape.UNDEFINED;
     }
 
     @Deprecated
-    @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
+    @OnlyIn(Dist.CLIENT)
+    public static boolean shouldSideBeRendered(IBlockState blockState, IBlockReader blockAccess, BlockPos pos, EnumFacing side)
     {
         if(side == EnumFacing.NORTH || side == EnumFacing.SOUTH || side == EnumFacing.EAST || side == EnumFacing.WEST)
         {
             Block b = blockAccess.getBlockState(pos.offset(side)).getBlock();
-            if(b == this || b instanceof BlockIce)
+            if(b instanceof BlockThinIce || b instanceof BlockIce)
             {
                 return false;
             }
         }
-        return super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+        return BlockIce.shouldSideBeRendered(blockState, blockAccess, pos, side);
     }
 }
 

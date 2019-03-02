@@ -3,44 +3,37 @@ package com.fredtargaryen.fragileglass.block;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
-import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-
-public class BlockWeakStone extends BlockFalling implements ITileEntityProvider {
-    @Nullable
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        try
-        {
-            return new TileEntityWeakStone();
-        }
-        catch (Exception exception)
-        {
-            throw new RuntimeException(exception);
-        }
-    }
-
+public class BlockWeakStone extends BlockFalling {
     public BlockWeakStone()
     {
-        super();
+        super(Properties.create(Material.ROCK));
     }
 
-    /**
-     * Called after the block is set in the Chunk data, but before the Tile Entity is set
-     */
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-    {
+    @Override
+    public TileEntity createTileEntity(IBlockState state, IBlockReader world) {
+        try {
+            return new TileEntityWeakStone();
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
+
+    @Override
+    public void onBlockAdded(IBlockState state, World worldIn, BlockPos pos, IBlockState otherState) {}
 
     /**
      * Called when a neighboring block was changed and marks that this state should perform any checks during a neighbor
@@ -65,8 +58,8 @@ public class BlockWeakStone extends BlockFalling implements ITileEntityProvider 
      * @param state Current state
      * @param fortune Breakers fortune level
      */
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
     {
-        drops.add(new ItemStack(Item.getItemFromBlock(Blocks.GRAVEL), 1, 0));
+        drops.add(new ItemStack(Item.getItemFromBlock(Blocks.GRAVEL), 1, new NBTTagCompound()));
     }
 }

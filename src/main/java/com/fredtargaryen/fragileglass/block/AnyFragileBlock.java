@@ -1,31 +1,25 @@
 package com.fredtargaryen.fragileglass.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import java.util.Random;
 
-abstract class AnyFragileBlock extends Block implements ITileEntityProvider
+abstract class AnyFragileBlock extends Block
 {
-    AnyFragileBlock(Material m)
+    AnyFragileBlock(Properties props)
     {
-        super(m);
-        this.setSoundType(SoundType.GLASS);
+        super(props.sound(SoundType.GLASS));
     }
 
     @Override
-    public abstract TileEntity createNewTileEntity(World worldIn, int meta);
-
-    @Override
-    public int quantityDropped(Random par1Random)
-    {
+    public int getItemsToDropCount(IBlockState state, int fortune, World worldIn, BlockPos pos, Random random) {
         return 0;
     }
 
@@ -35,8 +29,7 @@ abstract class AnyFragileBlock extends Block implements ITileEntityProvider
      * @return True if the block can be directly harvested using silk touch
      */
     @Override
-    public boolean canSilkHarvest(World world, BlockPos pos, IBlockState state, EntityPlayer player)
-    {
+    public boolean canSilkHarvest(IBlockState state, IWorldReader world, BlockPos pos, EntityPlayer player) {
         return false;
     }
 }

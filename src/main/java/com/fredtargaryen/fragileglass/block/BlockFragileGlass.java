@@ -3,47 +3,48 @@ package com.fredtargaryen.fragileglass.block;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockStainedGlass;
+import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockFragileGlass extends AnyFragileBlock
 {
 	public BlockFragileGlass()
 	{
-		super(Material.GLASS);
-		this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
-        this.setSoundType(SoundType.GLASS);
+		super(Properties.create(Material.GLASS)
+        .sound(SoundType.GLASS));
 	}
 
     //////////////////////
     //OVERRIDDEN METHODS//
     //////////////////////
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
-    {
-        Block near = world.getBlockState(pos.offset(face)).getBlock();
-        return near == FragileGlassBase.fragileGlass || near == FragileGlassBase.fragilePane
-                || near == FragileGlassBase.stainedFragileGlass || near == FragileGlassBase.stainedFragilePane
+    public boolean isSideInvisible(IBlockState thisState, IBlockState neighbourState, EnumFacing face) {
+	    Block near = neighbourState.getBlock();
+	    boolean nearIsOpaque = !(near == FragileGlassBase.FRAGILE_GLASS || near == FragileGlassBase.FRAGILE_PANE
+                || near instanceof BlockStainedFragileGlass || near instanceof BlockStainedFragilePane
                 || near == Blocks.GLASS || near == Blocks.GLASS_PANE
-                || near == Blocks.STAINED_GLASS || near == Blocks.STAINED_GLASS_PANE;
+                || near instanceof BlockStainedGlass || near instanceof BlockStainedGlassPane);
+        return nearIsOpaque || super.isSideInvisible(thisState, neighbourState, face);
     }
 
     @Override
@@ -53,21 +54,8 @@ public class BlockFragileGlass extends AnyFragileBlock
         return false;
     }
 
-    ///////////////////////////////
-    //METHODS FROM BLOCKBREAKABLE//
-    ///////////////////////////////
-    /**
-     * Used to determine ambient occlusion and culling when rebuilding chunks for render
-     */
     @Override
-    @Deprecated
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createTileEntity(IBlockState state, IBlockReader world) {
         try {
             return new TileEntityFragileGlass();
         }
@@ -75,5 +63,9 @@ public class BlockFragileGlass extends AnyFragileBlock
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean propagatesSkylightDown(IBlockState p_200123_1_, IBlockReader p_200123_2_, BlockPos p_200123_3_) {
+        return true;
     }
 }
