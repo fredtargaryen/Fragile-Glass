@@ -270,9 +270,8 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event)
-    {
-        event.getRegistry().registerAll(
+    public static void registerBlocks(IForgeRegistry<Block> registry) {
+        registry.registerAll(
                 FRAGILE_GLASS,
                 FRAGILE_PANE,
                 WHITE_STAINED_FRAGILE_GLASS,
@@ -314,9 +313,9 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event)
+    public static void registerItems(IForgeRegistry<Item> registry)
     {
-        event.getRegistry().registerAll(
+        registry.registerAll(
                 ITEM_FRAGILE_GLASS,
                 ITEM_FRAGILE_PANE,
                 ITEM_WHITE_STAINED_FRAGILE_GLASS,
@@ -358,8 +357,7 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public static void registerTileEntities(IForgeRegistry<TileEntityType<?>> registry)
-    {
+    public static void registerTileEntities(IForgeRegistry<TileEntityType<?>> registry) {
         registry.register(TEFG_TYPE);
         registry.register(TEWS_TYPE);
     }
