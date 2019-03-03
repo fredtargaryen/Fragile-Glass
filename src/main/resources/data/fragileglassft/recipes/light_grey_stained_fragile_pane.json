@@ -7,13 +7,11 @@
   ],
   "key": {
     "#": {
-      "item": "fragileglassft:lightgraystainedfragileglass",
-      "data": 8
+      "item": "fragileglassft:lightgraystainedfragileglass"
     }
   },
   "result": {
     "item": "fragileglassft:lightgraystainedfragileglasspane",
-    "data": 8,
     "count": 16
   }
 }
