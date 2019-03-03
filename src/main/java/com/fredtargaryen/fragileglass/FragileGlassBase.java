@@ -1,6 +1,5 @@
 /**
  * TODO
- * Glass isn't visible until broken
  * Glass doesn't crash
  */
 package com.fredtargaryen.fragileglass;

@@ -39,14 +39,16 @@ public class BlockFragilePane extends AnyFragileBlock
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
 
-    boolean canPaneConnectToBlock(Block blockIn)
+    public boolean canPaneConnectToBlock(Block blockIn)
     {
-        return blockIn == this
+        return blockIn.isFullCube(blockIn.getDefaultState()) ||
+                blockIn == this
                 || blockIn == Blocks.GLASS
                 || blockIn == FragileGlassBase.FRAGILE_GLASS
+                || blockIn == FragileGlassBase.FRAGILE_PANE
                 || blockIn instanceof BlockStainedGlass
-                || blockIn instanceof BlockStainedFragileGlass
                 || blockIn instanceof BlockStainedGlassPane
+                || blockIn instanceof BlockStainedFragileGlass
                 || blockIn instanceof BlockStainedFragilePane
                 || blockIn instanceof BlockPane;
     }
