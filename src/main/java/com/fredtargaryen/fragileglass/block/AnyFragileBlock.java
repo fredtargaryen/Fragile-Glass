@@ -15,7 +15,7 @@ abstract class AnyFragileBlock extends Block
 {
     AnyFragileBlock(Properties props)
     {
-        super(props.sound(SoundType.GLASS));
+        super(props);
     }
 
     @Override
