@@ -60,7 +60,7 @@ public class BreakerDataManager {
 
                     @Override
                     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                        return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : null;
+                        return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                     }
                 });
             }
@@ -112,7 +112,7 @@ public class BreakerDataManager {
                 @Nullable
                 @Override
                 public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : null;
+                    return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                 }
             };
             evt.addCapability(DataReference.BREAK_LOCATION, iCapProv);

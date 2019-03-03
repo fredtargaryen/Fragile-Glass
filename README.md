@@ -49,7 +49,7 @@ public class YourBaseModClass {
                 @Nullable
                 @Override
                 public <T> LazyOptional <T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : null;
+                    return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                 }
             };
             evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, icp);
@@ -73,7 +73,7 @@ but the validation process can change or reject certain values so it is better t
 * It is your responsibility to explain to your users how each fragility value is used for your tile entity, and to validate the values.
 * It is your users' responsibility to enter the fragility values correctly.
 
-If you want your mod to automatically add mod data, during `init` or `preInit` you can have the mod write it into a .cfg file: `fragileglassft_blocks_<name>.cfg` or `fragileglassft_entities_<name>.cfg`. This way you can force a collision behaviour by rewriting the file on mod initialisation. The mod reads from `fragileglassft_blocks.cfg` and `fragileglassft_entities.cfg` first, and the other files afterwards.
+If you want your mod to automatically add mod data, before the FMLCommonSetupEvents you can have the mod write it into a .cfg file: `fragileglassft_blocks_<name>.cfg` or `fragileglassft_entities_<name>.cfg`. This way you can force a collision behaviour by rewriting the file on mod initialisation. The mod reads from `fragileglassft_blocks.cfg` and `fragileglassft_entities.cfg` first, and the other files afterwards.
 ### Pull Requests
 Any pull requests are very welcome. There are currently no standards for pull requests but clean code which
 follows the existing patterns is appreciated. If you are making a new feature, message me first to see
