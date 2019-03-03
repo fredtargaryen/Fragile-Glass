@@ -11,12 +11,12 @@
       "item": "fragileglassft:fragileglass"
     },
     "X": {
-      "item": "minecraft:dye",
+      "item": "minecraft:cyan_dye",
       "data": 6
     }
   },
   "result": {
-    "item": "fragileglassft:stainedfragileglass",
+    "item": "fragileglassft:cyanstainedfragileglass",
     "data": 9,
     "count": 8
   }

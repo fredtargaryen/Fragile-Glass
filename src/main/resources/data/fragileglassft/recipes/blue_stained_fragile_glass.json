@@ -11,13 +11,11 @@
       "item": "fragileglassft:fragileglass"
     },
     "X": {
-      "item": "minecraft:dye",
-      "data": 4
+      "item": "minecraft:lapis_lazuli"
     }
   },
   "result": {
-    "item": "fragileglassft:stainedfragileglass",
-    "data": 11,
+    "item": "fragileglassft:bluestainedfragileglass",
     "count": 8
   }
 }

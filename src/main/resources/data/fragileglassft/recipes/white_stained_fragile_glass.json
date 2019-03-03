@@ -11,13 +11,11 @@
       "item": "fragileglassft:fragileglass"
     },
     "X": {
-      "item": "minecraft:dye",
-      "data": 15
+      "item": "minecraft:bone_meal"
     }
   },
   "result": {
-    "item": "fragileglassft:stainedfragileglass",
-    "data": 0,
+    "item": "fragileglassft:whitestainedfragileglass",
     "count": 8
   }
 }
