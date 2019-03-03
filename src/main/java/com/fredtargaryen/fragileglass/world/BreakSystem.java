@@ -118,27 +118,29 @@ public class BreakSystem {
     private void breakBlocksInWay(Entity e, double xToUse, double yToUse, double zToUse, double distance, byte noOfBreaks)
     {
         AxisAlignedBB originalAABB = e.getCollisionBoundingBox();
-        AxisAlignedBB aabb;
-        for(byte breaks = 0; breaks < noOfBreaks; ++breaks) {
-            aabb = originalAABB;
-            double xComp = xToUse / distance;
-            double yComp = yToUse / distance;
-            double zComp = zToUse / distance;
-            while (distance > 1.0) {
-                //The end of the movement vector is more than one block away from the current
-                //entity bounding box, so at the end of the tick it will have passed through
-                //at least one whole block. Offset the entity bounding box by a distance of
-                //1m (the length of a block), and check that it intersects with any fragile
-                //block bounding boxes.
-                aabb = aabb.offset(xComp, yComp, zComp);
-                distance -= 1.0;
-                this.breakNearbyFragileBlocks(e, aabb, distance);
+        if(originalAABB != null) {
+            AxisAlignedBB aabb;
+            for (byte breaks = 0; breaks < noOfBreaks; ++breaks) {
+                aabb = originalAABB;
+                double xComp = xToUse / distance;
+                double yComp = yToUse / distance;
+                double zComp = zToUse / distance;
+                while (distance > 1.0) {
+                    //The end of the movement vector is more than one block away from the current
+                    //entity bounding box, so at the end of the tick it will have passed through
+                    //at least one whole block. Offset the entity bounding box by a distance of
+                    //1m (the length of a block), and check that it intersects with any fragile
+                    //block bounding boxes.
+                    aabb = aabb.offset(xComp, yComp, zComp);
+                    distance -= 1.0;
+                    this.breakNearbyFragileBlocks(e, aabb, distance);
+                }
+                //The end of the movement vector is now less than one block away from the current
+                //entity bounding box. Offset the entity bounding box right to the end of the
+                //movement vector, and check that it intersects with the block bounding box.
+                originalAABB = originalAABB.offset(xToUse, yToUse, zToUse);
+                this.breakNearbyFragileBlocks(e, originalAABB, distance);
             }
-            //The end of the movement vector is now less than one block away from the current
-            //entity bounding box. Offset the entity bounding box right to the end of the
-            //movement vector, and check that it intersects with the block bounding box.
-            originalAABB = originalAABB.offset(xToUse, yToUse, zToUse);
-            this.breakNearbyFragileBlocks(e, originalAABB, distance);
         }
     }
 
