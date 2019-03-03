@@ -1,6 +1,7 @@
 /**
  * TODO
- * Need to flatten items
+ * Glass isn't visible until broken
+ * Glass doesn't crash
  */
 package com.fredtargaryen.fragileglass;
 
