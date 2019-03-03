@@ -463,11 +463,10 @@ public class FragileGlassBase {
         CapabilityManager.INSTANCE.register(IPlayerBreakCapability.class, new PlayerBreakStorage(), new PlayerBreakFactory());
         CapabilityManager.INSTANCE.register(IFragileCapability.class, new FragileCapStorage(), new FragileCapFactory());
 
-        //TODO CONFIG SETUP
-//        breakerDataManager = BreakerDataManager.getInstance();
-//        breakerDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
-//        fragDataManager = FragilityDataManager.getInstance();
-//        fragDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
+        breakerDataManager = BreakerDataManager.getInstance();
+        breakerDataManager.setupDirsAndFiles(FMLPaths.CONFIGDIR.get().toFile());
+        fragDataManager = FragilityDataManager.getInstance();
+        fragDataManager.setupDirsAndFiles(FMLPaths.CONFIGDIR.get().toFile());
 
         //TODO WORLDGEN SETUP
         if(WorldgenConfig.GEN_THIN_ICE.get())
