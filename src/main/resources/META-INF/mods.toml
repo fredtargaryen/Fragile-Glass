@@ -8,7 +8,7 @@ issueTrackerURL="https://github.com/fredtargaryen/Fragile-Glass/issues"
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://minecraft.curseforge.com/projects/fragile-glass-and-thin-ice"
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="assets/fragileglassft/textures/gui/banner.png"
+logoFile="banner.png"
 # A text field displayed in the mod UI
 credits="Thanks to Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12; McJty"
 # A text field displayed in the mod UI
