@@ -40,11 +40,11 @@ public class BlockFragileGlass extends AnyFragileBlock
     @Override
     public boolean isSideInvisible(IBlockState thisState, IBlockState neighbourState, EnumFacing face) {
 	    Block near = neighbourState.getBlock();
-	    boolean nearIsOpaque = !(near == FragileGlassBase.FRAGILE_GLASS || near == FragileGlassBase.FRAGILE_PANE
-                || near instanceof BlockStainedFragileGlass || near instanceof BlockStainedFragilePane
-                || near == Blocks.GLASS || near == Blocks.GLASS_PANE
-                || near instanceof BlockStainedGlass || near instanceof BlockStainedGlassPane);
-        return nearIsOpaque || super.isSideInvisible(thisState, neighbourState, face);
+	    boolean nearIsGlass = near == FragileGlassBase.FRAGILE_GLASS
+                || near instanceof BlockStainedFragileGlass
+                || near == Blocks.GLASS
+                || near instanceof BlockStainedGlass;
+        return nearIsGlass || super.isSideInvisible(thisState, neighbourState, face);
     }
 
     @Override
