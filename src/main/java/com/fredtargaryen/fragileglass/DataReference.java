@@ -9,9 +9,6 @@ public class DataReference
     public static final String MODID = "fragileglassft";
     public static final String MODNAME = "Fragile Glass and Thin Ice";
     public static final String VERSION = "2.0.0";
-    //PROXY PATHS
-    public static final String CLIENTPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ClientProxy";
-    public static final String SERVERPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ServerProxy";
 
     //The minimum speed a permitted entity must be travelling to break a fragile glass block.
     //This should be sprinting, which is over 5.5 m/s.
@@ -36,8 +33,8 @@ public class DataReference
     //Squared, to avoid a Math.sqrt() every tick: 34.7227348
     public static final double MAXIMUM_ENTITY_SPEED_SQUARED = 34.7227348;
 
-    public static final ResourceLocation BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "IBreakCapability");
-    public static final ResourceLocation PLAYER_BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "IBreakCapability2");
+    public static final ResourceLocation BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "ibreakcapability");
+    public static final ResourceLocation PLAYER_BREAK_LOCATION = new ResourceLocation(DataReference.MODID, "ibreakcapability2");
 
-    public static final ResourceLocation FRAGILE_CAP_LOCATION = new ResourceLocation(DataReference.MODID, "IFragileCapability");
+    public static final ResourceLocation FRAGILE_CAP_LOCATION = new ResourceLocation(DataReference.MODID, "ifragilecapability");
 }
