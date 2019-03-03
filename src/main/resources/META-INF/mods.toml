@@ -10,7 +10,7 @@ displayURL="https://minecraft.curseforge.com/projects/fragile-glass-and-thin-ice
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="assets/fragileglassft/textures/gui/banner.png"
 # A text field displayed in the mod UI
-credits="Thanks to Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12"
+credits="Thanks to Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12; McJty"
 # A text field displayed in the mod UI
 authors="FredTargaryen"
 # A list of mods - how many allowed here is determined by the individual mod loader
