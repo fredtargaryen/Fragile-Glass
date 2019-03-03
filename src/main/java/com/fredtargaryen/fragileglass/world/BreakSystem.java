@@ -117,7 +117,7 @@ public class BreakSystem {
      */
     private void breakBlocksInWay(Entity e, double xToUse, double yToUse, double zToUse, double distance, byte noOfBreaks)
     {
-        AxisAlignedBB originalAABB = e.getCollisionBoundingBox();
+        AxisAlignedBB originalAABB = e.getBoundingBox();
         if(originalAABB != null) {
             AxisAlignedBB aabb;
             for (byte breaks = 0; breaks < noOfBreaks; ++breaks) {
