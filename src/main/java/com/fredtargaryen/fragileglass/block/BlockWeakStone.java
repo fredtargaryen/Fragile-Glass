@@ -22,6 +22,11 @@ public class BlockWeakStone extends BlockFalling {
     }
 
     @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
+    }
+
+    @Override
     public TileEntity createTileEntity(IBlockState state, IBlockReader world) {
         try {
             return new TileEntityWeakStone();
