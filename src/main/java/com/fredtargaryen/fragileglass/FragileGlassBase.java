@@ -246,7 +246,9 @@ public class FragileGlassBase {
     public static Item ITEM_WEAK_STONE;
 
     //Declare TileEntityTypes here
+    @ObjectHolder("tefg")
     public static TileEntityType TEFG_TYPE;
+    @ObjectHolder("tews")
     public static TileEntityType TEWS_TYPE;
 
     // Says where the client and server 'proxy' code is loaded.
