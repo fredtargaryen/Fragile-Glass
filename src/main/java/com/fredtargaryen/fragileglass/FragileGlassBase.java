@@ -1,6 +1,6 @@
 /**
  * TODO
- * Glass doesn't crash
+ * Update worldgen and item tags
  */
 package com.fredtargaryen.fragileglass;
 
