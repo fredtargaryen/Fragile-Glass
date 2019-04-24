@@ -55,8 +55,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -637,7 +635,7 @@ public class FragileGlassBase {
                                     if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
                                         return LazyOptional.of(() -> (T) inst);
                                     }
-                                    return null;
+                                    return LazyOptional.empty();
                                 }
                             }
                     );

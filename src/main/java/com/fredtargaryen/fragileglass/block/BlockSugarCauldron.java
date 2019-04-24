@@ -3,7 +3,6 @@ package com.fredtargaryen.fragileglass.block;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.client.particle.ParticleMyBubble;
 import com.fredtargaryen.fragileglass.client.particle.ParticleMySplash;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.SoundType;
@@ -20,7 +19,6 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -32,6 +30,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import static net.minecraft.state.properties.BlockStateProperties.AGE_0_7;
 
 import java.util.Random;
 
@@ -45,22 +44,19 @@ import java.util.Random;
  * 5 - Boiling 3 (Same, with about 6 bubbles)
  * 6 - Boiled (Glass on top)
  */
-public class BlockSugarCauldron extends Block
-{
-    private static final IntegerProperty STAGE = IntegerProperty.create("stage", 0, 6);
-
+public class BlockSugarCauldron extends Block {
     private static final int thirdOfCookTime = 100;
 
     public BlockSugarCauldron()
     {
         super(Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(5.0F, 10.0F));
-        this.setDefaultState(this.stateContainer.getBaseState().with(STAGE, 0));
+        this.setDefaultState(this.stateContainer.getBaseState().with(AGE_0_7, 0));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder)
     {
-        builder.add(STAGE);
+        builder.add(AGE_0_7);
     }
 
     @Override
@@ -68,7 +64,7 @@ public class BlockSugarCauldron extends Block
     {
         if (w.isRemote)
         {
-            if(state.get(STAGE).equals(1))
+            if(state.get(AGE_0_7).equals(1))
             {
                 this.splash(w, pos.getX(), pos.getY(), pos.getZ());
             }
@@ -76,7 +72,7 @@ public class BlockSugarCauldron extends Block
         }
         else
         {
-            int i1 = state.get(STAGE);
+            int i1 = state.get(AGE_0_7);
             ItemStack itemstack = player.inventory.getCurrentItem();
             if(i1 == 0)
             {
@@ -87,7 +83,7 @@ public class BlockSugarCauldron extends Block
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
                     }
                     w.playSound(null, pos, SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    w.setBlockState(pos, this.getDefaultState().with(STAGE, 1), 3);
+                    w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 1), 3);
                 }
                 return true;
             }
@@ -103,7 +99,7 @@ public class BlockSugarCauldron extends Block
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, newStack);
                     }
                     w.playSound(null, pos, SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    w.setBlockState(pos, this.getDefaultState().with(STAGE, 2), 3);
+                    w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 2), 3);
                 }
                 return true;
             }
@@ -111,7 +107,7 @@ public class BlockSugarCauldron extends Block
             {
                 w.spawnEntity(new EntityItem(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, new ItemStack(FragileGlassBase.FRAGILE_GLASS, 16)));
                 w.spawnEntity(new EntityXPOrb(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, 4));
-                w.setBlockState(pos, this.getDefaultState().with(STAGE, 0), 3);
+                w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 0), 3);
                 return true;
             }
         }
@@ -121,7 +117,7 @@ public class BlockSugarCauldron extends Block
     @Override
     public void onBlockAdded(IBlockState state, World worldIn, BlockPos pos, IBlockState oldState)
     {
-        worldIn.setBlockState(pos, this.getDefaultState().with(STAGE, 0), 3);
+        worldIn.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 0), 3);
         worldIn.getPendingBlockTicks().scheduleTick(pos, this, 50);
     }
 
@@ -130,7 +126,7 @@ public class BlockSugarCauldron extends Block
     {
         IBlockState stateBelow = w.getBlockState(pos.down());
         Block below = stateBelow.getBlock();
-        int m = state.get(STAGE);
+        int m = state.get(AGE_0_7);
         if(m < 2 || m == 6)
         {
             w.getPendingBlockTicks().scheduleTick(pos, this, 50);
@@ -139,7 +135,7 @@ public class BlockSugarCauldron extends Block
         {
             if(below == Blocks.FIRE || below == Blocks.LAVA || (below == Blocks.FURNACE && stateBelow.get(BlockFurnace.LIT)))
             {
-                w.setBlockState(pos, this.getDefaultState().with(STAGE, 3), 3);
+                w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 3), 3);
                 w.getPendingBlockTicks().scheduleTick(pos, this, thirdOfCookTime);
             }
             else
@@ -149,7 +145,7 @@ public class BlockSugarCauldron extends Block
         }
         else if(m > 6)
         {
-            w.setBlockState(pos, this.getDefaultState().with(STAGE, 0), 3);
+            w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 0), 3);
             w.getPendingBlockTicks().scheduleTick(pos, this, 50);
         }
         else
@@ -157,13 +153,13 @@ public class BlockSugarCauldron extends Block
             if(below == Blocks.FIRE || below == Blocks.LAVA || (below == Blocks.FURNACE && stateBelow.get(BlockFurnace.LIT)))
             {
                 ++m;
-                w.setBlockState(pos, this.getDefaultState().with(STAGE, m), 3);
+                w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, m), 3);
                 w.getPendingBlockTicks().scheduleTick(pos, this, m == 6 ? 50 : thirdOfCookTime);
             }
             else
             {
                 --m;
-                w.setBlockState(pos, this.getDefaultState().with(STAGE, m), 3);
+                w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, m), 3);
                 w.getPendingBlockTicks().scheduleTick(pos, this, m == 2 ? 10 : thirdOfCookTime);
             }
         }
@@ -176,7 +172,7 @@ public class BlockSugarCauldron extends Block
     @OnlyIn(Dist.CLIENT)
     public void animateTick(IBlockState state, World world, BlockPos pos, Random r)
     {
-        int m = state.get(STAGE);
+        int m = state.get(AGE_0_7);
         if(m > 2 && m < 6)
         {
             boolean shouldBubble = true;
@@ -199,7 +195,7 @@ public class BlockSugarCauldron extends Block
     public void onPlayerDestroy(IWorld worldIn, BlockPos pos, IBlockState state)
     {
         World w = (World) worldIn;
-        if(state.get(STAGE).equals(6) && !w.isRemote)
+        if(state.get(AGE_0_7).equals(6) && !w.isRemote)
         {
             double x = pos.getX();
             double y = pos.getY();
