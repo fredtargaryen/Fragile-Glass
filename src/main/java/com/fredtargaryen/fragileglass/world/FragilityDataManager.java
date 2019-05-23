@@ -24,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.fredtargaryen.fragileglass.world.FragilityDataManager.FragileBehaviour.*;
@@ -37,8 +38,8 @@ public class FragilityDataManager {
     private File configDir;
     private File configFile;
 
-    private HashMap<String, FragilityData> tileEntityData;
-    private HashMap<IBlockState, FragilityData> blockStateData;
+    private HashMap<String, ArrayList<FragilityData>> tileEntityData;
+    private HashMap<IBlockState, ArrayList<FragilityData>> blockStateData;
 
     public enum FragileBehaviour {
         //Break if above the break speed
@@ -66,107 +67,67 @@ public class FragilityDataManager {
     }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
-        FragilityData fragData = this.getTileEntityFragilityData(te);
-        if (fragData != null) {
-            FragileBehaviour fb = fragData.getBehaviour();
-            //If MOD, a mod will define the capability at some point, so ignore
-            if (fb != FragileBehaviour.MOD) {
-                //If one of the other behaviours, and the capability has been defined, must ignore.
-                if(!evt.getCapabilities().containsKey(DataReference.FRAGILE_CAP_LOCATION)) {
-                    if (fb == FragileBehaviour.BREAK) {
-                        ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                            IFragileCapability inst = new IFragileCapability() {
-                                @Override
-                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                    if (speed > fragData.getBreakSpeed()) {
-                                        te.getWorld().destroyBlock(te.getPos(), true);
-                                    }
-                                }
-                            };
-
-                            @Nullable
-                            @Override
-                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
-                            }
-                        };
-                        evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-                    } else if (fb == FragileBehaviour.UPDATE) {
-                        ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                            IFragileCapability inst = new IFragileCapability() {
-                                @Override
-                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                    if (speed > fragData.getBreakSpeed()) {
-                                        World w = te.getWorld();
-                                        BlockPos tilePos = te.getPos();
-                                        w.getPendingBlockTicks().scheduleTick(tilePos, w.getBlockState(tilePos).getBlock(), fragData.getUpdateDelay());
-                                    }
-                                }
-                            };
-
-                            @Nullable
-                            @Override
-                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
-                            }
-                        };
-                        evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-                    } else if (fb == CHANGE) {
-                        ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                            IFragileCapability inst = new IFragileCapability() {
-                                @Override
-                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                    if (speed > fragData.getBreakSpeed()) {
-                                        te.getWorld().setBlockState(te.getPos(), fragData.getNewBlockState());
-                                    }
-                                }
-                            };
-
-                            @Nullable
-                            @Override
-                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
-                            }
-                        };
-                        evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-                    } else if (fb == FALL) {
-                        ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                            IFragileCapability inst = new IFragileCapability() {
-                                @Override
-                                public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
-                                    if (speed > fragData.getBreakSpeed()) {
-                                        World w = te.getWorld();
-                                        BlockPos pos = te.getPos();
-                                        if (BlockFalling.canFallThrough(w.getBlockState(pos.down()))) {
-                                            EntityFallingBlock fallingBlock = new EntityFallingBlock(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
-                                            fallingBlock.tileEntityData = te.write(new NBTTagCompound());
-                                            w.spawnEntity(fallingBlock);
+        ArrayList<FragilityData> fragDataList = this.getTileEntityFragilityData(te);
+        if (fragDataList != null) {
+            if (!evt.getCapabilities().containsKey(DataReference.FRAGILE_CAP_LOCATION)) {
+                ICapabilityProvider iCapProv = new ICapabilityProvider() {
+                    IFragileCapability inst = new IFragileCapability() {
+                        @Override
+                        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                            for (FragilityData fragData : fragDataList) {
+                                FragileBehaviour fb = fragData.getBehaviour();
+                                //If MOD, a mod will define the capability at some point, so ignore
+                                if (fb != FragileBehaviour.MOD) {
+                                    //If one of the other behaviours, and the capability has been defined, must ignore.
+                                    if (fb == FragileBehaviour.BREAK) {
+                                        if (speed > fragData.getBreakSpeed()) {
+                                            te.getWorld().destroyBlock(te.getPos(), true);
+                                        }
+                                    } else if (fb == FragileBehaviour.UPDATE) {
+                                        if (speed > fragData.getBreakSpeed()) {
+                                            World w = te.getWorld();
+                                            BlockPos tilePos = te.getPos();
+                                            w.getPendingBlockTicks().scheduleTick(tilePos, w.getBlockState(tilePos).getBlock(), fragData.getUpdateDelay());
+                                        }
+                                    } else if (fb == CHANGE) {
+                                        if (speed > fragData.getBreakSpeed()) {
+                                            te.getWorld().setBlockState(te.getPos(), fragData.getNewBlockState());
+                                        }
+                                    } else if (fb == FALL) {
+                                        if (speed > fragData.getBreakSpeed()) {
+                                            World w = te.getWorld();
+                                            BlockPos pos = te.getPos();
+                                            if (BlockFalling.canFallThrough(w.getBlockState(pos.down()))) {
+                                                EntityFallingBlock fallingBlock = new EntityFallingBlock(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
+                                                fallingBlock.tileEntityData = te.write(new NBTTagCompound());
+                                                w.spawnEntity(fallingBlock);
+                                            }
                                         }
                                     }
                                 }
-                            };
-
-                            @Nullable
-                            @Override
-                            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                                return capability == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                             }
-                        };
-                        evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+                        }
+                    };
+
+                    @Nonnull
+                    @Override
+                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+                        return cap == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                     }
-                }
+                };
+                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
             }
         }
     }
 
-    public FragilityData getBlockStateFragilityData(IBlockState state) {
+    public ArrayList<FragilityData> getBlockStateFragilityData(IBlockState state) {
         if(this.blockStateData.containsKey(state)) {
             return this.blockStateData.get(state);
         }
         return null;
     }
 
-    public FragilityData getTileEntityFragilityData(TileEntity te) {
+    public ArrayList<FragilityData> getTileEntityFragilityData(TileEntity te) {
         //Use the tile entity's class in the TileEntityRegistry to get its ResourceLocation
         ResourceLocation resourceLocation = ForgeRegistries.TILE_ENTITIES.getKey(te.getType());
         if(resourceLocation != null) {
@@ -203,9 +164,15 @@ public class FragilityDataManager {
     private void loadDefaultData() {
         this.blockStateData.clear();
         this.tileEntityData.clear();
-        this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.tileEntityData.put(DataReference.MODID + ":thinice", new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.tileEntityData.put(DataReference.MODID + ":tews", new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
+        ArrayList<FragilityData> list1 = new ArrayList<>();
+        list1.add(new FragilityData(BREAK, 0.165, 0, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.tileEntityData.put(DataReference.MODID + ":tefg", list1);
+        ArrayList<FragilityData> list2 = new ArrayList<>();
+        list2.add(new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.blockStateData.put(FragileGlassBase.THIN_ICE.getDefaultState(), list2);
+        ArrayList<FragilityData> list3 = new ArrayList<>();
+        list3.add(new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.tileEntityData.put(DataReference.MODID + ":tews", list3);
     }
 
     /**
@@ -291,11 +258,9 @@ public class FragilityDataManager {
             "#    looking at the block in-game with the F3 menu on - below it are the blockstate properties.\n",
             "#    > Only add the properties if you are specifying behaviour for specific blockstates.\n",
             "#      Not all properties need to be specified; see the door example below.\n",
-            "#* You must choose one of 'BREAK', 'UPDATE', 'CHANGE', 'FALL' or 'MOD'; the block will have one of the\n",
-            "#  following 'crash behaviours':\n",
-            "#  - For all crash behaviours, the 'breaker' entity must be travelling above its minimum speed. If so,\n",
-            "#    it must then be above the speed defined for the block. Meeting both these conditions causes the\n",
-            "#    crash behaviour to trigger.\n",
+            "#* For all crash behaviours, the 'breaker' entity must be travelling above its minimum speed. If so,\n",
+            "#  it must then be above the speed defined for the block. Meeting both these conditions causes the\n",
+            "#  crash behaviour to trigger.\n",
             "#  - 'BREAK': the block breaks immediately.\n",
             "#  - 'UPDATE': a block update is triggered.\n",
             "#  - 'CHANGE': the block changes into a specified blockstate.\n",
@@ -304,6 +269,8 @@ public class FragilityDataManager {
             "#           entities and implement IFragileCapability with the behaviour they want. This mod loads all\n",
             "#           the extra values and it is up to the modder how they are used. NOTE: If a tile entity has a\n",
             "#           custom behaviour it will be used regardless of the behaviour value.\n",
+            "#* Crash behaviours can be combined, and will trigger (if fast enough) in the order they are listed in\n",
+            "#  the config messages. However, only the first of each behaviour type will trigger.\n",
             "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their\n",
             "#  breaking speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks\n",
             "#  per tick, which is metres per second divided by 20.\n",

@@ -24,15 +24,42 @@ public class FragilityConfigLoader {
     private static final String BLOCK_STATE_REGEX = RES_LOC_REGEX + "\\[" + VARIANTS_REGEX + "\\]";
 
     private FragilityDataManager manager;
-    private HashMap<IBlockState, FragilityData> blockStates;
-    private HashMap<String, FragilityData> tileEntities;
+    private HashMap<IBlockState, ArrayList<FragilityData>> blockStates;
+    private HashMap<String, ArrayList<FragilityData>> tileEntities;
 
     public FragilityConfigLoader(FragilityDataManager manager,
-                                 HashMap<IBlockState, FragilityData> blockStates,
-                                 HashMap<String, FragilityData> tileEntities) {
+                                 HashMap<IBlockState, ArrayList<FragilityData>> blockStates,
+                                 HashMap<String, ArrayList<FragilityData>> tileEntities) {
         this.manager = manager;
         this.blockStates = blockStates;
         this.tileEntities = tileEntities;
+    }
+
+    /**
+     * When a behaviour has been validated and confirmed usable, this method is called to conditionally add it to the
+     * fragility data map.
+     * The maps map to ArrayLists of crash behaviours, which are executed in the order specified in the config file.
+     * No two crash behaviours in a list can be the same, i.e. you cannot have two breakages, but you can have a break
+     * followed by a block change (an example being ice breaking and being immediately replaced with water).
+     * @param map Either this.tileEntities or this.blockStates.
+     * @param key The ResourceLocation or block state the fragilitydatas should apply to.
+     * @param fragilityData The new crash behaviour to add.
+     * @param <T> String for this.tileEntities, or IBlockState for this.blockStates.
+     */
+    private <T> void addNewBehaviour(HashMap<T, ArrayList<FragilityData>> map, T key, FragilityData fragilityData) {
+        if(map.containsKey(key)) {
+            ArrayList<FragilityData> dataList = map.get(key);
+            boolean allowNewBehaviour = true;
+            for(FragilityData fdata : dataList) {
+                if(fdata.getBehaviour() == fragilityData.getBehaviour()) allowNewBehaviour = false;
+            }
+            if(allowNewBehaviour) dataList.add(fragilityData);
+        }
+        else {
+            ArrayList<FragilityData> newList = new ArrayList<>();
+            newList.add(fragilityData);
+            map.put(key, newList);
+        }
     }
 
     /**
@@ -134,7 +161,7 @@ public class FragilityConfigLoader {
             for(IProperty iprop : newState.getProperties()) {
                 newState = this.applyPropertyValue(oldState, newState, iprop, newSpecifiedProperties);
             }
-            this.blockStates.put(oldState, new FragilityData(behaviour, breakSpeed, updateDelay, newState, extraData));
+            this.addNewBehaviour(this.blockStates, oldState, new FragilityData(behaviour, breakSpeed, updateDelay, newState, extraData));
         }
     }
 
@@ -177,7 +204,7 @@ public class FragilityConfigLoader {
                             }
                             else {
                                 //It may or may not be a tile entity, but cannot validate this at this point
-                                this.tileEntities.put(values[0], new FragilityData(
+                                this.addNewBehaviour(this.tileEntities, values[0], new FragilityData(
                                         behaviour, minSpeed, updateDelay, newState,
                                         Arrays.copyOfRange(values, 5, values.length)));
                             }
