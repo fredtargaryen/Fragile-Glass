@@ -15,6 +15,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -174,27 +175,31 @@ public class BreakSystem {
                             //No Tile Entity
                             if(this.hasBlockStateFragilityData) {
                                 //The specific BlockState might be covered in the fragility data
-                                FragilityData fragilityData = this.fragilityDataManager.getBlockStateFragilityData(state);
-                                if(fragilityData != null && speed > fragilityData.getBreakSpeed()) {
-                                    FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
-                                    switch(fragileBehaviour) {
-                                        case BREAK:
-                                            e.world.destroyBlock(blockPos, true);
-                                            break;
-                                        case UPDATE:
-                                            e.world.getPendingBlockTicks().scheduleTick(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
-                                            break;
-                                        case CHANGE:
-                                            e.world.setBlockState(blockPos, fragilityData.getNewBlockState());
-                                        case FALL:
-                                            if(BlockFalling.canFallThrough(e.world.getBlockState(blockPos.down()))) {
-                                                EntityFallingBlock efb = new EntityFallingBlock(e.world,
-                                                        blockPos.getX() + 0.5D,
-                                                        blockPos.getY(),
-                                                        blockPos.getZ() + 0.5D, e.world.getBlockState(blockPos));
-                                                e.world.spawnEntity(efb);
+                                ArrayList<FragilityData> fragilityDataList = this.fragilityDataManager.getBlockStateFragilityData(state);
+                                if (fragilityDataList != null) {
+                                    for (FragilityData fragilityData : fragilityDataList) {
+                                        if (fragilityData != null && speed > fragilityData.getBreakSpeed()) {
+                                            FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
+                                            switch (fragileBehaviour) {
+                                                case BREAK:
+                                                    e.world.destroyBlock(blockPos, true);
+                                                    break;
+                                                case UPDATE:
+                                                    e.world.getPendingBlockTicks().scheduleTick(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                                                    break;
+                                                case CHANGE:
+                                                    e.world.setBlockState(blockPos, fragilityData.getNewBlockState());
+                                                case FALL:
+                                                    if (BlockFalling.canFallThrough(e.world.getBlockState(blockPos.down()))) {
+                                                        EntityFallingBlock efb = new EntityFallingBlock(e.world,
+                                                                blockPos.getX() + 0.5D,
+                                                                blockPos.getY(),
+                                                                blockPos.getZ() + 0.5D, e.world.getBlockState(blockPos));
+                                                        e.world.spawnEntity(efb);
+                                                    }
+                                                    break;
                                             }
-                                            break;
+                                        }
                                     }
                                 }
                             }
