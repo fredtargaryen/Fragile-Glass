@@ -2,7 +2,8 @@ package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.IChunkGenSettings;
@@ -14,6 +15,7 @@ import java.util.Random;
 public class IcePatchGen extends Feature<IcePatchGenConfig> {
     private static final double TWOPI = 2 * Math.PI;
     private static final double PIFRACTION = Math.PI / 6.0;
+    private static final ResourceLocation ICE_TAG = new ResourceLocation("minecraft", "ice");
 
     /**
      * Generate the feature at the given BlockPos (which was validated by an IPatchPlacement instance).
@@ -26,6 +28,8 @@ public class IcePatchGen extends Feature<IcePatchGenConfig> {
      */
     @Override
     public boolean func_212245_a(IWorld world, IChunkGenerator<? extends IChunkGenSettings> chunkGen, Random random, BlockPos pos, IcePatchGenConfig config) {
+        if(FragileGlassBase.ICE_BLOCKS == null)
+            FragileGlassBase.ICE_BLOCKS = BlockTags.getCollection().getOrCreate(ICE_TAG);
         BlockPos.MutableBlockPos nextBlockPos = new BlockPos.MutableBlockPos(0, 0, 0);
         Block nextBlock;
         int patchRadius = (int) (((2 * random.nextGaussian()) + config.avePatchSize) / 2);
@@ -45,7 +49,7 @@ public class IcePatchGen extends Feature<IcePatchGenConfig> {
                 int nextZ = (int) (centreZ + (rad * Math.sin(r)));
                 nextBlockPos.setPos(nextX, centreY, nextZ);
                 nextBlock = world.getBlockState(nextBlockPos).getBlock();
-                if(nextBlock == Blocks.ICE) {
+                if(FragileGlassBase.ICE_BLOCKS.contains(nextBlock)) {
                     //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
                     if (rad > patchRadius - 2) {
                         if (random.nextBoolean()) {

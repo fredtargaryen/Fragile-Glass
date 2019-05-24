@@ -1,7 +1,3 @@
-/**
- * TODO
- * item tags
- */
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
@@ -21,7 +17,6 @@ import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.world.BreakerDataManager;
 import com.fredtargaryen.fragileglass.world.FragilityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
-import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -78,9 +73,6 @@ public class FragileGlassBase {
 
     private static BreakerDataManager breakerDataManager;
     private static FragilityDataManager fragDataManager;
-
-    private static PatchGen patchGenIce;
-    private static PatchGen patchGenStone;
 
     public static BreakSystem breakSystem;
 
@@ -472,11 +464,9 @@ public class FragileGlassBase {
 
         //TAGS
         MinecraftForge.EVENT_BUS.register(new ISelectiveResourceReloadListener() {
-            private final ResourceLocation ICE_BLOCK_GROUP = new ResourceLocation(DataReference.MODID, "ice");
-
             @Override
             public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-                ICE_BLOCKS = BlockTags.getCollection().getOrCreate(ICE_BLOCK_GROUP);
+                FragileGlassBase.ICE_BLOCKS = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft", "ice"));
             }
         });
 
