@@ -1,6 +1,5 @@
 package com.fredtargaryen.fragileglass.block;
 
-import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockIce;
 import net.minecraft.block.SoundType;
@@ -58,22 +57,12 @@ public class BlockThinIce extends Block implements IForgeBlock
         }
     }
 
-    //TODO @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockReader world, BlockPos pos, EnumFacing face)
-    {
-        if(face == EnumFacing.DOWN)
-        {
-            return false;
-        }
-        else if(face == EnumFacing.UP)
-        {
-            return world.getBlockState(pos.offset(face)).getBlock() == Blocks.ICE;
-        }
-        else
-        {
-            Block near = world.getBlockState(pos.offset(face)).getBlock();
-            return near == FragileGlassBase.THIN_ICE || near == Blocks.ICE;
-        }
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public boolean isSideInvisible(IBlockState thisState, IBlockState neighbourState, EnumFacing face) {
+        Block near = neighbourState.getBlock();
+        boolean nearIsIce = near == Blocks.ICE || near == this;
+        return nearIsIce || super.isSideInvisible(thisState, neighbourState, face);
     }
 
     @OnlyIn(Dist.CLIENT)

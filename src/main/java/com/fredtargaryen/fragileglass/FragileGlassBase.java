@@ -1,12 +1,11 @@
 /**
  * TODO
- * Update worldgen and item tags
+ * item tags
  */
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.config.Config;
-import com.fredtargaryen.fragileglass.config.WorldgenConfig;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
@@ -18,14 +17,17 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import com.fredtargaryen.fragileglass.world.*;
+import com.fredtargaryen.fragileglass.world.BreakSystem;
+import com.fredtargaryen.fragileglass.world.BreakerDataManager;
+import com.fredtargaryen.fragileglass.world.FragilityDataManager;
+import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
-import com.fredtargaryen.fragileglass.worldgen.PatchGenIce;
-import com.fredtargaryen.fragileglass.worldgen.PatchGenStone;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
@@ -468,18 +470,6 @@ public class FragileGlassBase {
         fragDataManager = FragilityDataManager.getInstance();
         fragDataManager.setupDirsAndFiles(FMLPaths.CONFIGDIR.get().toFile());
 
-        //TODO WORLDGEN SETUP
-        if(WorldgenConfig.GEN_THIN_ICE.get())
-        {
-            patchGenIce = new PatchGenIce();
-            //GameRegistry.registerWorldGenerator(patchGenIce, 1);
-        }
-        if(WorldgenConfig.GEN_WEAK_STONE.get())
-        {
-            patchGenStone = new PatchGenStone();
-            //GameRegistry.registerWorldGenerator(patchGenStone, 1);
-        }
-
         //TAGS
         MinecraftForge.EVENT_BUS.register(new ISelectiveResourceReloadListener() {
             private final ResourceLocation ICE_BLOCK_GROUP = new ResourceLocation(DataReference.MODID, "ice");
@@ -489,6 +479,8 @@ public class FragileGlassBase {
                 ICE_BLOCKS = BlockTags.getCollection().getOrCreate(ICE_BLOCK_GROUP);
             }
         });
+
+        new FeatureManager().registerGenerators();
 
         //LOAD FRAGILITY AND BREAKER CONFIGS
         breakerDataManager.loadEntityData();
