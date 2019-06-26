@@ -1,22 +1,25 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.Block;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.IChunkGenSettings;
-import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.Random;
+import java.util.function.Function;
 
 public class IcePatchGen extends Feature<IcePatchGenConfig> {
     private static final double TWOPI = 2 * Math.PI;
     private static final double PIFRACTION = Math.PI / 6.0;
     private static final ResourceLocation ICE_TAG = new ResourceLocation("minecraft", "ice");
 
+    public IcePatchGen(Function<Dynamic<?>, ? extends IcePatchGenConfig> deserializer) { super(deserializer); }
     /**
      * Generate the feature at the given BlockPos (which was validated by an IPatchPlacement instance).
      * @param world
@@ -27,7 +30,7 @@ public class IcePatchGen extends Feature<IcePatchGenConfig> {
      * @return
      */
     @Override
-    public boolean func_212245_a(IWorld world, IChunkGenerator<? extends IChunkGenSettings> chunkGen, Random random, BlockPos pos, IcePatchGenConfig config) {
+    public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> chunkGen, Random random, BlockPos pos, IcePatchGenConfig config) {
         if(FragileGlassBase.ICE_BLOCKS == null)
             FragileGlassBase.ICE_BLOCKS = BlockTags.getCollection().getOrCreate(ICE_TAG);
         BlockPos.MutableBlockPos nextBlockPos = new BlockPos.MutableBlockPos(0, 0, 0);

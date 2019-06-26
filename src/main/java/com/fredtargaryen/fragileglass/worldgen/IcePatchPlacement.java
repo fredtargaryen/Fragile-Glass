@@ -1,21 +1,24 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
+import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.IChunkGenSettings;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.placement.BasePlacement;
+import net.minecraft.world.gen.placement.Placement;
 
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class IcePatchPlacement extends BasePlacement<IcePatchPlacementConfig> {
+public class IcePatchPlacement extends Placement<IcePatchPlacementConfig> {
+    public IcePatchPlacement(Function<Dynamic<?>, ? extends IcePatchPlacementConfig> func) { super(func); }
+
     @Override
-    public <C extends IFeatureConfig> boolean generate(IWorld world, IChunkGenerator<? extends IChunkGenSettings> iChunkGenerator, Random random, BlockPos blockPos, IcePatchPlacementConfig icePatchPlacementConfig, Feature<C> feature, C c) {
+    public Stream<BlockPos> getPositions(IWorld world, ChunkGenerator<? extends GenerationSettings> iChunkGenerator, Random random, IcePatchPlacementConfig icePatchPlacementConfig, BlockPos blockPos) {
         if(random.nextInt(icePatchPlacementConfig.genChance) == 0) {
             BlockPos surfacePos = world.getHeight(Heightmap.Type.WORLD_SURFACE, blockPos).down();
             Biome b = world.getBiome(surfacePos);
@@ -60,9 +63,9 @@ public class IcePatchPlacement extends BasePlacement<IcePatchPlacementConfig> {
 //                        }
 //                    }
 //                }
-                return feature.func_212245_a(world, iChunkGenerator, random, surfacePos, c);
+                return Stream.of(surfacePos);
             }
         }
-        return false;
+        return Stream.empty();
     }
 }

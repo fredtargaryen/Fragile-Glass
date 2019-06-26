@@ -17,8 +17,7 @@ public class MessageBreakerMovement
     public double motionz;
     public double speed;
 
-    public void onMessage(Supplier<NetworkEvent.Context> ctx)
-    {
+    public void onMessage(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> ctx.get().getSender().getCapability(FragileGlassBase.PLAYERBREAKCAP, null)
                 .ifPresent(pbc -> pbc.onMessage(this)));
         ctx.get().setPacketHandled(true);

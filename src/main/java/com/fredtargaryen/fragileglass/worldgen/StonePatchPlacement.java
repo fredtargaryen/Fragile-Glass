@@ -1,20 +1,25 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
+import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.IChunkGenSettings;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.placement.BasePlacement;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.placement.Placement;
 
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class StonePatchPlacement extends BasePlacement<StonePatchPlacementConfig> {
+public class StonePatchPlacement extends Placement<StonePatchPlacementConfig> {
+    public StonePatchPlacement(Function<Dynamic<?>, ? extends StonePatchPlacementConfig> func) {
+        super(func);
+    }
+
     @Override
-    public <C extends IFeatureConfig> boolean generate(IWorld world, IChunkGenerator<? extends IChunkGenSettings> chunkGen, Random random, BlockPos blockPos, StonePatchPlacementConfig stonePatchPlacementConfig, Feature<C> feature, C c) {
+    public Stream<BlockPos> getPositions(IWorld world, ChunkGenerator<? extends GenerationSettings> chunkGen, Random random, StonePatchPlacementConfig stonePatchPlacementConfig, BlockPos blockPos) {
         int y = 0;
         //Coords of "top left" blocks in chunk
         int cornerX = (blockPos.getX() / 16) * 16;
@@ -25,13 +30,13 @@ public class StonePatchPlacement extends BasePlacement<StonePatchPlacementConfig
         //The BlockPos where patch generation will be attempted
         BlockPos patchCentre = new BlockPos(cornerX + random.nextInt(16), 0, cornerZ + random.nextInt(16));
         while(y < 256) {
-            if (world.getBlockState(patchCentre).isBlockNormalCube()) {
+            if (world.getBlockState(patchCentre).getMaterial().isSolid()) {
                 if (!previousBlockSolid) {
                     previousBlockSolid = true;
                     candidate = world.getBlockState(patchCentre).getBlock();
                     if (candidate == Blocks.STONE) {
-                        feature.func_212245_a(world, chunkGen, random, patchCentre, c);
-                        patchCentre = new BlockPos(cornerX + random.nextInt(16), y, cornerZ + random.nextInt(16));
+                        return Stream.of(patchCentre);
+                        //patchCentre = new BlockPos(cornerX + random.nextInt(16), y, cornerZ + random.nextInt(16));
                     }
                 }
             } else {
@@ -42,6 +47,6 @@ public class StonePatchPlacement extends BasePlacement<StonePatchPlacementConfig
             patchCentre = patchCentre.up();
             ++y;
         }
-        return true;
+        return Stream.empty();
     }
 }

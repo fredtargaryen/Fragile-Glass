@@ -2,13 +2,14 @@ package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFalling;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import static com.fredtargaryen.fragileglass.FragileGlassBase.BREAKCAP;
 import static com.fredtargaryen.fragileglass.FragileGlassBase.FRAGILECAP;
@@ -50,7 +52,7 @@ public class BreakSystem {
     public void breakCheck(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             //Intended to avoid ConcurrentModificationExceptions
-            CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(event.world.loadedEntityList);
+            CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(((ServerWorld)event.world).getEntities().collect(Collectors.toList()));
             Iterator<Entity> i = entityList.iterator();
             while(i.hasNext()) {
                 Entity e = i.next();
@@ -161,7 +163,7 @@ public class BreakSystem {
                 for (double z = Math.floor(aabb.minZ); z < Math.ceil(aabb.maxZ); ++z)
                 {
                     blockPos = new BlockPos(x, y, z);
-                    IBlockState state = e.world.getBlockState(blockPos);
+                    BlockState state = e.world.getBlockState(blockPos);
                     block = state.getBlock();
                     // Chances are the block will be an air block (pass through no question) so best check this first
                     if (!block.isAir(state, e.world, blockPos))
@@ -190,12 +192,12 @@ public class BreakSystem {
                                                 case CHANGE:
                                                     e.world.setBlockState(blockPos, fragilityData.getNewBlockState());
                                                 case FALL:
-                                                    if (BlockFalling.canFallThrough(e.world.getBlockState(blockPos.down()))) {
-                                                        EntityFallingBlock efb = new EntityFallingBlock(e.world,
+                                                    if (FallingBlock.canFallThrough(e.world.getBlockState(blockPos.down()))) {
+                                                        FallingBlockEntity efb = new FallingBlockEntity(e.world,
                                                                 blockPos.getX() + 0.5D,
                                                                 blockPos.getY(),
                                                                 blockPos.getZ() + 0.5D, e.world.getBlockState(blockPos));
-                                                        e.world.spawnEntity(efb);
+                                                        e.world.addEntity(efb);
                                                     }
                                                     break;
                                             }

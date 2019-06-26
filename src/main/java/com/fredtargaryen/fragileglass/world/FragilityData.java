@@ -1,15 +1,15 @@
 package com.fredtargaryen.fragileglass.world;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 
 public class FragilityData {
     private FragilityDataManager.FragileBehaviour behaviour;
     private double breakSpeed;
     private int updateDelay;
-    private IBlockState newBlockState;
+    private BlockState newBlockState;
     private String[] extraData;
 
-    public FragilityData(FragilityDataManager.FragileBehaviour behaviour, double breakSpeed, int updateDelay, IBlockState newBlockState, String[] extraData) {
+    public FragilityData(FragilityDataManager.FragileBehaviour behaviour, double breakSpeed, int updateDelay, BlockState newBlockState, String[] extraData) {
         this.behaviour = behaviour;
         this.breakSpeed = breakSpeed;
         this.updateDelay = updateDelay;
@@ -23,7 +23,7 @@ public class FragilityData {
 
     public int getUpdateDelay() { return this.updateDelay; }
 
-    public IBlockState getNewBlockState() { return this.newBlockState; }
+    public BlockState getNewBlockState() { return this.newBlockState; }
 
     public String[] getExtraData() { return this.extraData; }
 }

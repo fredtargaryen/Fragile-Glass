@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.entity.capability;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.concurrent.Callable;
 
@@ -19,7 +20,8 @@ public class BreakCapFactory implements Callable<IBreakCapability> {
 
         @Override
         public double getSpeedSquared(Entity e) {
-            return e.motionX * e.motionX + e.motionY * e.motionY + e.motionZ * e.motionZ;
+            Vec3d motion = e.getMotion();
+            return motion.x * motion.x + motion.y * motion.y + motion.z * motion.z;
         }
 
         @Override
@@ -30,17 +32,17 @@ public class BreakCapFactory implements Callable<IBreakCapability> {
 
         @Override
         public double getMotionX(Entity e) {
-            return e.motionX;
+            return e.getMotion().x;
         }
 
         @Override
         public double getMotionY(Entity e) {
-            return e.motionY;
+            return e.getMotion().y;
         }
 
         @Override
         public double getMotionZ(Entity e) {
-            return e.motionZ;
+            return e.getMotion().z;
         }
 
         @Override

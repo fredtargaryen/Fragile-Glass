@@ -3,6 +3,7 @@ package com.fredtargaryen.fragileglass.entity.capability;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.concurrent.Callable;
 
@@ -38,7 +39,7 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
 
         @Override
         public boolean isAbleToBreak(Entity e, double speedSq) {
-            return speedSq >= DataReference.PLAYER_WALK_SPEED_SQUARED && speedSq <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
+            return !e.isSpectator() && speedSq >= DataReference.PLAYER_WALK_SPEED_SQUARED && speedSq <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
         }
 
         @Override
@@ -61,8 +62,7 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
             return 3;
         }
 
-        public void onMessage(MessageBreakerMovement mbm)
-        {
+        public void onMessage(MessageBreakerMovement mbm) {
             this.motionVec[0] = mbm.motionx;
             this.motionVec[1] = mbm.motiony;
             this.motionVec[2] = mbm.motionz;

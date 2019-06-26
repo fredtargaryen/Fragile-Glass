@@ -1,6 +1,6 @@
 {
   "parent": "fragileglassft:block/sc_empty",
   "textures": {
-    "water": "block/water_still"
+    "water": "fragileglassft:block/water"
   }
 }

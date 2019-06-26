@@ -1,19 +1,23 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.IChunkGenSettings;
-import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.Random;
+import java.util.function.Function;
 
 public class StonePatchGen extends Feature<StonePatchGenConfig> {
     private static final double TWOPI = Math.PI * 2;
     private static final double PIFRACTION = Math.PI / 6.0;
+
+    public StonePatchGen(Function<Dynamic<?>, ? extends StonePatchGenConfig> deserializer) { super(deserializer); }
 
     /**
      * Generate the feature at the given BlockPos (which was validated by an IPatchPlacement instance).
@@ -25,7 +29,7 @@ public class StonePatchGen extends Feature<StonePatchGenConfig> {
      * @return
      */
     @Override
-    public boolean func_212245_a(IWorld world, IChunkGenerator<? extends IChunkGenSettings> chunkGen, Random random, BlockPos pos, StonePatchGenConfig config) {
+    public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> chunkGen, Random random, BlockPos pos, StonePatchGenConfig config) {
         BlockPos.MutableBlockPos nextBlockPos = new BlockPos.MutableBlockPos(0, 0, 0);
         Block nextBlock;
         int patchRadius = (int) (((2 * random.nextGaussian()) + config.avePatchSize) / 2);

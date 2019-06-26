@@ -1,8 +1,8 @@
 package com.fredtargaryen.fragileglass.world;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
@@ -24,11 +24,11 @@ public class FragilityConfigLoader {
     private static final String BLOCK_STATE_REGEX = RES_LOC_REGEX + "\\[" + VARIANTS_REGEX + "\\]";
 
     private FragilityDataManager manager;
-    private HashMap<IBlockState, ArrayList<FragilityData>> blockStates;
+    private HashMap<BlockState, ArrayList<FragilityData>> blockStates;
     private HashMap<String, ArrayList<FragilityData>> tileEntities;
 
     public FragilityConfigLoader(FragilityDataManager manager,
-                                 HashMap<IBlockState, ArrayList<FragilityData>> blockStates,
+                                 HashMap<BlockState, ArrayList<FragilityData>> blockStates,
                                  HashMap<String, ArrayList<FragilityData>> tileEntities) {
         this.manager = manager;
         this.blockStates = blockStates;
@@ -44,7 +44,7 @@ public class FragilityConfigLoader {
      * @param map Either this.tileEntities or this.blockStates.
      * @param key The ResourceLocation or block state the fragilitydatas should apply to.
      * @param fragilityData The new crash behaviour to add.
-     * @param <T> String for this.tileEntities, or IBlockState for this.blockStates.
+     * @param <T> String for this.tileEntities, or BlockState for this.blockStates.
      */
     private <T> void addNewBehaviour(HashMap<T, ArrayList<FragilityData>> map, T key, FragilityData fragilityData) {
         if(map.containsKey(key)) {
@@ -72,7 +72,7 @@ public class FragilityConfigLoader {
      *   value in the old BlockState is valid for the new BlockState.
      * @return newState, with the given property set according to the rules above.
      */
-    private <P extends Comparable<P>> IBlockState applyPropertyValue(IBlockState oldState, IBlockState newState, IProperty<P> iprop, HashMap newProperties) {
+    private <P extends Comparable<P>> BlockState applyPropertyValue(BlockState oldState, BlockState newState, IProperty<P> iprop, HashMap newProperties) {
         if(newState.getBlock() == oldState.getBlock()) {
             if(newProperties.containsKey(iprop)) {
                 newState = newState.with(iprop, (P) newProperties.get(iprop));
@@ -136,7 +136,7 @@ public class FragilityConfigLoader {
         String[] splitEntryName = entryName.split("\\[");
         //Get all BlockStates with the block named in splitEntryName[0]
         Block oldBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(splitEntryName[0]));
-        List<IBlockState> allOldStates = new ArrayList<>(oldBlock.getStateContainer().getValidStates());
+        List<BlockState> allOldStates = new ArrayList<>(oldBlock.getStateContainer().getValidStates());
         //Regex ensures the length will be 1 or 2. If 1, no properties were specified so use all the states.
         if(splitEntryName.length == 2) {
             //Some properties were specified so change allOldStates
@@ -147,13 +147,13 @@ public class FragilityConfigLoader {
                         .collect(Collectors.toList());
             }
         }
-        for(IBlockState oldState : allOldStates) {
+        for(BlockState oldState : allOldStates) {
             //Compute new state, based on old state.
             String[] splitNewStateName = newStateName.split("\\[");
             //Regex ensures length will be 1 or 2
             Block newBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(splitNewStateName[0]));
             //If no properties were specified this value will be used.
-            IBlockState newState = newBlock.getDefaultState();
+            BlockState newState = newBlock.getDefaultState();
             HashMap newSpecifiedProperties = new HashMap();
             if(splitNewStateName.length == 2) {
                 newSpecifiedProperties = this.obtainSpecifiedProperties(newBlock, splitNewStateName[1].split("\\]")[0]);
@@ -190,7 +190,7 @@ public class FragilityConfigLoader {
                             //Validate updateDelay and silently clamp to >= 0
                             int updateDelay = Math.max(Integer.parseInt(values[3]), 0);
                             //Validate newState
-                            IBlockState newState = Blocks.AIR.getDefaultState();
+                            BlockState newState = Blocks.AIR.getDefaultState();
                             if(!values[4].equals("-")) {
                                 if(!this.validateEntryName(values[4])) {
                                     throw new FragilityConfigLoadException(filename, values[4] + " has the wrong format; please see the examples.", line, lineNumber);
@@ -242,7 +242,7 @@ public class FragilityConfigLoader {
     private HashMap<IProperty<?>, ?> obtainSpecifiedProperties(Block block, @Nullable String propertiesString) {
         HashMap<IProperty<?>, ?> properties = new HashMap<>();
         if(propertiesString != null) {
-            IBlockState state = block.getDefaultState();
+            BlockState state = block.getDefaultState();
             String[] variantInfo = propertiesString.split(",");
             Collection<IProperty<?>> keys = state.getProperties();
             for (String variant : variantInfo) {
@@ -257,7 +257,7 @@ public class FragilityConfigLoader {
         return properties;
     }
 
-    private <T extends Comparable<T>> IBlockState parseAndAddProperty(HashMap properties, IBlockState state, IProperty<T> iprop, String value) {
+    private <T extends Comparable<T>> BlockState parseAndAddProperty(HashMap properties, BlockState state, IProperty<T> iprop, String value) {
         if(iprop instanceof BooleanProperty) {
             BooleanProperty pb = (BooleanProperty) iprop;
             Optional<Boolean> opt = pb.parseValue(value);

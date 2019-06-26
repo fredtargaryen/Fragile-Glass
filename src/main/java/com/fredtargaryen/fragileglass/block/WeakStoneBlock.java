@@ -2,32 +2,32 @@ package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFalling;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockWeakStone extends BlockFalling {
-    public BlockWeakStone()
+public class WeakStoneBlock extends FallingBlock {
+    public WeakStoneBlock()
     {
         super(Properties.create(Material.ROCK));
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
     @Override
-    public TileEntity createTileEntity(IBlockState state, IBlockReader world) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         try {
             return new TileEntityWeakStone();
         }
@@ -38,19 +38,18 @@ public class BlockWeakStone extends BlockFalling {
     }
 
     @Override
-    public void onBlockAdded(IBlockState state, World worldIn, BlockPos pos, IBlockState otherState) {}
+    public void onBlockAdded(BlockState p_220082_1_, World worldIn, BlockPos pos, BlockState p_220082_4_, boolean p_220082_5_) {}
 
     /**
      * Called when a neighboring block was changed and marks that this state should perform any checks during a neighbor
      * change. Cases may include when redstone power is updated, cactus blocks popping off due to a neighboring solid
      * block, etc.
      */
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
     {
     }
 
-    public void onEndFalling(World worldIn, BlockPos pos, IBlockState p_176502_3_, IBlockState p_176502_4_)
-    {
+    public void onEndFalling(World worldIn, BlockPos pos, BlockState p_176502_3_, BlockState p_176502_4_) {
         worldIn.setBlockState(pos, Blocks.GRAVEL.getDefaultState());
     }
 
@@ -63,8 +62,7 @@ public class BlockWeakStone extends BlockFalling {
      * @param state Current state
      * @param fortune Breakers fortune level
      */
-    public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
-    {
-        drops.add(new ItemStack(Item.getItemFromBlock(Blocks.GRAVEL), 1, new NBTTagCompound()));
+    public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune) {
+        drops.add(new ItemStack(Item.getItemFromBlock(Blocks.GRAVEL), 1, new CompoundNBT()));
     }
 }

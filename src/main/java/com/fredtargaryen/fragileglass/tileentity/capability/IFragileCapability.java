@@ -1,6 +1,6 @@
 package com.fredtargaryen.fragileglass.tileentity.capability;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
@@ -24,5 +24,5 @@ public interface IFragileCapability {
      * Whenever this method is called, the projected entity bounding box WILL be inside the 1x1x1 space of a block, BUT
      * not necessarily intersecting the block's bounding box. Implementations will need to check for that.
      */
-    void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed);
+    void onCrash(BlockState state, TileEntity te, Entity crasher, double speed);
 }

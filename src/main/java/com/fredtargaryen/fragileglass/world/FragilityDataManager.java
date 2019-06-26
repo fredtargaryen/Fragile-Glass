@@ -3,15 +3,14 @@ package com.fredtargaryen.fragileglass.world;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import net.minecraft.block.BlockFalling;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,7 +38,7 @@ public class FragilityDataManager {
     private File configFile;
 
     private HashMap<String, ArrayList<FragilityData>> tileEntityData;
-    private HashMap<IBlockState, ArrayList<FragilityData>> blockStateData;
+    private HashMap<BlockState, ArrayList<FragilityData>> blockStateData;
 
     public enum FragileBehaviour {
         //Break if above the break speed
@@ -48,7 +47,7 @@ public class FragilityDataManager {
         UPDATE,
         //Change to a different BlockState
         CHANGE,
-        //Change to an EntityFallingBlock of the given BlockState
+        //Change to an FallingBlockEntity of the given BlockState
         FALL,
         //Load the data but don't even construct the capability; let another mod deal with it all
         MOD
@@ -73,7 +72,7 @@ public class FragilityDataManager {
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
                         @Override
-                        public void onCrash(IBlockState state, TileEntity te, Entity crasher, double speed) {
+                        public void onCrash(BlockState state, TileEntity te, Entity crasher, double speed) {
                             for (FragilityData fragData : fragDataList) {
                                 FragileBehaviour fb = fragData.getBehaviour();
                                 //If MOD, a mod will define the capability at some point, so ignore
@@ -97,10 +96,10 @@ public class FragilityDataManager {
                                         if (speed > fragData.getBreakSpeed()) {
                                             World w = te.getWorld();
                                             BlockPos pos = te.getPos();
-                                            if (BlockFalling.canFallThrough(w.getBlockState(pos.down()))) {
-                                                EntityFallingBlock fallingBlock = new EntityFallingBlock(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
-                                                fallingBlock.tileEntityData = te.write(new NBTTagCompound());
-                                                w.spawnEntity(fallingBlock);
+                                            if (FallingBlock.canFallThrough(w.getBlockState(pos.down()))) {
+                                                FallingBlockEntity fallingBlock = new FallingBlockEntity(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
+                                                fallingBlock.tileEntityData = te.write(new CompoundNBT());
+                                                w.addEntity(fallingBlock);
                                             }
                                         }
                                     }
@@ -111,7 +110,7 @@ public class FragilityDataManager {
 
                     @Nonnull
                     @Override
-                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
                         return cap == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                     }
                 };
@@ -120,7 +119,7 @@ public class FragilityDataManager {
         }
     }
 
-    public ArrayList<FragilityData> getBlockStateFragilityData(IBlockState state) {
+    public ArrayList<FragilityData> getBlockStateFragilityData(BlockState state) {
         if(this.blockStateData.containsKey(state)) {
             return this.blockStateData.get(state);
         }

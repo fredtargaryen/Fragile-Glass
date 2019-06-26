@@ -4,13 +4,18 @@ import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.*;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.entity.item.FireworkRocketEntity;
+import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.entity.item.minecart.MinecartEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.FireballEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -47,19 +52,19 @@ public class BreakerDataManager {
     public void addCapabilityIfPossible(Entity e, AttachCapabilitiesEvent<Entity> evt) {
         BreakerData breakerData = this.getEntityBreakerData(e);
         if (breakerData == null) {
-            if (e instanceof EntityLivingBase
-                    || e instanceof EntityArrow
-                    || e instanceof EntityFireball
-                    || e instanceof EntityMinecart
-                    || e instanceof EntityFireworkRocket
-                    || e instanceof EntityBoat
-                    || e instanceof EntityTNTPrimed
-                    || e instanceof EntityFallingBlock) {
+            if (e instanceof LivingEntity
+                    || e instanceof ArrowEntity
+                    || e instanceof FireballEntity
+                    || e instanceof MinecartEntity
+                    || e instanceof FireworkRocketEntity
+                    || e instanceof BoatEntity
+                    || e instanceof TNTEntity
+                    || e instanceof FallingBlockEntity) {
                 evt.addCapability(DataReference.BREAK_LOCATION, new ICapabilityProvider() {
                     IBreakCapability inst = FragileGlassBase.BREAKCAP.getDefaultInstance();
 
                     @Override
-                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
                         return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                     }
                 });
@@ -79,7 +84,8 @@ public class BreakerDataManager {
 
                     @Override
                     public double getSpeedSquared(Entity e) {
-                        return e.motionX * e.motionX + e.motionY * e.motionY + e.motionZ * e.motionZ;
+                        Vec3d motion = e.getMotion();
+                        return motion.x * motion.x + motion.y * motion.y + motion.z * motion.z;
                     }
 
                     @Override
@@ -90,17 +96,17 @@ public class BreakerDataManager {
 
                     @Override
                     public double getMotionX(Entity e) {
-                        return e.motionX;
+                        return e.getMotion().x;
                     }
 
                     @Override
                     public double getMotionY(Entity e) {
-                        return e.motionY;
+                        return e.getMotion().y;
                     }
 
                     @Override
                     public double getMotionZ(Entity e) {
-                        return e.motionZ;
+                        return e.getMotion().z;
                     }
 
                     @Override
@@ -111,7 +117,7 @@ public class BreakerDataManager {
 
                 @Nullable
                 @Override
-                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
                     return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
                 }
             };
