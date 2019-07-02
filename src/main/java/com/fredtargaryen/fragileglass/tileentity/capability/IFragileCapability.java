@@ -7,7 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Mod devs making use of the block config file for fragility can work with extra data supplied by their end users,
  * supplied as a String array in the file. Recommended usage in AttachCapabilitiesEvent<TileEntity> handler:
- * FragilityDataManager fdm = FragilityDataManager.getInstance();
+ * BlockDataManager fdm = BlockDataManager.getInstance();
  * FragilityData data = fdm.getTileEntityFragilityData(te);
  * if(data != null) {
  *     ICapabilityProvider icp = <construct your capability, with the FragilityData getters to access the values>

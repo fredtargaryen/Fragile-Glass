@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
+import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
@@ -26,20 +27,23 @@ import static com.fredtargaryen.fragileglass.FragileGlassBase.FRAGILECAP;
 
 public class BreakSystem {
     private World world;
-    private BreakerDataManager breakerDataManager;
-    private FragilityDataManager fragilityDataManager;
-    private boolean hasTileEntityFragilityData;
+    private BlockDataManager blockDataManager;
+    private EntityDataManager entityDataManager;
+    private TileEntityDataManager tileEntityDataManager;
+
     private boolean hasBlockStateFragilityData;
     private boolean hasEntityBreakerData;
+    private boolean hasTileEntityFragilityData;
 
     public void init(World world) {
         this.world = world;
         MinecraftForge.EVENT_BUS.register(this);
-        this.breakerDataManager = BreakerDataManager.getInstance();
-        this.fragilityDataManager = FragilityDataManager.getInstance();
-        this.hasEntityBreakerData = this.breakerDataManager.hasEntityBreakerData();
-        this.hasTileEntityFragilityData = this.fragilityDataManager.hasTileEntityFragilityData();
-        this.hasBlockStateFragilityData = this.fragilityDataManager.hasBlockStateFragilityData();
+        this.blockDataManager = FragileGlassBase.getBlockDataManager();
+        this.entityDataManager = FragileGlassBase.getEntityDataManager();
+        this.tileEntityDataManager = FragileGlassBase.getTileEntityDataManager();
+        this.hasBlockStateFragilityData = this.blockDataManager.hasData();
+        this.hasEntityBreakerData = this.entityDataManager.hasData();
+        this.hasTileEntityFragilityData = this.tileEntityDataManager.hasData();
     }
 
     public void end(World world) {
@@ -118,8 +122,7 @@ public class BreakSystem {
      * @param noOfBreaks Effectively multiplies the range of blocks to call onCrash on, but does not multiply the
      *                   speed of e when onCrash is called.
      */
-    private void breakBlocksInWay(Entity e, double xToUse, double yToUse, double zToUse, double distance, byte noOfBreaks)
-    {
+    private void breakBlocksInWay(Entity e, double xToUse, double yToUse, double zToUse, double distance, byte noOfBreaks) {
         AxisAlignedBB originalAABB = e.getBoundingBox();
         if(originalAABB != null) {
             AxisAlignedBB aabb;
@@ -152,22 +155,17 @@ public class BreakSystem {
      * @param aabb The bounding box to break blocks around
      * @param speed The speed e is travelling at
      */
-    private void breakNearbyFragileBlocks(Entity e, AxisAlignedBB aabb, double speed)
-    {
+    private void breakNearbyFragileBlocks(Entity e, AxisAlignedBB aabb, double speed) {
         BlockPos blockPos;
         Block block;
-        for (double x = Math.floor(aabb.minX); x < Math.ceil(aabb.maxX); ++x)
-        {
-            for (double y = Math.floor(aabb.minY); y < Math.ceil(aabb.maxY); ++y)
-            {
-                for (double z = Math.floor(aabb.minZ); z < Math.ceil(aabb.maxZ); ++z)
-                {
+        for (double x = Math.floor(aabb.minX); x < Math.ceil(aabb.maxX); ++x) {
+            for (double y = Math.floor(aabb.minY); y < Math.ceil(aabb.maxY); ++y) {
+                for (double z = Math.floor(aabb.minZ); z < Math.ceil(aabb.maxZ); ++z) {
                     blockPos = new BlockPos(x, y, z);
                     BlockState state = e.world.getBlockState(blockPos);
                     block = state.getBlock();
                     // Chances are the block will be an air block (pass through no question) so best check this first
-                    if (!block.isAir(state, e.world, blockPos))
-                    {
+                    if (!block.isAir(state, e.world, blockPos)) {
                         // Workaround - not all mods conform to the hasTileEntity->getTileEntity pattern
                         //if (block.hasTileEntity(state)) {
                         //    TileEntity te = e.world.getTileEntity(blockPos);
@@ -177,11 +175,11 @@ public class BreakSystem {
                             //No Tile Entity
                             if(this.hasBlockStateFragilityData) {
                                 //The specific BlockState might be covered in the fragility data
-                                ArrayList<FragilityData> fragilityDataList = this.fragilityDataManager.getBlockStateFragilityData(state);
+                                ArrayList<FragilityData> fragilityDataList = this.blockDataManager.data.get(state);
                                 if (fragilityDataList != null) {
                                     for (FragilityData fragilityData : fragilityDataList) {
                                         if (fragilityData != null && speed > fragilityData.getBreakSpeed()) {
-                                            FragilityDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
+                                            BlockDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
                                             switch (fragileBehaviour) {
                                                 case BREAK:
                                                     e.world.destroyBlock(blockPos, true);
@@ -223,8 +221,7 @@ public class BreakSystem {
      * Moving faster than MAXIMUM_ENTITY_SPEED_SQUARED means moving faster than chunks can be loaded.
      * If this is happening there is not much point trying to break blocks.
      */
-    private boolean isValidMoveSpeedSquared(double blocksPerTick)
-    {
+    private boolean isValidMoveSpeedSquared(double blocksPerTick) {
         return blocksPerTick <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
     }
 }

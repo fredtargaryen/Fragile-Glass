@@ -14,13 +14,11 @@ import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,27 +28,14 @@ import java.util.HashMap;
 /**
  * Responsible for everything to do with entity break data from fragileglassft_entities.cfg.
  */
-public class BreakerDataManager {
-    private static BreakerDataManager INSTANCE;
+public class EntityDataManager extends DataManager<EntityType, BreakerData> {
 
-    private File configDir;
-    private File configFile;
-
-    private HashMap<EntityType, BreakerData> entityData;
-
-    public static BreakerDataManager getInstance() {
-        if(INSTANCE == null) {
-            INSTANCE = new BreakerDataManager();
-        }
-        return INSTANCE;
-    }
-
-    public BreakerDataManager() {
-        this.entityData = new HashMap<>();
+    public EntityDataManager() {
+        super("entities");
     }
 
     public void addCapabilityIfPossible(Entity e, AttachCapabilitiesEvent<Entity> evt) {
-        BreakerData breakerData = this.getEntityBreakerData(e);
+        BreakerData breakerData = this.data.get(e.getType());
         if (breakerData == null) {
             if (e instanceof LivingEntity
                     || e instanceof ArrowEntity
@@ -125,89 +110,14 @@ public class BreakerDataManager {
         }
     }
 
-    public BreakerData getEntityBreakerData(Entity e) {
-        EntityType entry = e.getType();
-        if(this.entityData.containsKey(entry)) {
-            return this.entityData.get(entry);
-        }
-        return null;
-    }
-
-    public EntityType getEntityType(String s) {
-        ResourceLocation rl = new ResourceLocation(s);
-        if(ForgeRegistries.ENTITIES.containsKey(rl)) {
-            return ForgeRegistries.ENTITIES.getValue(rl);
-        }
-        return null;
-    }
-
-    private void handleConfigFileException(Exception e) {
-        FragileGlassBase.warn("Could not load "+DataReference.MODID+"_entities.cfg! " +
-                "Default entity crash behaviour will be loaded. The file will not be changed.");
-        e.printStackTrace();
-        this.loadDefaultData();
-    }
-
-    public boolean hasEntityBreakerData() {
-        return !this.entityData.isEmpty();
-    }
-
-    private void loadDefaultData() {
-        this.entityData.clear();
-    }
+    @Override
+    protected String[] getDefaultConfigFileText() { return defaultFileData; }
 
     /**
-     * Set up to read fragileglassft_entities.cfg. MUST be called in postInit, when all Entities have been created!
+     * Detect and read all block/tile entity config files. MUST be called when all Blocks and TileEntityTypes have been registered!
      */
     public void loadEntityData() {
-        try {
-            BreakerConfigLoader bcl = new BreakerConfigLoader(this, this.entityData);
-            File[] fileList = this.configDir.listFiles();
-            if(fileList != null) {
-                String fileName = this.configFile.getName();
-                System.out.println("Found file "+fileName+"; now loading");
-                BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-                bcl.loadFile(br, fileName);
-                br.close();
-                for (File file : fileList) {
-                    fileName = file.getName();
-                    String[] fileNameParts = fileName.split("_");
-                    if(fileNameParts.length == 3){
-                        System.out.println("Found file "+fileName+"; now loading");
-                        if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals("entities")) {
-                            br = new BufferedReader(new FileReader(file));
-                            bcl.loadFile(br, fileName);
-                            br.close();
-                        }
-                    }
-                }
-            }
-        }
-        catch(IOException ioe) {
-            this.handleConfigFileException(new Exception());
-        }
-        catch(BreakerConfigLoader.BreakerConfigLoadException bcle) {
-            FragileGlassBase.warn(bcle.getMessage());
-        }
-    }
-
-    public void setupDirsAndFiles(File configDir) {
-        this.configDir = configDir;
-        this.configFile = new File(this.configDir, DataReference.MODID + "_entities.cfg");
-        if(!this.configFile.exists()) {
-            try {
-                //Config file is not in config folder! Write from defaultFileData (see bottom of file)
-                FragileGlassBase.warn("[BREAKER CONFIG] No config file found! Writing a new one.");
-                FileWriter fw = new FileWriter(this.configFile);
-                for(String s : defaultFileData) {
-                    fw.write(s);
-                }
-                fw.close();
-            }
-            catch(IOException ioe) {
-                this.handleConfigFileException(ioe);
-            }
-        }
+        this.loadDataFromConfigDir(new EntityConfigLoader(this, this.data));
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now
@@ -227,8 +137,7 @@ public class BreakerDataManager {
             "#To make an entity able to break fragile blocks, add a new row in this file following this format:\n",
             "#<modid>:<ID> <min speed> <max speed> <extra values>\n",
             "#* 'modid:ID' is the ResourceLocation string used to register the entity with Forge.\n",
-            "#  - 'modid' can be found by looking in the 'modid' entry of the mod's mcmod.info file.\n",
-            "#    For vanilla Minecraft this is just 'minecraft'.\n",
+            "#  - You can usually find this by looking at the entity in-game with the F3 menu on.\n",
             "#* The first number is a minimum speed (must be decimal). The entity must be moving above this speed\n",
             "#  for a block to potentially break. Speed is measured in blocks per tick, which is metres per second\n",
             "#  divided by 20. The minimum for this value is 0.0, i.e. any movement could break a block.\n",

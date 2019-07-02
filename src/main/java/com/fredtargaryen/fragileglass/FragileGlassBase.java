@@ -18,9 +18,10 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
+import com.fredtargaryen.fragileglass.world.BlockDataManager;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
-import com.fredtargaryen.fragileglass.world.BreakerDataManager;
-import com.fredtargaryen.fragileglass.world.FragilityDataManager;
+import com.fredtargaryen.fragileglass.world.EntityDataManager;
+import com.fredtargaryen.fragileglass.world.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -42,8 +42,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -65,8 +63,6 @@ import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 @Mod(value = DataReference.MODID)
@@ -78,8 +74,9 @@ public class FragileGlassBase {
 
     public static Tag<Block> ICE_BLOCKS;
 
-    private static BreakerDataManager breakerDataManager;
-    private static FragilityDataManager fragDataManager;
+    private static BlockDataManager blockDataManager;
+    private static EntityDataManager entityDataManager;
+    private static TileEntityDataManager tileEntityDataManager;
 
     public static BreakSystem breakSystem;
 
@@ -455,8 +452,7 @@ public class FragileGlassBase {
      * Called after all registry events. Runs in parallel with other SetupEvent handlers.
      * @param event
      */
-    public void postRegistration(FMLCommonSetupEvent event)
-    {
+    public void postRegistration(FMLCommonSetupEvent event) {
         PacketHandler.init();
 
         //Capability
@@ -464,10 +460,12 @@ public class FragileGlassBase {
         CapabilityManager.INSTANCE.register(IPlayerBreakCapability.class, new PlayerBreakStorage(), new PlayerBreakFactory());
         CapabilityManager.INSTANCE.register(IFragileCapability.class, new FragileCapStorage(), new FragileCapFactory());
 
-        breakerDataManager = BreakerDataManager.getInstance();
-        breakerDataManager.setupDirsAndFiles(FMLPaths.CONFIGDIR.get().toFile());
-        fragDataManager = FragilityDataManager.getInstance();
-        fragDataManager.setupDirsAndFiles(FMLPaths.CONFIGDIR.get().toFile());
+        blockDataManager = new BlockDataManager();
+        blockDataManager.setupDirsAndFiles();
+        entityDataManager = new EntityDataManager();
+        entityDataManager.setupDirsAndFiles();
+        tileEntityDataManager = new TileEntityDataManager();
+        tileEntityDataManager.setupDirsAndFiles();
 
         //TAGS
         MinecraftForge.EVENT_BUS.register(new ISelectiveResourceReloadListener() {
@@ -479,9 +477,10 @@ public class FragileGlassBase {
 
         new FeatureManager().registerGenerators();
 
-        //LOAD FRAGILITY AND BREAKER CONFIGS
-        breakerDataManager.loadEntityData();
-        fragDataManager.loadBlockData();
+        //LOAD BREAK CONFIGS
+        blockDataManager.loadBlockData();
+        entityDataManager.loadEntityData();
+        tileEntityDataManager.loadTileEntityData();
     }
 
     ////////////////////////
@@ -562,6 +561,13 @@ public class FragileGlassBase {
         }
     }
 
+    ///////////////////////
+    //DATA MANAGER ACCESS//
+    ///////////////////////
+    public static BlockDataManager getBlockDataManager() { return blockDataManager; }
+    public static EntityDataManager getEntityDataManager() { return entityDataManager; }
+    public static TileEntityDataManager getTileEntityDataManager() { return tileEntityDataManager; }
+
     ////////////////
     //CAPABILITIES//
     ////////////////
@@ -630,7 +636,7 @@ public class FragileGlassBase {
                     //TODO         }
                     //TODO );
                 } else {
-                    breakerDataManager.addCapabilityIfPossible(e, evt);
+                    entityDataManager.addCapabilityIfPossible(e, evt);
                 }
             }
         }
@@ -639,7 +645,7 @@ public class FragileGlassBase {
     @SubscribeEvent
     public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt) {
         TileEntity te = evt.getObject();
-        fragDataManager.addCapabilityIfPossible(te, evt);
+        tileEntityDataManager.addCapabilityIfPossible(te, evt);
     }
 
     @SubscribeEvent
