@@ -22,10 +22,6 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
     @Override
     protected String[] getDefaultConfigFileText() { return defaultFileData; }
 
-    public boolean isResourceLocationValidBlock(String resourceLocation) {
-        return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(resourceLocation));
-    }
-
     /**
      * Detect and read all block/tile entity config files. MUST be called when all Blocks and TileEntityTypes have been registered!
      */
@@ -56,12 +52,13 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
             "#\n#--How to customise--\n",
             "#To add a comment to the file, start the line with a # symbol.\n",
             "#To make a block fragile, add a new row in this file following this format:\n",
-            "#<modid>:<ID>[properties] <BREAK/UPDATE/CHANGE/FALL/MOD> <min speed> <update delay/new state> <extra values>\n",
+            "#modid:ID[properties] BREAK/UPDATE/CHANGE/FALL/MOD minSpeed updateDelay new state extraValues\n",
             "#* 'modid:ID' is the ResourceLocation string used to register with Forge.\n",
-            "#  - You can usually find this by looking at the block in-game with the F3 menu on - below it are the\n",
-            "#    blockstate properties.\n",
-            "#    > Only add the properties if you are specifying behaviour for specific blockstates.\n",
-            "#      Unspecified properties carry over from the block being changed; see the door example below.\n",
+            "#  You can usually find this by looking at the block in-game with the F3 menu on - below it are the\n",
+            "#  blockstate properties.\n",
+            "#  - Only add the properties if you are specifying behaviour for specific blockstates.\n",
+            "#    Unspecified properties carry over from the block being changed; see the door example below.\n",
+            "#  - Any specified properties that the block doesn't have will be quietly ignored.\n",
             "#* For all crash behaviours, the 'breaker' entity must be travelling above its minimum speed. If so,\n",
             "#  it must then be above the speed defined for the block. Meeting both these conditions causes the\n",
             "#  crash behaviour to trigger.\n",
@@ -72,15 +69,15 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
             "#  - 'MOD': for mod tile entities with custom behaviours ONLY.\n",
             "#* Crash behaviours can be combined, and will trigger (if fast enough) in the order they are listed in\n",
             "#  the config messages. However, only the first of each behaviour type will trigger.\n",
-            "#* The first number is a minimum speed (must be decimal). The breaker must be moving above their\n",
+            "#* minSpeed is a minimum speed (must be decimal). The breaker must be moving above their\n",
             "#  breaking speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks\n",
             "#  per tick, which is metres per second divided by 20.\n",
-            "#* The second number is only used by the UPDATE behaviour. It must be an integer. It specifies the\n",
-            "#  delay between the collision and the block update. Delays are measured in ticks and there are 20\n",
-            "#  ticks per second.\n",
-            "#* The value after the second number is only used by the CHANGE behaviour. It must be a blockstate\n",
-            "#  (same format as the first value in each line). This is the state the block will change into. If you\n",
-            "#  aren't using this value you can leave a - here.\n",
+            "#* updateDelay is only used by the UPDATE behaviour. It must be an integer. It specifies the delay\n",
+            "#  between the collision and the block update. Delays are measured in ticks and there are 20 ticks per\n",
+            "#  second.\n",
+            "#* newState is only used by the CHANGE behaviour. It must have the format of a block or blockstate; you\n",
+            "#  can see examples below. This is the state the block will change into. If you aren't using this value\n",
+            "#  you can leave a - here.\n",
             "#* You can add extra values of any format, separated by spaces, for any mod blocks that might require\n",
             "#  them.\n",
             "#\n#--Fun example lines you may wish to uncomment--\n",
