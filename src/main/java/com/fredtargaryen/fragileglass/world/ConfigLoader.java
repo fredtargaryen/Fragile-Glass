@@ -21,6 +21,8 @@ public abstract class ConfigLoader {
     private static final String VARIANT_REGEX = "[a-z]+=([0-9]+|[a-z|_]+)";
     private static final String VARIANTS_REGEX = "(" + VARIANT_REGEX + ",)*(" + VARIANT_REGEX + ")";
     private static final String BLOCK_STATES_REGEX = RES_LOC_REGEX + "\\[" + VARIANTS_REGEX + "\\]";
+    private static final String TAGS_RES_LOC_REGEX = "#" + RES_LOC_REGEX;
+    private static final String TAGS_BLOCK_STATES_REGEX = "#" + BLOCK_STATES_REGEX;
 
     protected String filename;
     protected int lineNumber;
@@ -40,18 +42,34 @@ public abstract class ConfigLoader {
         HashMap<String, String> map = new HashMap<>();
         if(string.equals("-")) {
             //Looks like "-"
+            map.put("tag", null);
             map.put("block", "minecraft:air");
             map.put("properties", null);
         }
         else if(string.matches(RES_LOC_REGEX)) {
             //Looks like "minecraft:acacia_button"
+            map.put("tag", null);
             map.put("block", string);
+            map.put("properties", null);
+        }
+        else if(string.matches(TAGS_RES_LOC_REGEX)) {
+            //Looks like "#minecraft:dirt_like"
+            map.put("tag", string.substring(1));
+            map.put("block", null);
             map.put("properties", null);
         }
         else if(string.matches(BLOCK_STATES_REGEX)) {
             //Looks like "minecraft:acacia_button[face=wall]"
             String[] splitString = string.split("\\[");
+            map.put("tag", null);
             map.put("block", splitString[0]);
+            map.put("properties", splitString[1].substring(0, splitString[1].length() - 1));
+        }
+        else if(string.matches(TAGS_BLOCK_STATES_REGEX)) {
+            //Looks like "#minecraft:dirt_like[snowy=true]"
+            String[] splitString = string.split("\\[");
+            map.put("tag", splitString[0].substring(1));
+            map.put("block", null);
             map.put("properties", splitString[1].substring(0, splitString[1].length() - 1));
         }
         else {
@@ -141,7 +159,7 @@ public abstract class ConfigLoader {
         this.lineNumber = 0;
         while ((this.line = br.readLine()) != null) {
             ++this.lineNumber;
-            if(!this.line.equals("") && line.charAt(0) != '#') {
+            if(!this.line.equals("") && line.charAt(0) != '@') {
                 //Line is supposed to be read
                 this.parseLine();
             }

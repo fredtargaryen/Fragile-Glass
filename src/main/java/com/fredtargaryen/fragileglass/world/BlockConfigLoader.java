@@ -3,11 +3,10 @@ package com.fredtargaryen.fragileglass.world;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IProperty;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BlockConfigLoader extends ConfigLoader {
@@ -47,20 +46,39 @@ public class BlockConfigLoader extends ConfigLoader {
     }
 
 
-    private List<BlockState> getAllBlockStatesForString(String states) throws ConfigLoadException {
+    private List<BlockState> getAllBlockStatesForString(String states) {
         HashMap<String, String> description = this.getDescriptionFromString(states);
-        //Get all BlockStates with the block named in splitEntryName[0]
-        Block block = this.getBlockFromString(description.get("block"));
-        List<BlockState> allStates = new ArrayList<>(block.getStateContainer().getValidStates());
+        List<BlockState> allStates = new ArrayList<>();
+        Collection<Block> blocks;
+        String tag = description.get("tag");
+        if(tag == null) {
+            //Represents a single block
+            //Get all BlockStates with the block named in splitEntryName[0]
+            Block block = this.getBlockFromString(description.get("block"));
+            blocks = new ArrayList<>();
+            blocks.add(block);
+        }
+        else {
+            //Represents the set of blocks under the given tag
+            blocks = BlockTags.getCollection().getOrCreate(new ResourceLocation(tag)).getAllElements();
+        }
         String propsString = description.get("properties");
-        if(propsString != null) {
-            //Some properties were specified so change allStates
-            HashMap<IProperty<?>, ?> specifiedProperties = this.parseStringPropertyMap(block.getDefaultState(), this.getStringPropertyMapFrom(propsString));
-            for(IProperty<?> iprop : specifiedProperties.keySet()) {
-                allStates = allStates.stream()
-                        .filter(state -> state.get(iprop) == specifiedProperties.get(iprop))
-                        .collect(Collectors.toList());
+        for(Block block : blocks) {
+            //Get all valid states of the block
+            Collection<BlockState> filteredStates = block.getStateContainer().getValidStates();
+            if (propsString != null) {
+                //Some properties were specified so change filteredStates
+                //Get the properties specified by the variant text in the config file
+                HashMap<IProperty<?>, ?> specifiedProperties = this.parseStringPropertyMap(
+                        block.getDefaultState(), this.getStringPropertyMapFrom(propsString));
+                for (IProperty<?> iprop : specifiedProperties.keySet()) {
+                    //For each property, filter the states and keep the ones which have the same value for that property
+                    filteredStates = filteredStates.stream()
+                            .filter(state -> state.get(iprop) == specifiedProperties.get(iprop))
+                            .collect(Collectors.toList());
+                }
             }
+            allStates.addAll(filteredStates);
         }
         return allStates;
     }

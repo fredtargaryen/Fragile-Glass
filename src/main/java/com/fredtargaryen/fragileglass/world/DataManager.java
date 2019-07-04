@@ -34,6 +34,10 @@ public abstract class DataManager<E, D> {
         this.typeString = typeString;
     }
 
+    public final void clearData() {
+        this.data.clear();
+    }
+
     protected abstract String[] getDefaultConfigFileText();
 
     private void handleConfigFileException(Exception e) {

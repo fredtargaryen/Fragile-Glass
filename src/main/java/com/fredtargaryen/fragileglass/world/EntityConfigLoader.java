@@ -2,12 +2,13 @@ package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import net.minecraft.entity.EntityType;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class EntityConfigLoader extends ConfigLoader{
@@ -30,13 +31,27 @@ public class EntityConfigLoader extends ConfigLoader{
             throw new ConfigLoadException("There must be at least 3 values here.");
         }
         else {
-            //Check the first value is a ResourceLocation in the Forge EntityType registry, i.e. refers to a valid entity
-            EntityType entry = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(values[0]));
-            if(entry == null) {
-                throw new ConfigLoadException("There is no entity type with the resource location " + values[0] + ".");
+            //Get collection of entities described on this line
+            Collection<EntityType<?>> entityTypes;
+            if(values[0].charAt(0) == '#') {
+                //values[0] is a tag representing multiple entities
+                entityTypes = EntityTypeTags.getCollection()
+                        .getOrCreate(new ResourceLocation(values[0].substring(1)))
+                        .getAllElements();
             }
             else {
-                try {
+                //values[0] is a single entity
+                entityTypes = new ArrayList<>();
+                //Check the first value is a ResourceLocation in the Forge EntityType registry, i.e. refers to a valid entity
+                EntityType entry = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(values[0]));
+                if (entry == null) {
+                    throw new ConfigLoadException("There is no entity type with the resource location " + values[0] + ".");
+                } else {
+                    entityTypes.add(entry);
+                }
+            }
+            try {
+                for(EntityType et : entityTypes) {
                     //Validate minSpeed and silently clamp to >= 0
                     double minSpeedSquared = Double.parseDouble(values[1]);
                     minSpeedSquared = Math.max(minSpeedSquared * minSpeedSquared, 0.0);
@@ -44,17 +59,17 @@ public class EntityConfigLoader extends ConfigLoader{
                     double maxSpeedSquared = Double.parseDouble(values[2]);
                     maxSpeedSquared = Math.min(maxSpeedSquared * maxSpeedSquared, DataReference.MAXIMUM_ENTITY_SPEED_SQUARED);
                     //Ensure minSpeed <= maxSpeed. If not, silently swap the values
-                    if(minSpeedSquared > maxSpeedSquared) {
+                    if (minSpeedSquared > maxSpeedSquared) {
                         double temp = minSpeedSquared;
                         minSpeedSquared = maxSpeedSquared;
                         maxSpeedSquared = temp;
                     }
-                    this.entities.put(entry, new BreakerData(minSpeedSquared, maxSpeedSquared, Arrays.copyOfRange(values, 3, values.length)));
+                    this.entities.put(et, new BreakerData(minSpeedSquared, maxSpeedSquared, Arrays.copyOfRange(values, 3, values.length)));
                 }
-                catch(NumberFormatException nfe) {
-                    //Thrown when speed values can't be parsed as Doubles
-                    throw new ConfigLoadException("One of your speed values can't be read as a decimal number.");
-                }
+            }
+            catch(NumberFormatException nfe) {
+                //Thrown when speed values can't be parsed as Doubles
+                throw new ConfigLoadException("One of your speed values can't be read as a decimal number.");
             }
         }
     }

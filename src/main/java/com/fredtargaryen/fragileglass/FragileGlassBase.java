@@ -30,8 +30,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -55,15 +54,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ObjectHolder;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.function.Predicate;
 
 @Mod(value = DataReference.MODID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -466,21 +462,24 @@ public class FragileGlassBase {
         entityDataManager.setupDirsAndFiles();
         tileEntityDataManager = new TileEntityDataManager();
         tileEntityDataManager.setupDirsAndFiles();
-
-        //TAGS
-        MinecraftForge.EVENT_BUS.register(new ISelectiveResourceReloadListener() {
-            @Override
-            public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-                FragileGlassBase.ICE_BLOCKS = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft", "ice"));
-            }
-        });
+        //Can load tile entity data just once because these don't use tags
+        tileEntityDataManager.loadTileEntityData();
 
         new FeatureManager().registerGenerators();
+    }
 
-        //LOAD BREAK CONFIGS
-        blockDataManager.loadBlockData();
-        entityDataManager.loadEntityData();
-        tileEntityDataManager.loadTileEntityData();
+    /**
+     * The listener added ensures the data is only loaded when the Tags have been fully populated.
+     * @param event
+     */
+    @SubscribeEvent
+    public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
+        event.getServer().getResourceManager().addReloadListener((IResourceManagerReloadListener) resourceManager -> {
+            blockDataManager.clearData();
+            blockDataManager.loadBlockData();
+            entityDataManager.clearData();
+            entityDataManager.loadEntityData();
+        });
     }
 
     ////////////////////////
