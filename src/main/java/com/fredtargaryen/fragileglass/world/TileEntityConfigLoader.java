@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.world;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -87,7 +88,13 @@ public class TileEntityConfigLoader extends ConfigLoader{
 
     private BlockState getSingleBlockStateFromString(String stateString) throws ConfigLoadException {
         HashMap<String, String> description = this.getDescriptionFromString(stateString);
-        BlockState state = this.getBlockFromString(description.get("block")).getDefaultState();
-        return this.getNewStateFromOldAndString(state, stateString);
+        String blockString = description.get("block");
+        if(blockString.equals("-")) {
+            return Blocks.AIR.getDefaultState();
+        }
+        else {
+            BlockState state = this.getBlockFromString(blockString).getDefaultState();
+            return this.getNewStateFromOldAndString(state, stateString);
+        }
     }
 }

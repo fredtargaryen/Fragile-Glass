@@ -23,6 +23,7 @@ public abstract class ConfigLoader {
     private static final String BLOCK_STATES_REGEX = RES_LOC_REGEX + "\\[" + VARIANTS_REGEX + "\\]";
     private static final String TAGS_RES_LOC_REGEX = "#" + RES_LOC_REGEX;
     private static final String TAGS_BLOCK_STATES_REGEX = "#" + BLOCK_STATES_REGEX;
+    private static final String OLD_WITHPROPS_REGEX = "\\-\\[" + VARIANTS_REGEX + "\\]";
 
     protected String filename;
     protected int lineNumber;
@@ -41,10 +42,17 @@ public abstract class ConfigLoader {
     protected HashMap<String, String> getDescriptionFromString(String string) {
         HashMap<String, String> map = new HashMap<>();
         if(string.equals("-")) {
-            //Looks like "-"
+            //Looks like "-", i.e. whatever the block was before
             map.put("tag", null);
-            map.put("block", "minecraft:air");
+            map.put("block", "-");
             map.put("properties", null);
+        }
+        else if(string.matches(OLD_WITHPROPS_REGEX)) {
+            //Looks like "-[open=true]", i.e. whatever the block was but open
+            String[] splitString = string.split("\\[");
+            map.put("tag", null);
+            map.put("block", "-");
+            map.put("properties", splitString[1].substring(0, splitString[1].length() - 1));
         }
         else if(string.matches(RES_LOC_REGEX)) {
             //Looks like "minecraft:acacia_button"
@@ -79,7 +87,7 @@ public abstract class ConfigLoader {
     }
 
     protected Block getBlockFromString(String state) {
-        if(state.equals("-")) {
+        if(state == null) {
             return Blocks.AIR;
         }
         else {
@@ -99,11 +107,15 @@ public abstract class ConfigLoader {
         String blockString = description.get("block");
         //Acquire the default new state to transform into
         BlockState newState = this.getBlockFromString(blockString).getDefaultState();
-        if(newState == Blocks.AIR.getDefaultState() &&
-                !blockString.equals("minecraft:air") &&
-                !blockString.equals("-")) {
-            //Registry returned air, but something is fishy
-            throw new ConfigLoadException("Could not find a block matching "+blockString);
+        if(newState == Blocks.AIR.getDefaultState() && !blockString.equals("minecraft:air")) {
+            if(blockString.equals("-")) {
+                //- means use the old state
+                newState = old;
+            }
+            else {
+                //Registry returned air, but something is fishy
+                throw new ConfigLoadException("Could not find a block matching " + blockString);
+            }
         }
         //Get property map of this default state
         HashMap<String, String> newMap = this.getStringPropertyMapFrom(newState);
