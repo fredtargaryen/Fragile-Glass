@@ -12,11 +12,15 @@ For Minecraft 1.7.10, see [the Fragile-Glass-1.7.10 repo](https://github.com/fre
 ## Information for Players and Pack Developers
 ### Customising Fragile Blocks
 Full information on how to customise blocks' behaviour on collision can be found in these places:
-* At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/master/src/main/java/com/fredtargaryen/fragileglass/world/FragilityDataManager.java).
+* At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/master/src/main/java/com/fredtargaryen/fragileglass/world/BlockDataManager.java).
 * In your game folder, under `config/fragileglassft_blocks.cfg`.
+#### Via Tile Entities
+Full information on how to customise tile entities' behaviour on collision can be found in these places:
+* At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/master/src/main/java/com/fredtargaryen/fragileglass/world/TileEntityDataManager.java).
+* In your game folder, under `config/fragileglassft_tileentities.cfg`.
 ### Customising Fragile Entities
 Full information on how to customise entities' minimum and maximum collision speed can be found in these places:
-* At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/blocklist/src/main/java/com/fredtargaryen/fragileglass/world/BreakerDataManager.java).
+* At the bottom of [this file](https://github.com/fredtargaryen/Fragile-Glass/blob/master/src/main/java/com/fredtargaryen/fragileglass/world/EntityDataManager.java).
 * In your game folder, under `config/fragileglassft_entities.cfg`.
 ### Issues
 Please report any issues on [the Issues page](https://github.com/fredtargaryen/Fragile-Glass/issues).
@@ -57,9 +61,11 @@ public class YourBaseModClass {
     }
 }
 ```
-If you want to support custom fragility values from `fragileglassft_blocks.cfg`, if they were entered correctly you can access them like this:
+If you want to support custom values from the config files, if they were entered correctly you can access them like this:
+#####Blocks
 ```
-FragilityData fragData = FragilityDataManager.getInstance().getTileEntityFragilityData(te);
+FragilityData fragData = FragileGlassBase.getBlockDataManager().data.get(blockState); //For BlockStates
+FragilityData fragData = FragileGlassBase.getTileEntityDataManager().data.get(tileEntity.getType()); //For Tile Entities
 FragileBehaviour fb = fragData.getBehaviour(); //If this is not set to MOD you won't be able to use your custom behaviour
 double breakSpeed = fragData.getBreakSpeed();
 int updateDelay = fragData.getUpdateDelay();
@@ -72,8 +78,16 @@ String[] extraData = fragData.getExtraData(); //Extra values as unparsed strings
 but the validation process can change or reject certain values so it is better to put values for the custom behaviour in extraData.
 * It is your responsibility to explain to your users how each fragility value is used for your tile entity, and to validate the values.
 * It is your users' responsibility to enter the fragility values correctly.
-
-If you want your mod to automatically add mod data, before the FMLCommonSetupEvents you can have the mod write it into a .cfg file: `fragileglassft_blocks_<name>.cfg` or `fragileglassft_entities_<name>.cfg`. This way you can force a collision behaviour by rewriting the file on mod initialisation. The mod reads from `fragileglassft_blocks.cfg` and `fragileglassft_entities.cfg` first, and the other files afterwards.
+#####Entities
+```
+BreakerData breakerData = FragileGlassBase.getEntityDataManager().data.get(entity.getType());
+double minSpeedSquared = breakerData.getMinSpeedSquared();
+double maxSpeedSquared = breakerData.getMaxSpeedSquared();
+String[] extraData = breakerData.getExtraData();
+```
+* Your entity is likely to already have a break behaviour added behind the scenes; check the file in "Customising Fragile Entities" above to see if it does.
+* Because this is a custom behaviour you are free to use minSpeedSquared and maxSpeedSquared for any purpose, but the validation process can change or reject certain values so it is better to put values for the custom behaviour in extraData.
+If you want your mod to automatically add mod data, before the FMLCommonSetupEvents you can have the mod write it into a .cfg file: `fragileglassft_blocks_<name>.cfg`, `fragileglassft_entities_<name>.cfg` or `fragileglassft_tileentities_<name>.cfg`. This way you can force a collision behaviour by rewriting the file on mod initialisation. The mod reads from `fragileglassft_blocks.cfg`, `fragileglassft_entities.cfg` and `fragileglassft_tileentities.cfg` first, and the other files afterwards.
 ### Pull Requests
 Any pull requests are very welcome. There are currently no standards for pull requests but clean code which
 follows the existing patterns is appreciated. If you are making a new feature, message me first to see
