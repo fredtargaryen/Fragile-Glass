@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
+import ljfa.glassshards.api.GlassType;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPane;
@@ -21,6 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -237,5 +239,11 @@ public class BlockFragilePane extends AnyFragileBlock
         {
             throw new RuntimeException(e);
         }
+    }
+
+    @Optional.Method(modid="glass_shards")
+    @Override
+    public GlassType getGlassType(World world, BlockPos pos, IBlockState state) {
+        return new GlassType(FragileGlassBase.glassShards ? GlassType.mult_pane : 0.0F);
     }
 }

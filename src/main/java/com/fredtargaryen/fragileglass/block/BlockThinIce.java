@@ -16,16 +16,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class BlockThinIce extends Block
+public class BlockThinIce extends BlockIce
 {
     public BlockThinIce()
     {
-        super(Material.ICE);
+        super();
         this.lightOpacity = 0;
         this.slipperiness = 0.98F;
         this.setCreativeTab(CreativeTabs.MISC);

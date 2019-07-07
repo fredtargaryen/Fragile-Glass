@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
+import ljfa.glassshards.api.GlassType;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -14,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -75,5 +77,11 @@ public class BlockFragileGlass extends AnyFragileBlock
         {
             throw new RuntimeException(e);
         }
+    }
+
+    @Optional.Method(modid="glass_shards")
+    @Override
+    public GlassType getGlassType(World world, BlockPos pos, IBlockState state) {
+        return new GlassType(FragileGlassBase.glassShards ? GlassType.mult_block : 0.0F);
     }
 }
