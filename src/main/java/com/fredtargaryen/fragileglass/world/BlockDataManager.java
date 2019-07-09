@@ -97,8 +97,11 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
             "@Safe lava that turns into slime at the last minute\n",
             "@minecraft:lava CHANGE 0.0 0 minecraft:slime_block\n",
             "@\n@--Default values, in case you break something--\n",
+            "@Fragile Glass blocks and panes:\n",
+            "@#fragileglassft:fragile_glass BREAK 0.165 0 -\n",
             "@Thin ice:\n",
             "@fragileglassft:thinice BREAK 0.0 0 -\n",
+            "#fragileglassft:fragile_glass BREAK 0.165 0 -\n",
             "fragileglassft:thinice BREAK 0.0 0 -\n"
     };
 }

@@ -1,6 +1,6 @@
 package com.fredtargaryen.fragileglass.block;
 
-import net.minecraft.block.*;
+import net.minecraft.block.IBeaconBeamColorProvider;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.api.distmarker.Dist;

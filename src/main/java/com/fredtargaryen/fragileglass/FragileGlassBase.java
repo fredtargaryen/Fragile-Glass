@@ -12,7 +12,6 @@ import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.ClientProxy;
 import com.fredtargaryen.fragileglass.proxy.IProxy;
 import com.fredtargaryen.fragileglass.proxy.ServerProxy;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
@@ -243,8 +242,6 @@ public class FragileGlassBase {
     public static Item ITEM_WEAK_STONE;
 
     //Declare TileEntityTypes here
-    @ObjectHolder("tefg")
-    public static TileEntityType TEFG_TYPE;
     @ObjectHolder("tews")
     public static TileEntityType TEWS_TYPE;
 
@@ -440,9 +437,6 @@ public class FragileGlassBase {
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         event.getRegistry().registerAll(
-                TileEntityType.Builder.create(TileEntityFragileGlass::new)
-                        .build(null)
-                        .setRegistryName(new ResourceLocation(DataReference.MODID, "tefg")),
                 TileEntityType.Builder.create(TileEntityWeakStone::new)
                         .build(null)
                         .setRegistryName(new ResourceLocation(DataReference.MODID, "tews"))

@@ -89,9 +89,6 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     @Override
     protected void loadDefaultData() {
         super.loadDefaultData();
-        ArrayList<FragilityData> glassBehaviour = new ArrayList<>();
-        glassBehaviour.add(new FragilityData(BREAK, 0.165, 0, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.data.put(FragileGlassBase.TEFG_TYPE, glassBehaviour);
         ArrayList<FragilityData> stoneBehaviour = new ArrayList<>();
         stoneBehaviour.add(new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
         this.data.put(FragileGlassBase.TEWS_TYPE, stoneBehaviour);
@@ -149,11 +146,8 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
             "@\n@--Fun example lines you may wish to uncomment--\n",
             "@Currently none, but I am open to suggestions!\n",
             "@\n@--Default values, in case you break something--\n",
-            "@All fragile glass blocks:\n",
-            "@fragileglassft:tefg BREAK 0.165 0 -\n",
             "@Weak stone:\n",
             "@fragileglassft:tews UPDATE 0.0 10 -\n",
-            "fragileglassft:tefg BREAK 0.165 0 -\n",
             "fragileglassft:tews UPDATE 0.0 10 -\n"
     };
 }

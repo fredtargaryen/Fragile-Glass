@@ -1,10 +1,8 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityFragileGlass;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -39,22 +37,6 @@ public class FragileGlassBlock extends AnyFragileBlock
                 || near == Blocks.GLASS
                 || near instanceof StainedGlassBlock;
         return nearIsGlass || super.isSideInvisible(thisState, neighbourState, face);
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        try {
-            return new TileEntityFragileGlass();
-        }
-        catch(Exception e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     public boolean propagatesSkylightDown(BlockState p_200123_1_, IBlockReader p_200123_2_, BlockPos p_200123_3_) {
