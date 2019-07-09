@@ -95,8 +95,8 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
             "@Cause suspended sand to fall when you are near it\n",
             "@#minecraft:sand UPDATE 0.0 10 -\n",
             "@Safe lava that turns into slime at the last minute\n",
-            "@#minecraft:lava CHANGE 0.0 0 minecraft:slime_block\n",
-            "@\n#--Default values, in case you break something--\n",
+            "@minecraft:lava CHANGE 0.0 0 minecraft:slime_block\n",
+            "@\n@--Default values, in case you break something--\n",
             "@Thin ice:\n",
             "@fragileglassft:thinice BREAK 0.0 0 -\n",
             "fragileglassft:thinice BREAK 0.0 0 -\n"

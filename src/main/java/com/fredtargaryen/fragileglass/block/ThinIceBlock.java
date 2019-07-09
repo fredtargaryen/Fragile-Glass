@@ -17,7 +17,7 @@ import net.minecraftforge.common.extensions.IForgeBlock;
 import java.util.Random;
 
 public class ThinIceBlock extends Block implements IForgeBlock {
-    private static final VoxelShape SHAPE = Block.makeCuboidShape(14.0, 14.0, 14.0, 16.0, 16.0, 16.0);
+    private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0, 14.0, 0.0, 16.0, 16.0, 16.0);
 
     public ThinIceBlock() {
         super(Properties.create(Material.ICE).slipperiness(0.98F).sound(SoundType.GLASS).tickRandomly());

@@ -1,6 +1,5 @@
 /**
  * Checklist
- * Busted player break cap (waiting for a Forge update)
  * Particles (probably needs another update)
  */
 package com.fredtargaryen.fragileglass;
@@ -34,6 +33,7 @@ import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -41,6 +41,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -60,6 +62,9 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @Mod(value = DataReference.MODID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -621,19 +626,19 @@ public class FragileGlassBase {
                 }
             } else {
                 if (e instanceof PlayerEntity) {
-                    //TODO evt.addCapability(DataReference.PLAYER_BREAK_LOCATION,
-                    //TODO         new ICapabilityProvider() {
-                    //TODO             IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
-//TODO
-                    //TODO             @Override
-                    //TODO             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-                    //TODO                 if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
-                    //TODO                     return LazyOptional.of(() -> (T) inst);
-                    //TODO                 }
-                    //TODO                 return LazyOptional.empty();
-                    //TODO             }
-                    //TODO         }
-                    //TODO );
+                    evt.addCapability(DataReference.PLAYER_BREAK_LOCATION,
+                            new ICapabilityProvider() {
+                                IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
+
+                                @Override
+                                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+                                    if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
+                                        return LazyOptional.of(() -> (T) inst);
+                                    }
+                                    return LazyOptional.empty();
+                                }
+                            }
+                    );
                 } else {
                     entityDataManager.addCapabilityIfPossible(e, evt);
                 }
