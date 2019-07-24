@@ -43,9 +43,10 @@ public class MyBubbleParticle extends SpriteTexturedParticle {
         }
 
         public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            MyBubbleParticle bubbleparticle = new MyBubbleParticle(worldIn, x, y, z);
-            bubbleparticle.func_217568_a(this.field_217510_a);
-            return bubbleparticle;
+//            MyBubbleParticle bubbleparticle = new MyBubbleParticle(worldIn, x, y, z);
+//            bubbleparticle.func_217568_a(this.field_217510_a);
+//            return bubbleparticle;
+            return new BubbleParticle.Factory(this.field_217510_a).makeParticle(typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
         }
     }
 }

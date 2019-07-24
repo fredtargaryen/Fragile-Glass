@@ -122,7 +122,7 @@ public class SugarCauldronBlock extends Block {
         }
         else if(m == 2)
         {
-            if(below == Blocks.FIRE || below == Blocks.LAVA || (below == Blocks.FURNACE && stateBelow.get(AbstractFurnaceBlock.field_220091_b))) //LIT
+            if(below == Blocks.FIRE || below == Blocks.LAVA || (below == Blocks.FURNACE && stateBelow.get(AbstractFurnaceBlock.LIT)))
             {
                 w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 3), 3);
                 w.getPendingBlockTicks().scheduleTick(pos, this, thirdOfCookTime);
@@ -139,7 +139,7 @@ public class SugarCauldronBlock extends Block {
         }
         else
         {
-            if(below == Blocks.FIRE || below == Blocks.LAVA || (below == Blocks.FURNACE && stateBelow.get(AbstractFurnaceBlock.field_220091_b))) //LIT
+            if(below == Blocks.FIRE || below == Blocks.LAVA || (below == Blocks.FURNACE && stateBelow.get(AbstractFurnaceBlock.LIT)))
             {
                 ++m;
                 w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, m), 3);

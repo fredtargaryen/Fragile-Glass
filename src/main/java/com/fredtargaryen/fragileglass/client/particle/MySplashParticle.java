@@ -26,9 +26,10 @@ public class MySplashParticle extends RainParticle {
         }
 
         public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            MySplashParticle splashparticle = new MySplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-            splashparticle.func_217568_a(this.field_217547_a);
-            return splashparticle;
+//            MySplashParticle splashparticle = new MySplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
+//            splashparticle.func_217568_a(this.field_217547_a);
+//            return splashparticle;
+            return new SplashParticle.Factory(this.field_217547_a).makeParticle(typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
         }
     }
 }
