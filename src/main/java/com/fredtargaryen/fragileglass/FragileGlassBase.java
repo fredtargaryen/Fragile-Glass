@@ -1,7 +1,3 @@
-/**
- * Checklist
- * Particles (probably needs another update)
- */
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;

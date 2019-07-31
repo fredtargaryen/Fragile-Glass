@@ -1,14 +1,9 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.client.particle.MyBubbleParticle;
-import com.fredtargaryen.fragileglass.client.particle.MySplashParticle;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SplashParticle;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +16,6 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IWorld;
@@ -164,14 +158,13 @@ public class SugarCauldronBlock extends Block {
         if(m > 2 && m < 6) {
             boolean shouldBubble = true;
             if(m == 3) {
-                shouldBubble = r.nextInt(4) == 0;
+                shouldBubble = r.nextInt(2) == 0;
             }
             else if(m == 4) {
                 shouldBubble = r.nextBoolean();
             }
             if(shouldBubble) {
-                world.addParticle(ParticleTypes.BUBBLE, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.0, 0.0);
-                //TODO this.spawnParticle(new MyBubbleParticle(world, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 1, pos.getZ() + 0.125 + r.nextFloat() * 0.75));
+                world.addParticle(ParticleTypes.BUBBLE_COLUMN_UP, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 0.5, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.005, 0.0);
             }
         }
     }
@@ -192,18 +185,11 @@ public class SugarCauldronBlock extends Block {
 
     @OnlyIn(Dist.CLIENT)
     private void splash(World w, int x, int y, int z) {
+        w.addParticle(ParticleTypes.SPLASH, x + 0.25, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
         w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
-        w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
-        w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
-        w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
-        w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
-        w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
-        // TODO this.spawnParticle(new MySplashParticle(w, x + 0.5, y + 0.8, z + 0.5));
-        // TODO this.spawnParticle(new MySplashParticle(w, x + 0.5, y + 0.8, z + 0.5));
-        // TODO this.spawnParticle(new MySplashParticle(w, x + 0.5, y + 0.8, z + 0.5));
-        // TODO this.spawnParticle(new MySplashParticle(w, x + 0.5, y + 0.8, z + 0.5));
-        // TODO this.spawnParticle(new MySplashParticle(w, x + 0.5, y + 0.8, z + 0.5));
-        // TODO this.spawnParticle(new MySplashParticle(w, x + 0.5, y + 0.8, z + 0.5));
+        w.addParticle(ParticleTypes.SPLASH, x + 0.75, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
+        w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.25, 0.0, 0.0, 0.0);
+        w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.75, 0.0, 0.0, 0.0);
     }
 
     /*
