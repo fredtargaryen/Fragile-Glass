@@ -148,8 +148,8 @@ public class FragilityConfigLoader {
                 //Line is supposed to be read
                 String[] values = line.split(" ");
                 //Validate number of values on row
-                if(values.length < 4) {
-                    throw new FragilityConfigLoadException(filename, "There must be at least 4 values here.", line, lineNumber);
+                if(values.length < 5) {
+                    throw new FragilityConfigLoadException(filename, "There must be at least 5 values here.", line, lineNumber);
                 }
                 else {
                     //Validate first value

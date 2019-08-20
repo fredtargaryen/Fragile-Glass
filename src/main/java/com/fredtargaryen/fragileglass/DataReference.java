@@ -8,7 +8,7 @@ public class DataReference
     //MAIN MOD DETAILS
     public static final String MODID = "fragileglassft";
     public static final String MODNAME = "Fragile Glass and Thin Ice";
-    public static final String VERSION = "2.0.2";
+    public static final String VERSION = "2.0.3";
     //PROXY PATHS
     public static final String CLIENTPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ClientProxy";
     public static final String SERVERPROXYPATH = "com.fredtargaryen.fragileglass.proxy.ServerProxy";
