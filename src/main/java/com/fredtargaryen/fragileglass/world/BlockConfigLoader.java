@@ -87,8 +87,8 @@ public class BlockConfigLoader extends ConfigLoader {
     protected void parseLine() throws ConfigLoadException {
         String[] values = this.line.split(" ");
         //Validate number of values on row
-        if(values.length < 4) {
-            throw new ConfigLoadException("There must be at least 4 values here.");
+        if(values.length < 5) {
+            throw new ConfigLoadException("There must be at least 5 values here.");
         }
         else {
             List<BlockState> states = this.getAllBlockStatesForString(values[0]);
