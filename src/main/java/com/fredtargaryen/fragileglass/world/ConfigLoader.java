@@ -181,6 +181,13 @@ public abstract class ConfigLoader {
         this.lineNumber = 0;
     }
 
+    public void parseArbitraryString(String string) throws ConfigLoadException {
+        this.line = string;
+        this.lineNumber = -1;
+        this.filename = "";
+        this.parseLine();
+    }
+
     /**
      * Parse a single line of text (this.line).
      * @throws ConfigLoadException
@@ -226,7 +233,9 @@ public abstract class ConfigLoader {
      */
     public class ConfigLoadException extends Exception {
         public ConfigLoadException(String message) {
-            super("Could not load " + ConfigLoader.this.filename + " because of line " + ConfigLoader.this.lineNumber + ":\n" + ConfigLoader.this.line +"\n" + message +
+            super(ConfigLoader.this.lineNumber == -1 ?
+                    "Could not parse command: \n" + ConfigLoader.this.line + "\n" + message + "\nNo changes have been made." :
+                    "Could not load " + ConfigLoader.this.filename + " because of line " + ConfigLoader.this.lineNumber + ":\n" + ConfigLoader.this.line +"\n" + message +
                     "\nThe rest of the file will not be loaded.");
         }
     }
