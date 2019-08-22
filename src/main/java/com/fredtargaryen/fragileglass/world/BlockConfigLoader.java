@@ -121,7 +121,7 @@ public class BlockConfigLoader extends ConfigLoader {
                 }
                 catch(IllegalArgumentException iae) {
                     //Thrown when the second value is not one of the supported ones
-                    throw new ConfigLoadException(values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.");
+                    throw new ConfigLoadException(values[1] + " should be 'BREAK', 'UPDATE', 'CHANGE', 'FALL' or 'MOD'.");
                 }
             }
         }
