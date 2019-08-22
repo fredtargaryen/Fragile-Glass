@@ -333,7 +333,7 @@ public class FragilityDataManager {
             "#  ticks per second.\n",
             "#* The value after the second number is only used by the CHANGE behaviour. It must be a blockstate\n",
             "#  (same format as the first value in each line). This is the state the block will change into. If you\n",
-            "#  aren't using this value you can leave a - here.\n",
+            "#  aren't using this value leave a - here.\n",
             "#* You can add extra values of any format, separated by spaces, for any mod blocks that might require\n",
             "#  them.\n",
             "#\n#--Fun example lines you may wish to uncomment--\n",

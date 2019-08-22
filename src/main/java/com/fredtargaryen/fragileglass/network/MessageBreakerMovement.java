@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
- * Used to handle player movement. See IPlayerBreakCapability, PlayerBreakStorage and PlayerBreakFactory for more
+ * Handles player movement. See IPlayerBreakCapability, PlayerBreakStorage and PlayerBreakFactory for more
  * information.
  */
 public class MessageBreakerMovement implements IMessage, IMessageHandler<MessageBreakerMovement, IMessage>
