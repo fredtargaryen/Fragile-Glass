@@ -225,7 +225,7 @@ public class FragilityDataManager {
         this.blockStateData.clear();
         this.tileEntityData.clear();
         this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.tileEntityData.put(DataReference.MODID + ":thinice", new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.blockStateData.put(FragileGlassBase.thinIce.getDefaultState(), new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
         this.tileEntityData.put(DataReference.MODID + ":tews", new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
     }
 
