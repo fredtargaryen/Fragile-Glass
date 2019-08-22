@@ -27,7 +27,15 @@ import static com.fredtargaryen.fragileglass.world.DataManager.FragileBehaviour.
 
 public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList<FragilityData>> {
 
-    public TileEntityDataManager() { super("tileentities"); }
+    /**
+     * Processes config lines from files or code - maybe commands in the future
+     */
+    private TileEntityConfigLoader tileEntityConfigLoader;
+
+    public TileEntityDataManager() {
+        super("tileentities");
+        this.tileEntityConfigLoader = new TileEntityConfigLoader(this, this.data);
+    }
 
     public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
         ArrayList<FragilityData> fragDataList = this.data.get(te.getType());
@@ -89,9 +97,12 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     @Override
     protected void loadDefaultData() {
         super.loadDefaultData();
-        ArrayList<FragilityData> stoneBehaviour = new ArrayList<>();
-        stoneBehaviour.add(new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.data.put(FragileGlassBase.TEWS_TYPE, stoneBehaviour);
+        try {
+            this.tileEntityConfigLoader.parseArbitraryString("fragileglassft:tews UPDATE 0.0 10 -");
+        }
+        catch(ConfigLoader.ConfigLoadException cle) {
+            System.out.println("FredTargaryen is an idiot; please let him know you saw this");
+        }
     }
 
     /**

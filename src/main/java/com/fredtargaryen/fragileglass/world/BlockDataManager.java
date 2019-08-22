@@ -1,22 +1,22 @@
 package com.fredtargaryen.fragileglass.world;
 
-import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
-
-import static com.fredtargaryen.fragileglass.world.DataManager.FragileBehaviour.BREAK;
 
 /**
  * Responsible for everything to do with block fragility data from fragileglassft_blocks.cfg.
  */
 public class BlockDataManager extends DataManager<BlockState, ArrayList<FragilityData>> {
 
+    /**
+     * Processes config lines from files or code - maybe commands in the future
+     */
+    private BlockConfigLoader blockConfigLoader;
+
     public BlockDataManager() {
         super("blocks");
+        this.blockConfigLoader = new BlockConfigLoader(this, this.data);
     }
 
     @Override
@@ -26,15 +26,19 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
      * Detect and read all block/tile entity config files. MUST be called when all Blocks and TileEntityTypes have been registered!
      */
     public void loadBlockData() {
-        this.loadDataFromConfigDir(new BlockConfigLoader(this, this.data));
+        this.loadDataFromConfigDir(this.blockConfigLoader);
     }
 
     @Override
     protected void loadDefaultData() {
         super.loadDefaultData();
-        ArrayList<FragilityData> iceBehaviour = new ArrayList<>();
-        iceBehaviour.add(new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.data.put(FragileGlassBase.THIN_ICE.getDefaultState(), iceBehaviour);
+        try {
+            this.blockConfigLoader.parseArbitraryString("#fragileglassft:fragile_glass BREAK 0.165 0 -");
+            this.blockConfigLoader.parseArbitraryString("fragileglassft:thinice BREAK 0.0 0 -");
+        }
+        catch(ConfigLoader.ConfigLoadException cle) {
+            System.out.println("FredTargaryen is an idiot; please let him know you saw this");
+        }
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now
