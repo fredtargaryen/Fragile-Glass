@@ -170,6 +170,15 @@ public abstract class ConfigLoader {
         this.filename = filename;
         this.lineNumber = 0;
         ArrayList<String> errors = new ArrayList<>();
+
+        //Delete previous error file
+        String errorFileName = configDir.getAbsolutePath() + "/ERRORS_" + filename + ".txt";
+        File errorFile = new File(errorFileName);
+        if(errorFile.exists()) {
+            errorFile.delete();
+        }
+
+        //Read file and collect errors from invalid lines
         while ((this.line = br.readLine()) != null) {
             ++this.lineNumber;
             if(!this.line.equals("") && line.charAt(0) != '@') {
@@ -183,8 +192,7 @@ public abstract class ConfigLoader {
             }
         }
         if(!errors.isEmpty()) {
-            String errorFileName = configDir.getAbsolutePath() + "/ERRORS_" + filename + ".txt";
-            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(errorFileName)));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(errorFile));
             for(String s : errors) {
                 bw.write(s + "\n");
             }
@@ -249,7 +257,7 @@ public abstract class ConfigLoader {
         public ConfigLoadException(String message) {
             super(ConfigLoader.this.lineNumber == -1 ?
                     "Could not parse command: \n" + ConfigLoader.this.line + "\n" + message + "\nNo changes have been made." :
-                    "Could not load " + ConfigLoader.this.filename + " because of line " + ConfigLoader.this.lineNumber + ":\n"
+                    "Error parsing " + ConfigLoader.this.filename + " line " + ConfigLoader.this.lineNumber + ":\n"
                             + ConfigLoader.this.line +"\n" + message + "\n");
         }
     }
