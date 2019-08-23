@@ -42,6 +42,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -240,8 +241,6 @@ public class FragileGlassBase {
     public void postInit(FMLPostInitializationEvent event) {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
-        breakerDataManager.loadEntityData();
-        fragDataManager.loadBlockData();
     }
 
     ////////////////////////
@@ -428,5 +427,16 @@ public class FragileGlassBase {
                 breakSystem.end(w);
             }
         }
+    }
+
+    /**
+     * Only load stuff on world start, so that if there's an invalid config line, players can be told via chat
+     */
+    @SubscribeEvent
+    public void onWorldStart(FMLServerAboutToStartEvent event) {
+        breakerDataManager.clearData();
+        breakerDataManager.loadEntityData();
+        fragDataManager.clearData();
+        fragDataManager.loadBlockData();
     }
 }

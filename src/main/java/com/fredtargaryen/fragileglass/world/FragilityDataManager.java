@@ -178,6 +178,11 @@ public class FragilityDataManager {
         }
     }
 
+    public void clearData() {
+        this.blockStateData.clear();
+        this.tileEntityData.clear();
+    }
+
     public FragilityData getBlockStateFragilityData(IBlockState state) {
         if(this.blockStateData.containsKey(state)) {
             return this.blockStateData.get(state);
@@ -230,8 +235,7 @@ public class FragilityDataManager {
     }
 
     /**
-     * Set up to read fragileglassft_blocks.cfg. MUST be called in postInit, when all Blocks and Tile Entities have
-     * been created!
+     * Set up to read fragileglassft_blocks.cfg. MUST be called when all Blocks and Tile Entities have been created!
      */
     public void loadBlockData() {
         try {

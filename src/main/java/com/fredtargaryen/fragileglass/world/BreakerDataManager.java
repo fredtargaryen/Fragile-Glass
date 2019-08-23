@@ -130,6 +130,10 @@ public class BreakerDataManager {
         }
     }
 
+    public void clearData() {
+        this.entityData.clear();
+    }
+
     public BreakerData getEntityBreakerData(Entity e) {
         EntityEntry entry = EntityRegistry.getEntry(e.getClass());
         if(this.entityData.containsKey(entry)) {
