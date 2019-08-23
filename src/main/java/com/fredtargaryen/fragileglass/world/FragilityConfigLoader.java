@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class FragilityConfigLoader {
     //REGEX CONSTANTS
-    private static final String RES_LOC_REGEX = "[a-z]+:[a-z|_]+";
+    private static final String RES_LOC_REGEX = "[a-z]+:[a-z|0-9|_]+";
     private static final String VARIANT_REGEX = "[a-z]+=([0-9]+|[a-z|_]+)";
     private static final String VARIANTS_REGEX = "(" + VARIANT_REGEX + ",)*(" + VARIANT_REGEX + ")";
     private static final String BLOCK_STATE_REGEX = RES_LOC_REGEX + "\\[" + VARIANTS_REGEX + "\\]";
