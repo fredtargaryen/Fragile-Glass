@@ -51,6 +51,11 @@ public abstract class DataManager<E, D> {
         return !this.data.isEmpty();
     }
 
+    /**
+     * Detect and read all block/tile entity config files. MUST be called when all Blocks and TileEntityTypes have been registered!
+     */
+    public abstract void loadData();
+
     protected void loadDataFromConfigDir(ConfigLoader cl) {
         try {
             File[] fileList = this.configDir.listFiles();

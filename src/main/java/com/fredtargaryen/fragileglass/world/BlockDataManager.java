@@ -22,10 +22,8 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
     @Override
     protected String[] getDefaultConfigFileText() { return defaultFileData; }
 
-    /**
-     * Detect and read all block/tile entity config files. MUST be called when all Blocks and TileEntityTypes have been registered!
-     */
-    public void loadBlockData() {
+    @Override
+    public void loadData() {
         this.loadDataFromConfigDir(this.blockConfigLoader);
     }
 

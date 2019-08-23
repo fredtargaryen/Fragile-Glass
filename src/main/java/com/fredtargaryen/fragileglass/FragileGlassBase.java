@@ -468,11 +468,11 @@ public class FragileGlassBase {
     public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
         event.getServer().getResourceManager().addReloadListener((IResourceManagerReloadListener) resourceManager -> {
             blockDataManager.clearData();
-            blockDataManager.loadBlockData();
+            blockDataManager.loadData();
             entityDataManager.clearData();
-            entityDataManager.loadEntityData();
+            entityDataManager.loadData();
             tileEntityDataManager.clearData();
-            tileEntityDataManager.loadTileEntityData();
+            tileEntityDataManager.loadData();
         });
     }
 

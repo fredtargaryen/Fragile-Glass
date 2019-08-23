@@ -113,10 +113,8 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
     @Override
     protected String[] getDefaultConfigFileText() { return defaultFileData; }
 
-    /**
-     * Detect and read all block/tile entity config files. MUST be called when all Blocks and TileEntityTypes have been registered!
-     */
-    public void loadEntityData() {
+    @Override
+    public void loadData() {
         this.loadDataFromConfigDir(new EntityConfigLoader(this, this.data));
     }
 
