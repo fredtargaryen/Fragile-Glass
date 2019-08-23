@@ -457,9 +457,6 @@ public class FragileGlassBase {
         entityDataManager.setupDirsAndFiles();
         tileEntityDataManager = new TileEntityDataManager();
         tileEntityDataManager.setupDirsAndFiles();
-        //Can load tile entity data just once because these don't use tags
-        tileEntityDataManager.loadTileEntityData();
-
         new FeatureManager().registerGenerators();
     }
 
@@ -474,6 +471,8 @@ public class FragileGlassBase {
             blockDataManager.loadBlockData();
             entityDataManager.clearData();
             entityDataManager.loadEntityData();
+            tileEntityDataManager.clearData();
+            tileEntityDataManager.loadTileEntityData();
         });
     }
 
