@@ -59,7 +59,7 @@ public abstract class DataManager<E, D> {
                 String fileName = this.configFile.getName();
                 System.out.println("Found file " + fileName + "; now loading");
                 BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-                cl.loadFile(br, fileName);
+                cl.loadFile(br, this.configDir, fileName);
                 br.close();
                 //Iterate through all the config files
                 for(File file : fileList) {
@@ -70,7 +70,7 @@ public abstract class DataManager<E, D> {
                         if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals(this.typeString)) {
                             System.out.println("Found file "+fileName+"; now loading");
                             br = new BufferedReader(new FileReader(file));
-                            cl.loadFile(br, fileName);
+                            cl.loadFile(br, this.configDir, fileName);
                             br.close();
                         }
                     }
@@ -79,9 +79,6 @@ public abstract class DataManager<E, D> {
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());
-        }
-        catch(ConfigLoader.ConfigLoadException cle) {
-            FragileGlassBase.warn(cle.getMessage());
         }
     }
 

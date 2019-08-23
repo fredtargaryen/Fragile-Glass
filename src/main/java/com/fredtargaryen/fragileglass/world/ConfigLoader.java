@@ -10,8 +10,8 @@ import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -166,15 +166,29 @@ public abstract class ConfigLoader {
         return map;
     }
 
-    public final void loadFile(BufferedReader br, String filename) throws ConfigLoadException, IOException {
+    public final void loadFile(BufferedReader br, File configDir, String filename) throws IOException {
         this.filename = filename;
         this.lineNumber = 0;
+        ArrayList<String> errors = new ArrayList<>();
         while ((this.line = br.readLine()) != null) {
             ++this.lineNumber;
             if(!this.line.equals("") && line.charAt(0) != '@') {
-                //Line is supposed to be read
-                this.parseLine();
+                try {
+                    //Line is supposed to be read
+                    this.parseLine();
+                }
+                catch(ConfigLoadException cle) {
+                    errors.add(cle.getMessage());
+                }
             }
+        }
+        if(!errors.isEmpty()) {
+            String errorFileName = configDir.getAbsolutePath() + "/ERRORS_" + filename + ".txt";
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(errorFileName)));
+            for(String s : errors) {
+                bw.write(s + "\n");
+            }
+            bw.close();
         }
         this.filename = null;
         this.line = null;
@@ -235,8 +249,8 @@ public abstract class ConfigLoader {
         public ConfigLoadException(String message) {
             super(ConfigLoader.this.lineNumber == -1 ?
                     "Could not parse command: \n" + ConfigLoader.this.line + "\n" + message + "\nNo changes have been made." :
-                    "Could not load " + ConfigLoader.this.filename + " because of line " + ConfigLoader.this.lineNumber + ":\n" + ConfigLoader.this.line +"\n" + message +
-                    "\nThe rest of the file will not be loaded.");
+                    "Could not load " + ConfigLoader.this.filename + " because of line " + ConfigLoader.this.lineNumber + ":\n"
+                            + ConfigLoader.this.line +"\n" + message + "\n");
         }
     }
 }
