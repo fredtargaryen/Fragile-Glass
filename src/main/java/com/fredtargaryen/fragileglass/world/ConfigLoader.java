@@ -1,5 +1,6 @@
 package com.fredtargaryen.fragileglass.world;
 
+import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -197,6 +198,8 @@ public abstract class ConfigLoader {
                 bw.write(s + "\n");
             }
             bw.close();
+            FragileGlassBase.error("[FRAGILE GLASS] ERRORS FOUND IN "+filename+"!");
+            FragileGlassBase.error("[FRAGILE GLASS] Please check config/ERRORS_"+filename+".txt for more information.");
         }
         this.filename = null;
         this.line = null;

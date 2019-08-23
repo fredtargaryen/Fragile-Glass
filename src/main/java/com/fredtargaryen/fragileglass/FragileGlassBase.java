@@ -669,7 +669,11 @@ public class FragileGlassBase {
     //////////////////
     //LOGGER METHODS//
     //////////////////
+    public static void error(String message) {
+        LOGGER.error(message);
+    }
+
     public static void warn(String message) {
-        LOGGER.warn(message);
+        LOGGER.error(message);
     }
 }
