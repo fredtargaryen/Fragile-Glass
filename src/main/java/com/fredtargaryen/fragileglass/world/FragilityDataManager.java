@@ -225,7 +225,7 @@ public class FragilityDataManager {
         this.blockStateData.clear();
         this.tileEntityData.clear();
         this.tileEntityData.put(DataReference.MODID + ":tefg", new FragilityData(BREAK, 0.165, 0, Blocks.AIR.getDefaultState(), new String[]{}));
-        this.tileEntityData.put(DataReference.MODID + ":thinice", new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
+        this.blockStateData.put(FragileGlassBase.thinIce.getDefaultState(), new FragilityData(BREAK, 0.0, 0, Blocks.AIR.getDefaultState(), new String[]{}));
         this.tileEntityData.put(DataReference.MODID + ":tews", new FragilityData(UPDATE, 0.0, 10, Blocks.AIR.getDefaultState(), new String[]{}));
     }
 
@@ -292,13 +292,13 @@ public class FragilityDataManager {
             "#THINK VERY CAREFULLY AND BACK UP YOUR WORLDS BEFORE ADDING ENTRIES HERE!\n",
             "#(You probably don't really want to make ALL DIRT BLOCKS fragile, for example.)\n",
             "#Here is where you can configure which blocks are fragile and which are not, and modify basic behaviour.\n",
-            "#\n#--Limitations--\n",
+            "\n#--Limitations--\n",
             "#* This will not work for blocks which are basically air blocks, e.g. Air blocks and 'logic' blocks.\n",
             "#* If you specify block states you should be as specific as possible; if you leave out a property it\n",
             "#  will only work for blocks with the properties you specified, and the default for everything else.\n",
             "#* If your entry is not for a valid block, the mod will assume you entered a tile entity. However it\n",
             "#  cannot check if tile entities are valid, so you won't be warned. Check your spellings carefully.\n",
-            "#\n#--How to customise--\n",
+            "\n#--How to customise--\n",
             "#To add a comment to the file, start the line with a # symbol.\n",
             "#To make a block fragile, add a new row in this file following this format:\n",
             "#<modid>:<ID>[properties] <BREAK/UPDATE/CHANGE/FALL/MOD> <min speed> <update delay/new state> <extra values>\n",
@@ -333,10 +333,10 @@ public class FragilityDataManager {
             "#  ticks per second.\n",
             "#* The value after the second number is only used by the CHANGE behaviour. It must be a blockstate\n",
             "#  (same format as the first value in each line). This is the state the block will change into. If you\n",
-            "#  aren't using this value you can leave a - here.\n",
+            "#  aren't using this value leave a - here.\n",
             "#* You can add extra values of any format, separated by spaces, for any mod blocks that might require\n",
             "#  them.\n",
-            "#\n#--Fun example lines you may wish to uncomment--\n",
+            "\n#--Fun example lines you may wish to uncomment--\n",
             "#Make vanilla glass and ice fragile too\n",
             "#minecraft:ice BREAK 0.165 0 -\n",
             "#minecraft:glass BREAK 0.165 0 -\n",
@@ -365,7 +365,7 @@ public class FragilityDataManager {
             "#Thin ice:\n",
             "#fragileglassft:thinice BREAK 0.0 0 -\n",
             "#Weak stone:\n",
-            "#fragileglassft:tews UPDATE 0.0 10 -\n",
+            "#fragileglassft:tews UPDATE 0.0 10 -\n\n",
             "fragileglassft:tefg BREAK 0.165 0 -\n",
             "fragileglassft:thinice BREAK 0.0 0 -\n",
             "fragileglassft:tews UPDATE 0.0 10 -\n"
