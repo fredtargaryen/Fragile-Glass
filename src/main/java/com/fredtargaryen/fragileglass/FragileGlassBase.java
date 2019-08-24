@@ -18,13 +18,16 @@ import com.fredtargaryen.fragileglass.world.EntityDataManager;
 import com.fredtargaryen.fragileglass.world.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -60,6 +63,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 @Mod(value = DataReference.MODID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -466,14 +470,26 @@ public class FragileGlassBase {
      */
     @SubscribeEvent
     public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener((IResourceManagerReloadListener) resourceManager -> {
-            blockDataManager.clearData();
-            blockDataManager.loadData();
-            entityDataManager.clearData();
-            entityDataManager.loadData();
-            tileEntityDataManager.clearData();
-            tileEntityDataManager.loadData();
+        event.getServer().getResourceManager().addReloadListener(new ReloadListener<Map<ResourceLocation, Tag.Builder<EntityType<?>>>>() {
+            @Override
+            protected Map<ResourceLocation, Tag.Builder<EntityType<?>>> prepare(IResourceManager iResourceManager, IProfiler iProfiler) {
+                return null;
+            }
+
+            @Override
+            protected void apply(Map<ResourceLocation, Tag.Builder<EntityType<?>>> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
+                FragileGlassBase.reloadDataManagers();
+            }
         });
+    }
+
+    public static void reloadDataManagers() {
+        blockDataManager.clearData();
+        blockDataManager.loadData();
+        entityDataManager.clearData();
+        entityDataManager.loadData();
+        tileEntityDataManager.clearData();
+        tileEntityDataManager.loadData();
     }
 
     ////////////////////////
