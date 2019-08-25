@@ -18,19 +18,26 @@ import com.fredtargaryen.fragileglass.world.EntityDataManager;
 import com.fredtargaryen.fragileglass.world.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.ReloadListener;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -39,9 +46,11 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -60,6 +69,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 @Mod(value = DataReference.MODID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -457,24 +467,7 @@ public class FragileGlassBase {
         entityDataManager.setupDirsAndFiles();
         tileEntityDataManager = new TileEntityDataManager();
         tileEntityDataManager.setupDirsAndFiles();
-        //Can load tile entity data just once because these don't use tags
-        tileEntityDataManager.loadTileEntityData();
-
         new FeatureManager().registerGenerators();
-    }
-
-    /**
-     * The listener added ensures the data is only loaded when the Tags have been fully populated.
-     * @param event
-     */
-    @SubscribeEvent
-    public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener((IResourceManagerReloadListener) resourceManager -> {
-            blockDataManager.clearData();
-            blockDataManager.loadBlockData();
-            entityDataManager.clearData();
-            entityDataManager.loadEntityData();
-        });
     }
 
     ////////////////////////
@@ -561,6 +554,20 @@ public class FragileGlassBase {
     public static BlockDataManager getBlockDataManager() { return blockDataManager; }
     public static EntityDataManager getEntityDataManager() { return entityDataManager; }
     public static TileEntityDataManager getTileEntityDataManager() { return tileEntityDataManager; }
+
+    /**
+     * Clear all DataManager data and reload it from the config files.
+     * @return true if no errors were found; false otherwise
+     */
+    public static boolean reloadDataManagers() {
+        FragileGlassBase.blockDataManager.clearData();
+        FragileGlassBase.entityDataManager.clearData();
+        FragileGlassBase.tileEntityDataManager.clearData();
+        boolean blocksOK = FragileGlassBase.blockDataManager.loadData();
+        boolean entitiesOK = FragileGlassBase.entityDataManager.loadData();
+        boolean tilesOK = FragileGlassBase.tileEntityDataManager.loadData();
+        return blocksOK && entitiesOK && tilesOK;
+    }
 
     ////////////////
     //CAPABILITIES//
@@ -670,7 +677,61 @@ public class FragileGlassBase {
     //////////////////
     //LOGGER METHODS//
     //////////////////
+    public static void error(String message) {
+        LOGGER.error(message);
+    }
+
     public static void warn(String message) {
-        LOGGER.warn(message);
+        LOGGER.error(message);
+    }
+
+    //////////////////////////////
+    //DATA MANAGER ERROR LOGGING//
+    //////////////////////////////
+    private static final ITextComponent SUCCESS_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Data reloaded without errors!").applyTextStyle(TextFormatting.GREEN);
+    private static final ITextComponent FAILURE_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Errors found in config files; please check config folder for more information.").applyTextStyle(TextFormatting.RED);
+    private static ITextComponent STATUS;
+    private static CommandSource cachedCommandSource = null;
+
+    /**
+     * Adds a listener which refreshes DataManager data whenever Tags are reloaded.
+     * @param event
+     */
+    @SubscribeEvent
+    public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
+        event.getServer().getResourceManager().addReloadListener(new ReloadListener<Map<ResourceLocation, Tag.Builder<EntityType<?>>>>() {
+            @Override
+            protected Map<ResourceLocation, Tag.Builder<EntityType<?>>> prepare(IResourceManager iResourceManager, IProfiler iProfiler) {
+                return null;
+            }
+
+            @Override
+            protected void apply(Map<ResourceLocation, Tag.Builder<EntityType<?>>> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
+                STATUS = FragileGlassBase.reloadDataManagers() ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
+                if(cachedCommandSource != null) {
+                    cachedCommandSource.sendFeedback(STATUS, true);
+                    cachedCommandSource = null;
+                }
+            }
+        });
+    }
+
+    /**
+     * When a player logs in, if they are in single player or if they are an op, they should know whether it loaded successfully last time.
+     * @param event
+     */
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        PlayerEntity pe = event.getPlayer();
+        if (pe.hasPermissionLevel(2) || pe.world.getServer().isSinglePlayer()) {
+            pe.sendStatusMessage(STATUS, false);
+        }
+    }
+
+    @SubscribeEvent
+    public void onReloadCommand(CommandEvent ce) {
+        if(ce.getParseResults().getReader().getString().equals("/reload")) {
+            cachedCommandSource = ce.getParseResults().getContext().getSource();
+        }
     }
 }

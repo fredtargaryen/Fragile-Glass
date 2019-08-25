@@ -105,10 +105,10 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
         }
     }
 
-    /**
-     * Detect and read all tile entity config files. MUST be called when all TileEntityTypes have been registered!
-     */
-    public void loadTileEntityData() { this.loadDataFromConfigDir(new TileEntityConfigLoader(this, this.data)); }
+    @Override
+    public boolean loadData() {
+        return this.loadDataFromConfigDir(new TileEntityConfigLoader(this, this.data));
+    }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now
     private static final String[] defaultFileData = new String[] {

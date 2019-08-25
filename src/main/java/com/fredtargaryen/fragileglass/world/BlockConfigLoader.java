@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.world;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.state.IProperty;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
@@ -56,7 +57,19 @@ public class BlockConfigLoader extends ConfigLoader {
             //Get all BlockStates with the block named in splitEntryName[0]
             Block block = this.getBlockFromString(description.get("block"));
             blocks = new ArrayList<>();
-            blocks.add(block);
+            if(block == Blocks.AIR) {
+                //The registry potentially doesn't recognise this block
+                String blockString = description.get("block");
+                if(blockString.equals("minecraft:air") || blockString.equals("-")) {
+                    //The user actually wanted an air block
+                    blocks.add(block);
+                }
+                //Else, the block string wasn't found in the registry, so ignore it.
+            }
+            else {
+                //The block was found in the registry
+                blocks.add(block);
+            }
         }
         else {
             //Represents the set of blocks under the given tag

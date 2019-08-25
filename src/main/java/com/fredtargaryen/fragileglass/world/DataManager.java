@@ -51,7 +51,13 @@ public abstract class DataManager<E, D> {
         return !this.data.isEmpty();
     }
 
-    protected void loadDataFromConfigDir(ConfigLoader cl) {
+    /**
+     * Detect and read all block/tile entity config files. MUST be called when all Blocks and TileEntityTypes have been registered!
+     */
+    public abstract boolean loadData();
+
+    protected boolean loadDataFromConfigDir(ConfigLoader cl) {
+        boolean ok = true;
         try {
             File[] fileList = this.configDir.listFiles();
             if(fileList != null) {
@@ -59,7 +65,7 @@ public abstract class DataManager<E, D> {
                 String fileName = this.configFile.getName();
                 System.out.println("Found file " + fileName + "; now loading");
                 BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-                cl.loadFile(br, fileName);
+                ok = cl.loadFile(br, this.configDir, fileName);
                 br.close();
                 //Iterate through all the config files
                 for(File file : fileList) {
@@ -70,18 +76,17 @@ public abstract class DataManager<E, D> {
                         if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals(this.typeString)) {
                             System.out.println("Found file "+fileName+"; now loading");
                             br = new BufferedReader(new FileReader(file));
-                            cl.loadFile(br, fileName);
+                            ok = cl.loadFile(br, this.configDir, fileName);
                             br.close();
                         }
                     }
                 }
             }
+            return ok;
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());
-        }
-        catch(ConfigLoader.ConfigLoadException cle) {
-            FragileGlassBase.warn(cle.getMessage());
+            return false;
         }
     }
 
