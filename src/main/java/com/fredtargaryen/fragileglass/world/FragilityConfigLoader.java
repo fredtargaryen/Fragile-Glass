@@ -142,6 +142,15 @@ public class FragilityConfigLoader {
         String line;
         int lineNumber = 0;
         ArrayList<String> errors = new ArrayList<>();
+
+        //Delete previous error file
+        String errorFileName = configDir.getAbsolutePath() + "/ERRORS_" + filename + ".txt";
+        File errorFile = new File(errorFileName);
+        if(errorFile.exists()) {
+            errorFile.delete();
+        }
+
+        //Read file and collect errors from invalid lines
         while ((line = br.readLine()) != null) {
             ++lineNumber;
             if(!line.equals("") && line.charAt(0) != '#') {
@@ -197,8 +206,7 @@ public class FragilityConfigLoader {
             }
         }
         if(!errors.isEmpty()) {
-            String errorFileName = configDir.getAbsolutePath() + "/ERRORS_" + filename + ".txt";
-            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(errorFileName)));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(errorFile));
             for(String s : errors) {
                 bw.write(s + "\n");
             }
@@ -217,7 +225,7 @@ public class FragilityConfigLoader {
 
     public class FragilityConfigLoadException extends Exception {
         public FragilityConfigLoadException(String filename, String message, String badLine, int lineNumber) {
-            super("Could not load " + filename + " because of line " + lineNumber + ":\n" + badLine +"\n" + message + "\n");
+            super("Error parsing " + filename + " line " + lineNumber + ":\n" + badLine +"\n" + message + "\n");
         }
     }
 
