@@ -2,13 +2,11 @@ package com.fredtargaryen.fragileglass;
 
 import net.minecraft.util.ResourceLocation;
 
-// Change version number in: DataReference; build.gradle; mcmod.info
-public class DataReference
-{
+// Change version number in: build.gradle; mods.toml
+public class DataReference {
     //MAIN MOD DETAILS
     public static final String MODID = "fragileglassft";
     public static final String MODNAME = "Fragile Glass and Thin Ice";
-    public static final String VERSION = "2.2";
 
     //The minimum speed a permitted entity must be travelling to break a fragile glass block.
     //This should be sprinting, which is over 5.5 m/s.
