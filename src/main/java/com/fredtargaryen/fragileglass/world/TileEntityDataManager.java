@@ -121,9 +121,9 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
             "@Using tile entities has some advantages over using blocks:\n",
             "@* All blocks which have the tile entity will have the same behaviour, so less lines are needed.\n",
             "@* Tile entities from other mods are able to use code to achieve more complex crash behaviours.\n",
-            "@\n@--Limitations--\n",
+            "\n@--Limitations--\n",
             "@* This will not work for blocks which are basically air blocks, e.g. Air blocks and 'logic' blocks.\n",
-            "@\n@--How to customise--\n",
+            "\n@--How to customise--\n",
             "@To add a comment to the file, start the line with a @ symbol.\n",
             "@To make a tile entity fragile, add a new row in this file following this format:\n",
             "@modid:ID BREAK/UPDATE/CHANGE/FALL/MOD minSpeed updateDelay newState extraValues\n",
@@ -154,11 +154,11 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
             "@  you aren't using this value you can leave a - here.\n",
             "@* You can add extra values of any format, separated by spaces, for any mod blocks that might require\n",
             "@  them.\n",
-            "@\n@--Fun example lines you may wish to uncomment--\n",
+            "\n@--Fun example lines you may wish to uncomment--\n",
             "@Currently none, but I am open to suggestions!\n",
-            "@\n@--Default values, in case you break something--\n",
+            "\n@--Default values, in case you break something--\n",
             "@Weak stone:\n",
-            "@fragileglassft:tews UPDATE 0.0 10 -\n",
+            "@fragileglassft:tews UPDATE 0.0 10 -\n\n",
             "fragileglassft:tews UPDATE 0.0 10 -\n"
     };
 }
