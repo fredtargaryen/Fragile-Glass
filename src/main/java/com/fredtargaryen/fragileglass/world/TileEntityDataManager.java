@@ -106,8 +106,8 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     }
 
     @Override
-    public void loadData() {
-        this.loadDataFromConfigDir(new TileEntityConfigLoader(this, this.data));
+    public boolean loadData() {
+        return this.loadDataFromConfigDir(new TileEntityConfigLoader(this, this.data));
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

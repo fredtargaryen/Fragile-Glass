@@ -577,6 +577,20 @@ public class FragileGlassBase {
     public static EntityDataManager getEntityDataManager() { return entityDataManager; }
     public static TileEntityDataManager getTileEntityDataManager() { return tileEntityDataManager; }
 
+    /**
+     * Clear all DataManager data and reload it from the config files.
+     * @return true if no errors were found; false otherwise
+     */
+    public static boolean reloadDataManagers() {
+        FragileGlassBase.blockDataManager.clearData();
+        FragileGlassBase.entityDataManager.clearData();
+        FragileGlassBase.tileEntityDataManager.clearData();
+        boolean blocksOK = FragileGlassBase.blockDataManager.loadData();
+        boolean entitiesOK = FragileGlassBase.entityDataManager.loadData();
+        boolean tilesOK = FragileGlassBase.tileEntityDataManager.loadData();
+        return blocksOK && entitiesOK && tilesOK;
+    }
+
     ////////////////
     //CAPABILITIES//
     ////////////////
