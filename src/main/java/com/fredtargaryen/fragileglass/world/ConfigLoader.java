@@ -167,7 +167,7 @@ public abstract class ConfigLoader {
         return map;
     }
 
-    public final void loadFile(BufferedReader br, File configDir, String filename) throws IOException {
+    public final boolean loadFile(BufferedReader br, File configDir, String filename) throws IOException {
         this.filename = filename;
         this.lineNumber = 0;
         ArrayList<String> errors = new ArrayList<>();
@@ -204,6 +204,7 @@ public abstract class ConfigLoader {
         this.filename = null;
         this.line = null;
         this.lineNumber = 0;
+        return errors.isEmpty();
     }
 
     public void parseArbitraryString(String string) throws ConfigLoadException {

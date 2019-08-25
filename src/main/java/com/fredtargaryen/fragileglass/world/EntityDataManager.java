@@ -114,8 +114,8 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
     protected String[] getDefaultConfigFileText() { return defaultFileData; }
 
     @Override
-    public void loadData() {
-        this.loadDataFromConfigDir(new EntityConfigLoader(this, this.data));
+    public boolean loadData() {
+        return this.loadDataFromConfigDir(new EntityConfigLoader(this, this.data));
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

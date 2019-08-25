@@ -23,8 +23,8 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
     protected String[] getDefaultConfigFileText() { return defaultFileData; }
 
     @Override
-    public void loadData() {
-        this.loadDataFromConfigDir(this.blockConfigLoader);
+    public boolean loadData() {
+        return this.loadDataFromConfigDir(this.blockConfigLoader);
     }
 
     @Override
