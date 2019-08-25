@@ -241,7 +241,7 @@ public class FragilityDataManager {
                 String fileName = this.configFile.getName();
                 System.out.println("Found file " + fileName + "; now loading");
                 BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-                fcl.loadFile(br, fileName);
+                fcl.loadFile(br, this.configDir, fileName);
                 br.close();
                 for(File file : fileList) {
                     fileName = file.getName();
@@ -250,7 +250,7 @@ public class FragilityDataManager {
                         System.out.println("Found file "+fileName+"; now loading");
                         if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals("blocks")) {
                             br = new BufferedReader(new FileReader(file));
-                            fcl.loadFile(br, fileName);
+                            fcl.loadFile(br, this.configDir, fileName);
                             br.close();
                         }
                     }
@@ -259,9 +259,6 @@ public class FragilityDataManager {
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());
-        }
-        catch(FragilityConfigLoader.FragilityConfigLoadException fcle) {
-            FMLLog.bigWarning(fcle.getMessage());
         }
     }
 

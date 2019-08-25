@@ -12,8 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,61 +138,71 @@ public class FragilityConfigLoader {
         }
     }
 
-    public void loadFile(BufferedReader br, String filename) throws FragilityConfigLoadException, IOException {
+    public void loadFile(BufferedReader br, File configDir, String filename) throws IOException {
         String line;
         int lineNumber = 0;
+        ArrayList<String> errors = new ArrayList<>();
         while ((line = br.readLine()) != null) {
             ++lineNumber;
             if(!line.equals("") && line.charAt(0) != '#') {
-                //Line is supposed to be read
-                String[] values = line.split(" ");
-                //Validate number of values on row
-                if(values.length < 5) {
-                    throw new FragilityConfigLoadException(filename, "There must be at least 5 values here.", line, lineNumber);
-                }
-                else {
-                    //Validate first value
-                    if(!this.validateEntryName(values[0])) {
-                        throw new FragilityConfigLoadException(filename, values[0] + " has the wrong format; please see the examples.", line, lineNumber);
+                try {
+                    //Line is supposed to be read
+                    String[] values = line.split(" ");
+                    //Validate number of values on row
+                    if (values.length < 5) {
+                        throw new FragilityConfigLoadException(filename, "There must be at least 5 values here.", line, lineNumber);
                     } else {
-                        try {
-                            //Validate behaviour value
-                            FragilityDataManager.FragileBehaviour behaviour = FragilityDataManager.FragileBehaviour.valueOf(values[1]);
-                            //Validate minSpeed and silently clamp to >= 0
-                            double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
-                            //Validate updateDelay and silently clamp to >= 0
-                            int updateDelay = Math.max(Integer.parseInt(values[3]), 0);
-                            //Validate newState
-                            IBlockState newState = Blocks.AIR.getDefaultState();
-                            if(!values[4].equals("-")) {
-                                if(!this.validateEntryName(values[4])) {
-                                    throw new FragilityConfigLoadException(filename, values[4] + " has the wrong format; please see the examples.", line, lineNumber);
+                        //Validate first value
+                        if (!this.validateEntryName(values[0])) {
+                            throw new FragilityConfigLoadException(filename, values[0] + " has the wrong format; please see the examples.", line, lineNumber);
+                        } else {
+                            try {
+                                //Validate behaviour value
+                                FragilityDataManager.FragileBehaviour behaviour = FragilityDataManager.FragileBehaviour.valueOf(values[1]);
+                                //Validate minSpeed and silently clamp to >= 0
+                                double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
+                                //Validate updateDelay and silently clamp to >= 0
+                                int updateDelay = Math.max(Integer.parseInt(values[3]), 0);
+                                //Validate newState
+                                IBlockState newState = Blocks.AIR.getDefaultState();
+                                if (!values[4].equals("-")) {
+                                    if (!this.validateEntryName(values[4])) {
+                                        throw new FragilityConfigLoadException(filename, values[4] + " has the wrong format; please see the examples.", line, lineNumber);
+                                    }
                                 }
+                                //Determine which registry to add the data to
+                                if (this.manager.isResourceLocationValidBlock(values[0].split("\\[")[0])) {
+                                    //It's a block or blockstate
+                                    this.addBlockStates(values[0], behaviour, minSpeed, updateDelay, values[4],
+                                            Arrays.copyOfRange(values, 5, values.length));
+                                } else {
+                                    //It may or may not be a tile entity, but cannot validate this at this point
+                                    this.tileEntities.put(values[0], new FragilityData(
+                                            behaviour, minSpeed, updateDelay, newState,
+                                            Arrays.copyOfRange(values, 5, values.length)));
+                                }
+                            } catch (NumberFormatException nfe) {
+                                //Thrown when the third value can't be parsed as a Double
+                                throw new FragilityConfigLoadException(filename, values[2] + " can't be read as a decimal number.", line, lineNumber);
+                            } catch (IllegalArgumentException iae) {
+                                //Thrown when the second value is not one of the supported ones
+                                throw new FragilityConfigLoadException(filename, values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.", line, lineNumber);
                             }
-                            //Determine which registry to add the data to
-                            if(this.manager.isResourceLocationValidBlock(values[0].split("\\[")[0])) {
-                                //It's a block or blockstate
-                                this.addBlockStates(values[0], behaviour, minSpeed, updateDelay, values[4],
-                                        Arrays.copyOfRange(values, 5, values.length));
-                            }
-                            else {
-                                //It may or may not be a tile entity, but cannot validate this at this point
-                                this.tileEntities.put(values[0], new FragilityData(
-                                        behaviour, minSpeed, updateDelay, newState,
-                                        Arrays.copyOfRange(values, 5, values.length)));
-                            }
-                        }
-                        catch(NumberFormatException nfe) {
-                            //Thrown when the third value can't be parsed as a Double
-                            throw new FragilityConfigLoadException(filename, values[2] + " can't be read as a decimal number.", line, lineNumber);
-                        }
-                        catch(IllegalArgumentException iae) {
-                            //Thrown when the second value is not one of the supported ones
-                            throw new FragilityConfigLoadException(filename, values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.", line, lineNumber);
                         }
                     }
                 }
+                catch(FragilityConfigLoadException fcle) {
+                    errors.add(fcle.getMessage());
+                }
             }
+        }
+        if(!errors.isEmpty()) {
+            String errorFileName = configDir.getAbsolutePath() + "/ERRORS_" + filename + ".txt";
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(errorFileName)));
+            for(String s : errors) {
+                bw.write(s + "\n");
+            }
+            bw.close();
         }
     }
 
@@ -208,8 +217,7 @@ public class FragilityConfigLoader {
 
     public class FragilityConfigLoadException extends Exception {
         public FragilityConfigLoadException(String filename, String message, String badLine, int lineNumber) {
-            super("Could not load " + filename + " because of line " + lineNumber + ":\n" + badLine +"\n" + message +
-                    " Default fragility data will be loaded. The file will not be changed.");
+            super("Could not load " + filename + " because of line " + lineNumber + ":\n" + badLine +"\n" + message + "\n");
         }
     }
 
