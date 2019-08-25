@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 
 import java.io.*;
@@ -84,6 +85,8 @@ public class BreakerConfigLoader {
                 bw.write(s + "\n");
             }
             bw.close();
+            FMLLog.warning("ERRORS FOUND IN "+filename+"!");
+            FMLLog.warning("Please check config/ERRORS_"+filename+".txt for more information.");
         }
     }
 

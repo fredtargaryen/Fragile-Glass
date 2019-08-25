@@ -9,6 +9,7 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -211,6 +212,8 @@ public class FragilityConfigLoader {
                 bw.write(s + "\n");
             }
             bw.close();
+            FMLLog.warning("ERRORS FOUND IN "+filename+"!");
+            FMLLog.warning("Please check config/ERRORS_"+filename+".txt for more information.");
         }
     }
 
