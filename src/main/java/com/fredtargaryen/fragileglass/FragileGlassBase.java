@@ -718,13 +718,14 @@ public class FragileGlassBase {
 
     /**
      * When a player logs in, if they are in single player or if they are an op, they should know whether it loaded successfully last time.
-     * TODO Check if op || single player
      * @param event
      */
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEntity pe = event.getPlayer();
-        pe.sendStatusMessage(STATUS, false); //May need to be true
+        if (pe.hasPermissionLevel(2) || pe.world.getServer().isSinglePlayer()) {
+            pe.sendStatusMessage(STATUS, false);
+        }
     }
 
     @SubscribeEvent
