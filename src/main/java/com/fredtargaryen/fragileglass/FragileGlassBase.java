@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -42,6 +43,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -462,34 +464,6 @@ public class FragileGlassBase {
         tileEntityDataManager = new TileEntityDataManager();
         tileEntityDataManager.setupDirsAndFiles();
         new FeatureManager().registerGenerators();
-    }
-
-    /**
-     * The listener added ensures the data is only loaded when the Tags have been fully populated.
-     * @param event
-     */
-    @SubscribeEvent
-    public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener(new ReloadListener<Map<ResourceLocation, Tag.Builder<EntityType<?>>>>() {
-            @Override
-            protected Map<ResourceLocation, Tag.Builder<EntityType<?>>> prepare(IResourceManager iResourceManager, IProfiler iProfiler) {
-                return null;
-            }
-
-            @Override
-            protected void apply(Map<ResourceLocation, Tag.Builder<EntityType<?>>> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
-                FragileGlassBase.reloadDataManagers();
-            }
-        });
-    }
-
-    public static void reloadDataManagers() {
-        blockDataManager.clearData();
-        blockDataManager.loadData();
-        entityDataManager.clearData();
-        entityDataManager.loadData();
-        tileEntityDataManager.clearData();
-        tileEntityDataManager.loadData();
     }
 
     ////////////////////////

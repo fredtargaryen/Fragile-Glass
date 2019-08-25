@@ -1,3 +1,5 @@
 package com.fredtargaryen.fragileglass.proxy;
 
-public interface IProxy { }
+public interface IProxy {
+    void registerServerListeners();
+}
