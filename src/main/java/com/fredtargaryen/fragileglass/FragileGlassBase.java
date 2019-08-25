@@ -19,6 +19,7 @@ import com.fredtargaryen.fragileglass.world.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.ReloadListener;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +35,9 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -47,6 +50,7 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -679,5 +683,54 @@ public class FragileGlassBase {
 
     public static void warn(String message) {
         LOGGER.error(message);
+    }
+
+    //////////////////////////////
+    //DATA MANAGER ERROR LOGGING//
+    //////////////////////////////
+    private static final ITextComponent SUCCESS_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Data reloaded without errors!").applyTextStyle(TextFormatting.GREEN);
+    private static final ITextComponent FAILURE_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Errors found in config files; please check config folder for more information.").applyTextStyle(TextFormatting.RED);
+    private static ITextComponent STATUS;
+    private static CommandSource cachedCommandSource = null;
+
+    /**
+     * Adds a listener which refreshes DataManager data whenever Tags are reloaded.
+     * @param event
+     */
+    @SubscribeEvent
+    public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
+        event.getServer().getResourceManager().addReloadListener(new ReloadListener<Map<ResourceLocation, Tag.Builder<EntityType<?>>>>() {
+            @Override
+            protected Map<ResourceLocation, Tag.Builder<EntityType<?>>> prepare(IResourceManager iResourceManager, IProfiler iProfiler) {
+                return null;
+            }
+
+            @Override
+            protected void apply(Map<ResourceLocation, Tag.Builder<EntityType<?>>> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
+                STATUS = FragileGlassBase.reloadDataManagers() ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
+                if(cachedCommandSource != null) {
+                    cachedCommandSource.sendFeedback(STATUS, true);
+                    cachedCommandSource = null;
+                }
+            }
+        });
+    }
+
+    /**
+     * When a player logs in, if they are in single player or if they are an op, they should know whether it loaded successfully last time.
+     * TODO Check if op || single player
+     * @param event
+     */
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        PlayerEntity pe = event.getPlayer();
+        pe.sendStatusMessage(STATUS, false); //May need to be true
+    }
+
+    @SubscribeEvent
+    public void onReloadCommand(CommandEvent ce) {
+        if(ce.getParseResults().getReader().getString().equals("/reload")) {
+            cachedCommandSource = ce.getParseResults().getContext().getSource();
+        }
     }
 }
