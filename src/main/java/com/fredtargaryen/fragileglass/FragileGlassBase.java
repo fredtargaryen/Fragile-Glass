@@ -244,11 +244,12 @@ public class FragileGlassBase {
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
     }
 
-    public static void reloadDataManagers() {
+    public static boolean reloadDataManagers() {
         breakerDataManager.clearData();
-        breakerDataManager.loadEntityData();
+        boolean breaksOK = breakerDataManager.loadEntityData();
         fragDataManager.clearData();
-        fragDataManager.loadBlockData();
+        boolean fragsOK = fragDataManager.loadBlockData();
+        return breaksOK && fragsOK;
     }
 
     ////////////////////////

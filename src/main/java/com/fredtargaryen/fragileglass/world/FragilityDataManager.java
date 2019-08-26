@@ -238,15 +238,16 @@ public class FragilityDataManager {
      * Set up to read fragileglassft_blocks.cfg. MUST be called in postInit, when all Blocks and Tile Entities have
      * been created!
      */
-    public void loadBlockData() {
+    public boolean loadBlockData() {
         try {
+            boolean ok = true;
             FragilityConfigLoader fcl = new FragilityConfigLoader(this, this.blockStateData, this.tileEntityData);
             File[] fileList = this.configDir.listFiles();
             if(fileList != null) {
                 String fileName = this.configFile.getName();
                 System.out.println("Found file " + fileName + "; now loading");
                 BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-                fcl.loadFile(br, this.configDir, fileName);
+                ok &= fcl.loadFile(br, this.configDir, fileName);
                 br.close();
                 for(File file : fileList) {
                     fileName = file.getName();
@@ -255,15 +256,17 @@ public class FragilityDataManager {
                         System.out.println("Found file "+fileName+"; now loading");
                         if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals("blocks")) {
                             br = new BufferedReader(new FileReader(file));
-                            fcl.loadFile(br, this.configDir, fileName);
+                            ok &= fcl.loadFile(br, this.configDir, fileName);
                             br.close();
                         }
                     }
                 }
             }
+            return ok;
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());
+            return false;
         }
     }
 

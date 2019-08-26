@@ -168,15 +168,16 @@ public class BreakerDataManager {
     /**
      * Set up to read fragileglassft_entities.cfg. MUST be called in postInit, when all Entities have been created!
      */
-    public void loadEntityData() {
+    public boolean loadEntityData() {
         try {
+            boolean ok = true;
             BreakerConfigLoader bcl = new BreakerConfigLoader(this, this.entityData);
             File[] fileList = this.configDir.listFiles();
             if(fileList != null) {
                 String fileName = this.configFile.getName();
                 System.out.println("Found file "+fileName+"; now loading");
                 BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-                bcl.loadFile(br, this.configDir, fileName);
+                ok &= bcl.loadFile(br, this.configDir, fileName);
                 br.close();
                 for (File file : fileList) {
                     fileName = file.getName();
@@ -185,15 +186,17 @@ public class BreakerDataManager {
                         System.out.println("Found file "+fileName+"; now loading");
                         if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals("entities")) {
                             br = new BufferedReader(new FileReader(file));
-                            bcl.loadFile(br, this.configDir, fileName);
+                            ok &= bcl.loadFile(br, this.configDir, fileName);
                             br.close();
                         }
                     }
                 }
             }
+            return ok;
         }
         catch(IOException ioe) {
             this.handleConfigFileException(new Exception());
+            return false;
         }
     }
 

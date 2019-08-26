@@ -21,7 +21,7 @@ public class BreakerConfigLoader {
         this.entities = entities;
     }
 
-    public void loadFile(BufferedReader br, File configDir, String filename) throws IOException {
+    public boolean loadFile(BufferedReader br, File configDir, String filename) throws IOException {
         String line;
         int lineNumber = 0;
         ArrayList<String> errors = new ArrayList<>();
@@ -88,6 +88,7 @@ public class BreakerConfigLoader {
             FMLLog.warning("ERRORS FOUND IN "+filename+"!");
             FMLLog.warning("Please check config/ERRORS_"+filename+".txt for more information.");
         }
+        return errors.isEmpty();
     }
 
     public class BreakerConfigLoadException extends Exception {
