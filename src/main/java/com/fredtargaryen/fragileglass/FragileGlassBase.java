@@ -462,12 +462,13 @@ public class FragileGlassBase {
 
     /**
      * When a player logs in, if they are in single player or if they are an op, they should know whether it loaded successfully last time.
-     * TODO Check if op || single player
      * @param event
      */
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         EntityPlayer ep = event.player;
-        ep.sendStatusMessage(STATUS, false);
+        if(ep.canUseCommand(2, "") || ep.world.getMinecraftServer().isSinglePlayer()) {
+            ep.sendStatusMessage(STATUS, false);
+        }
     }
 }
