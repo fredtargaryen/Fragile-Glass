@@ -12,7 +12,9 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import com.fredtargaryen.fragileglass.world.*;
+import com.fredtargaryen.fragileglass.world.BreakSystem;
+import com.fredtargaryen.fragileglass.world.BreakerDataManager;
+import com.fredtargaryen.fragileglass.world.FragilityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.PatchGen;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenIce;
 import com.fredtargaryen.fragileglass.worldgen.PatchGenStone;
@@ -25,6 +27,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,17 +49,18 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import static net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import static net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 @Mod(modid = DataReference.MODID, version = DataReference.VERSION, name=DataReference.MODNAME)
 @Mod.EventBusSubscriber
@@ -438,13 +445,29 @@ public class FragileGlassBase {
         }
     }
 
-    ////////////////////////
-    //ERROR LOADING THINGS//
-    ////////////////////////
+    //////////////////////////////
+    //DATA MANAGER ERROR LOGGING//
+    //////////////////////////////
+    private static final ITextComponent SUCCESS_MESSAGE = new TextComponentString("[FRAGILE GLASS] Data reloaded without errors!").setStyle(new Style().setColor(TextFormatting.GREEN));
+    private static final ITextComponent FAILURE_MESSAGE = new TextComponentString("[FRAGILE GLASS] Errors found in config files; please check config folder for more information.").setStyle(new Style().setColor(TextFormatting.RED));
+    private static ITextComponent STATUS;
+
     @SubscribeEvent
     public void reload(CommandEvent event) {
         if(event.getCommand().getName().equals("reload")) {
-            reloadDataManagers();
+            STATUS = reloadDataManagers() ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
+            event.getSender().sendMessage(STATUS);
         }
+    }
+
+    /**
+     * When a player logs in, if they are in single player or if they are an op, they should know whether it loaded successfully last time.
+     * TODO Check if op || single player
+     * @param event
+     */
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        EntityPlayer ep = event.player;
+        ep.sendStatusMessage(STATUS, false);
     }
 }
