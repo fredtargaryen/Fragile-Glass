@@ -65,7 +65,7 @@ public abstract class DataManager<E, D> {
                 String fileName = this.configFile.getName();
                 System.out.println("Found file " + fileName + "; now loading");
                 BufferedReader br = new BufferedReader(new FileReader(this.configFile));
-                ok = cl.loadFile(br, this.configDir, fileName);
+                ok &= cl.loadFile(br, this.configDir, fileName);
                 br.close();
                 //Iterate through all the config files
                 for(File file : fileList) {
@@ -76,7 +76,7 @@ public abstract class DataManager<E, D> {
                         if(fileNameParts[0].equals(DataReference.MODID) && fileNameParts[1].equals(this.typeString)) {
                             System.out.println("Found file "+fileName+"; now loading");
                             br = new BufferedReader(new FileReader(file));
-                            ok = cl.loadFile(br, this.configDir, fileName);
+                            ok &= cl.loadFile(br, this.configDir, fileName);
                             br.close();
                         }
                     }
