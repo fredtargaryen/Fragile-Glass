@@ -34,6 +34,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -42,6 +43,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -240,7 +242,12 @@ public class FragileGlassBase {
     public void postInit(FMLPostInitializationEvent event) {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
+    }
+
+    public static void reloadDataManagers() {
+        breakerDataManager.clearData();
         breakerDataManager.loadEntityData();
+        fragDataManager.clearData();
         fragDataManager.loadBlockData();
     }
 
@@ -427,6 +434,16 @@ public class FragileGlassBase {
             if(breakSystem != null) {
                 breakSystem.end(w);
             }
+        }
+    }
+
+    ////////////////////////
+    //ERROR LOADING THINGS//
+    ////////////////////////
+    @SubscribeEvent
+    public void reload(CommandEvent event) {
+        if(event.getCommand().getName().equals("reload")) {
+            reloadDataManagers();
         }
     }
 }

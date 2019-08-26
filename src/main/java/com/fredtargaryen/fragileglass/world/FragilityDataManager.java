@@ -178,6 +178,11 @@ public class FragilityDataManager {
         }
     }
 
+    public void clearData() {
+        this.tileEntityData.clear();
+        this.blockStateData.clear();
+    }
+
     public FragilityData getBlockStateFragilityData(IBlockState state) {
         if(this.blockStateData.containsKey(state)) {
             return this.blockStateData.get(state);
