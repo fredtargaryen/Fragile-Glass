@@ -1,7 +1,11 @@
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
+import com.fredtargaryen.fragileglass.client.particle.MyBubbleParticle;
 import com.fredtargaryen.fragileglass.config.Config;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
@@ -12,12 +16,10 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
@@ -27,6 +29,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
@@ -39,6 +43,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -247,6 +252,10 @@ public class FragileGlassBase {
     @ObjectHolder("weakstone")
     public static Item ITEM_WEAK_STONE;
 
+    //Declare ParticleTypes here
+    @ObjectHolder("bubble")
+    public static ParticleType BUBBLE;
+
     //Declare TileEntityTypes here
     @ObjectHolder("tews")
     public static TileEntityType TEWS_TYPE;
@@ -438,6 +447,16 @@ public class FragileGlassBase {
                 new BlockItem(BLACK_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
                         .setRegistryName("blackstainedfragileglasspane")
         );
+    }
+
+    @SubscribeEvent
+    public void onRegisterParticleFactories(ParticleFactoryRegisterEvent event) {
+        Minecraft.getInstance().particles.registerFactory(BUBBLE, MyBubbleParticle.Factory::new);
+    }
+
+    @SubscribeEvent
+    public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
+        event.getRegistry().register(new BasicParticleType(false).setRegistryName("bubble"));//May need to be true
     }
 
     @SubscribeEvent

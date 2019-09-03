@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.client.particle;
 
 import net.minecraft.client.particle.*;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,18 +36,15 @@ public class MyBubbleParticle extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
-        private final IAnimatedSprite field_217510_a;
+    public static class Factory implements IParticleFactory<IParticleData> {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite p_i50227_1_) {
-            this.field_217510_a = p_i50227_1_;
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-//            MyBubbleParticle bubbleparticle = new MyBubbleParticle(worldIn, x, y, z);
-//            bubbleparticle.func_217568_a(this.field_217510_a);
-//            return bubbleparticle;
-            return new BubbleParticle.Factory(this.field_217510_a).makeParticle(typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
+        public Particle makeParticle(IParticleData type, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            return new MyBubbleParticle(worldIn, x, y, z);
         }
     }
 }
