@@ -2,6 +2,8 @@ package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.data.ChangeData;
+import com.fredtargaryen.fragileglass.config.behaviour.data.UpdateData;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
@@ -185,10 +187,10 @@ public class BreakSystem {
                                                     e.world.destroyBlock(blockPos, true);
                                                     break;
                                                 case UPDATE:
-                                                    e.world.getPendingBlockTicks().scheduleTick(blockPos, e.world.getBlockState(blockPos).getBlock(), fragilityData.getUpdateDelay());
+                                                    e.world.getPendingBlockTicks().scheduleTick(blockPos, e.world.getBlockState(blockPos).getBlock(), ((UpdateData)fragilityData).getUpdateDelay());
                                                     break;
                                                 case CHANGE:
-                                                    e.world.setBlockState(blockPos, fragilityData.getNewBlockState());
+                                                    e.world.setBlockState(blockPos, ((ChangeData)fragilityData).getNewBlockState());
                                                 case FALL:
                                                     if (FallingBlock.canFallThrough(e.world.getBlockState(blockPos.down()))) {
                                                         FallingBlockEntity efb = new FallingBlockEntity(e.world,

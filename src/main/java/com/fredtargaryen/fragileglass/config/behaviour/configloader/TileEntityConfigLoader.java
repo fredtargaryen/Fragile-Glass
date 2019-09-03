@@ -1,8 +1,8 @@
 package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
+import com.fredtargaryen.fragileglass.config.behaviour.data.*;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
-import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -68,15 +68,13 @@ public class TileEntityConfigLoader extends ConfigLoader{
                     DataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1]);
                     //Validate minSpeed and silently clamp to >= 0
                     double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
-                    //Validate updateDelay and silently clamp to >= 0
-                    int updateDelay = Math.max(Integer.parseInt(values[3]), 0);
-                    //Validate newState
-                    BlockState newState = this.getSingleBlockStateFromString(values[4]);
-                    this.addNewBehaviour(
-                            ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(values[0])),
-                            new FragilityData(
-                                    behaviour, minSpeed, updateDelay, newState,
-                                    Arrays.copyOfRange(values, 5, values.length)));
+
+                    FragilityData newData = this.createDataFromBehaviour(behaviour, minSpeed);
+                    newData.parseExtraData(null, this, Arrays.copyOfRange(values, 3, values.length));
+                    this.addNewBehaviour(ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(values[0])), newData);
+                }
+                catch(FragilityData.FragilityDataParseException fdpe) {
+                    throw new ConfigLoadException(fdpe.getMessage());
                 }
                 catch(NumberFormatException nfe) {
                     //Thrown when the third value can't be parsed as a Double
@@ -90,15 +88,5 @@ public class TileEntityConfigLoader extends ConfigLoader{
         }
     }
 
-    private BlockState getSingleBlockStateFromString(String stateString) throws ConfigLoadException {
-        HashMap<String, String> description = this.getDescriptionFromString(stateString);
-        String blockString = description.get("block");
-        if(blockString.equals("-")) {
-            return Blocks.AIR.getDefaultState();
-        }
-        else {
-            BlockState state = this.getBlockFromString(blockString).getDefaultState();
-            return this.getNewStateFromOldAndString(state, stateString);
-        }
-    }
+
 }

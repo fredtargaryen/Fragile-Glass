@@ -2,9 +2,11 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.data.ChangeData;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.TileEntityConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.data.UpdateData;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
@@ -60,11 +62,11 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
                                         if (speed > fragData.getBreakSpeed()) {
                                             World w = te.getWorld();
                                             BlockPos tilePos = te.getPos();
-                                            w.getPendingBlockTicks().scheduleTick(tilePos, w.getBlockState(tilePos).getBlock(), fragData.getUpdateDelay());
+                                            w.getPendingBlockTicks().scheduleTick(tilePos, w.getBlockState(tilePos).getBlock(), ((UpdateData)fragData).getUpdateDelay());
                                         }
                                     } else if (fb == CHANGE) {
                                         if (speed > fragData.getBreakSpeed()) {
-                                            te.getWorld().setBlockState(te.getPos(), fragData.getNewBlockState());
+                                            te.getWorld().setBlockState(te.getPos(), ((ChangeData)fragData).getNewBlockState());
                                         }
                                     } else if (fb == FALL) {
                                         if (speed > fragData.getBreakSpeed()) {
