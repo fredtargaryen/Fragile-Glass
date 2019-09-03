@@ -251,6 +251,10 @@ public class FragileGlassBase {
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
     }
 
+    /**
+     * Clear all DataManager data and reload it from the config files.
+     * @return true if no errors were found; false otherwise
+     */
     public static boolean reloadDataManagers() {
         breakerDataManager.clearData();
         boolean breaksOK = breakerDataManager.loadEntityData();
@@ -428,6 +432,7 @@ public class FragileGlassBase {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void loadSystem(WorldEvent.Load event) {
+        STATUS = reloadDataManagers() ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
         World w = event.getWorld();
         if(!w.isRemote) {
             breakSystem = new BreakSystem();
