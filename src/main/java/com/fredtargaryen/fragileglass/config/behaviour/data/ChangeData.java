@@ -44,6 +44,4 @@ public class ChangeData extends FragilityData {
             crasher.world.setBlockState(pos, this.newBlockState);
         }
     }
-
-    public BlockState getNewBlockState() { return this.newBlockState; }
 }

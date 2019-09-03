@@ -34,6 +34,4 @@ public class UpdateData extends FragilityData {
             crasher.world.getPendingBlockTicks().scheduleTick(pos, crasher.world.getBlockState(pos).getBlock(), this.updateDelay);
         }
     }
-
-    public int getUpdateDelay() { return this.updateDelay; }
 }

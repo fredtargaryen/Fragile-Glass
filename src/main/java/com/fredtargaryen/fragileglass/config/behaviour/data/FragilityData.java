@@ -22,8 +22,6 @@ public abstract class FragilityData {
 
     public abstract void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speed);
 
-    public double getBreakSpeed() { return this.breakSpeed; }
-
     public class FragilityDataParseException extends Exception {
         public FragilityDataParseException(String message) {
             super(message);
