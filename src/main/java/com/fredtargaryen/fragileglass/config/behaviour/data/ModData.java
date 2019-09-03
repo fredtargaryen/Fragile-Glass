@@ -3,6 +3,9 @@ package com.fredtargaryen.fragileglass.config.behaviour.data;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 
@@ -21,5 +24,10 @@ public class ModData extends FragilityData {
     @Override
     public void parseExtraData(@Nullable BlockState state, ConfigLoader cl, String[] extraData) throws FragilityDataParseException {
         this.extraData = extraData;
+    }
+
+    @Override
+    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speed) {
+
     }
 }

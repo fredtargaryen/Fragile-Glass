@@ -180,27 +180,8 @@ public class BreakSystem {
                                 ArrayList<FragilityData> fragilityDataList = this.blockDataManager.getData(state);
                                 if (fragilityDataList != null) {
                                     for (FragilityData fragilityData : fragilityDataList) {
-                                        if (fragilityData != null && speed > fragilityData.getBreakSpeed()) {
-                                            BlockDataManager.FragileBehaviour fragileBehaviour = fragilityData.getBehaviour();
-                                            switch (fragileBehaviour) {
-                                                case BREAK:
-                                                    e.world.destroyBlock(blockPos, true);
-                                                    break;
-                                                case UPDATE:
-                                                    e.world.getPendingBlockTicks().scheduleTick(blockPos, e.world.getBlockState(blockPos).getBlock(), ((UpdateData)fragilityData).getUpdateDelay());
-                                                    break;
-                                                case CHANGE:
-                                                    e.world.setBlockState(blockPos, ((ChangeData)fragilityData).getNewBlockState());
-                                                case FALL:
-                                                    if (FallingBlock.canFallThrough(e.world.getBlockState(blockPos.down()))) {
-                                                        FallingBlockEntity efb = new FallingBlockEntity(e.world,
-                                                                blockPos.getX() + 0.5D,
-                                                                blockPos.getY(),
-                                                                blockPos.getZ() + 0.5D, e.world.getBlockState(blockPos));
-                                                        e.world.addEntity(efb);
-                                                    }
-                                                    break;
-                                            }
+                                        if (fragilityData != null) {
+                                            fragilityData.onCrash(state, null, blockPos, e, speed);
                                         }
                                     }
                                 }

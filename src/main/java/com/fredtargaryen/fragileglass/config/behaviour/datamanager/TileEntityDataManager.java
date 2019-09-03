@@ -50,36 +50,7 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
                         @Override
                         public void onCrash(BlockState state, TileEntity te, Entity crasher, double speed) {
                             for (FragilityData fragData : fragDataList) {
-                                BlockDataManager.FragileBehaviour fb = fragData.getBehaviour();
-                                //If MOD, a mod will define the capability at some point, so ignore
-                                if (fb != BlockDataManager.FragileBehaviour.MOD) {
-                                    //If one of the other behaviours, and the capability has been defined, must ignore.
-                                    if (fb == BlockDataManager.FragileBehaviour.BREAK) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            te.getWorld().destroyBlock(te.getPos(), true);
-                                        }
-                                    } else if (fb == BlockDataManager.FragileBehaviour.UPDATE) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            World w = te.getWorld();
-                                            BlockPos tilePos = te.getPos();
-                                            w.getPendingBlockTicks().scheduleTick(tilePos, w.getBlockState(tilePos).getBlock(), ((UpdateData)fragData).getUpdateDelay());
-                                        }
-                                    } else if (fb == CHANGE) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            te.getWorld().setBlockState(te.getPos(), ((ChangeData)fragData).getNewBlockState());
-                                        }
-                                    } else if (fb == FALL) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            World w = te.getWorld();
-                                            BlockPos pos = te.getPos();
-                                            if (FallingBlock.canFallThrough(w.getBlockState(pos.down()))) {
-                                                FallingBlockEntity fallingBlock = new FallingBlockEntity(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
-                                                fallingBlock.tileEntityData = te.write(new CompoundNBT());
-                                                w.addEntity(fallingBlock);
-                                            }
-                                        }
-                                    }
-                                }
+                                fragData.onCrash(state, te, te.getPos(), crasher, speed);
                             }
                         }
                     };
