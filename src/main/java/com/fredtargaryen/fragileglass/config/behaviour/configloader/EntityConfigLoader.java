@@ -1,6 +1,8 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
 import com.fredtargaryen.fragileglass.DataReference;
+import com.fredtargaryen.fragileglass.config.behaviour.data.BreakerData;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
 import net.minecraft.entity.EntityType;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.ResourceLocation;

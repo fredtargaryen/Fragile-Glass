@@ -1,7 +1,9 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.data.BreakerData;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.EntityConfigLoader;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -22,8 +24,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.*;
-import java.util.HashMap;
 
 /**
  * Responsible for everything to do with entity break data from fragileglassft_entities.cfg.

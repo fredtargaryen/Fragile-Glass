@@ -1,5 +1,6 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.data;
 
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import net.minecraft.block.BlockState;
 
 public class FragilityData {

@@ -1,4 +1,4 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.Block;

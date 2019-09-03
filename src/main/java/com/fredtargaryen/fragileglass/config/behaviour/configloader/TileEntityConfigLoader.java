@@ -1,5 +1,9 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntityType;
@@ -61,7 +65,7 @@ public class TileEntityConfigLoader extends ConfigLoader{
             } else {
                 try {
                     //Validate behaviour value
-                    BlockDataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1]);
+                    DataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1]);
                     //Validate minSpeed and silently clamp to >= 0
                     double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
                     //Validate updateDelay and silently clamp to >= 0

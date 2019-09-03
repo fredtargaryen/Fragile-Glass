@@ -2,6 +2,10 @@ package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
@@ -166,16 +170,12 @@ public class BreakSystem {
                     block = state.getBlock();
                     // Chances are the block will be an air block (pass through no question) so best check this first
                     if (!block.isAir(state, e.world, blockPos)) {
-                        // Workaround - not all mods conform to the hasTileEntity->getTileEntity pattern
-                        //if (block.hasTileEntity(state)) {
-                        //    TileEntity te = e.world.getTileEntity(blockPos);
-                        //    te.getCapability(FragileGlassBase.FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speed));
                         TileEntity te = e.world.getTileEntity(blockPos);
                         if(te == null) {
                             //No Tile Entity
                             if(this.hasBlockStateFragilityData) {
                                 //The specific BlockState might be covered in the fragility data
-                                ArrayList<FragilityData> fragilityDataList = this.blockDataManager.data.get(state);
+                                ArrayList<FragilityData> fragilityDataList = this.blockDataManager.getData(state);
                                 if (fragilityDataList != null) {
                                     for (FragilityData fragilityData : fragilityDataList) {
                                         if (fragilityData != null && speed > fragilityData.getBreakSpeed()) {

@@ -1,10 +1,12 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.TileEntityConfigLoader;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.FallingBlockEntity;
@@ -23,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-import static com.fredtargaryen.fragileglass.world.DataManager.FragileBehaviour.*;
+import static com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager.FragileBehaviour.*;
 
 public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList<FragilityData>> {
 

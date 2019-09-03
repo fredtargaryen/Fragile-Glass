@@ -1,4 +1,4 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.data;
 
 public class BreakerData {
     private double minSpeedSquared;

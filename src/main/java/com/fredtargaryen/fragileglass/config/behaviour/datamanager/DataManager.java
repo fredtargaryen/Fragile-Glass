@@ -1,7 +1,8 @@
-package com.fredtargaryen.fragileglass.world;
+package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.*;
@@ -37,6 +38,8 @@ public abstract class DataManager<E, D> {
     public final void clearData() {
         this.data.clear();
     }
+
+    public final D getData(E key) { return this.data.get(key); }
 
     protected abstract String[] getDefaultConfigFileText();
 
