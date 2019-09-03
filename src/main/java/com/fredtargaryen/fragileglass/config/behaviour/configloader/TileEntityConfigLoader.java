@@ -54,8 +54,8 @@ public class TileEntityConfigLoader extends ConfigLoader{
     protected void parseLine() throws ConfigLoadException {
         String[] values = line.split(" ");
         //Validate number of values on row
-        if(values.length < 5) {
-            throw new ConfigLoadException("There must be at least 5 values here.");
+        if(values.length < 3) {
+            throw new ConfigLoadException("There must be at least 3 values here.");
         }
         else {
             //Check the first value is a ResourceLocation in the Forge TileEntityType registry, i.e. refers to a valid tile entity
