@@ -37,19 +37,12 @@ public class BreakSystem {
     private EntityDataManager entityDataManager;
     private TileEntityDataManager tileEntityDataManager;
 
-    private boolean hasBlockStateFragilityData;
-    private boolean hasEntityBreakerData;
-    private boolean hasTileEntityFragilityData;
-
     public void init(World world) {
         this.world = world;
         MinecraftForge.EVENT_BUS.register(this);
         this.blockDataManager = FragileGlassBase.getBlockDataManager();
         this.entityDataManager = FragileGlassBase.getEntityDataManager();
         this.tileEntityDataManager = FragileGlassBase.getTileEntityDataManager();
-        this.hasBlockStateFragilityData = this.blockDataManager.hasData();
-        this.hasEntityBreakerData = this.entityDataManager.hasData();
-        this.hasTileEntityFragilityData = this.tileEntityDataManager.hasData();
     }
 
     public void end(World world) {
@@ -174,15 +167,12 @@ public class BreakSystem {
                     if (!block.isAir(state, e.world, blockPos)) {
                         TileEntity te = e.world.getTileEntity(blockPos);
                         if(te == null) {
-                            //No Tile Entity
-                            if(this.hasBlockStateFragilityData) {
-                                //The specific BlockState might be covered in the fragility data
-                                ArrayList<FragilityData> fragilityDataList = this.blockDataManager.getData(state);
-                                if (fragilityDataList != null) {
-                                    for (FragilityData fragilityData : fragilityDataList) {
-                                        if (fragilityData != null) {
-                                            fragilityData.onCrash(state, null, blockPos, e, speed);
-                                        }
+                            //No Tile Entity. The specific BlockState might be covered in the fragility data
+                            ArrayList<FragilityData> fragilityDataList = this.blockDataManager.getData(state);
+                            if (fragilityDataList != null) {
+                                for (FragilityData fragilityData : fragilityDataList) {
+                                    if (fragilityData != null) {
+                                        fragilityData.onCrash(state, null, blockPos, e, speed);
                                     }
                                 }
                             }
@@ -190,9 +180,7 @@ public class BreakSystem {
                         else {
                             //Has a Tile Entity; check there's anything in the Tile Entity fragility data before continuing
                             //Tile Entities are dealt with via Capabilities already; no need to obtain fragility data
-                            if(this.hasTileEntityFragilityData) {
-                                te.getCapability(FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speed));
-                            }
+                            te.getCapability(FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speed));
                         }
                     }
                 }
