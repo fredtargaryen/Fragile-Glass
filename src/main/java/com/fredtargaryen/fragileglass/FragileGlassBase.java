@@ -18,6 +18,7 @@ import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataMan
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
@@ -588,7 +589,7 @@ public class FragileGlassBase {
         final Entity e = evt.getObject();
         if (e.world != null) {
             if (e.world.isRemote) {
-                if (e instanceof PlayerEntity) {
+                if (e == Minecraft.getInstance().player) {
                     MinecraftForge.EVENT_BUS.register(new Object() {
                         private PlayerEntity ep = (PlayerEntity) e;
                         private double lastSpeedSq;
