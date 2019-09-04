@@ -39,6 +39,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -612,13 +613,10 @@ public class FragileGlassBase {
                             }
                         }
 
-                        /**
-                         * TODO
-                         */
-//                        @SubscribeEvent
-//                        public void killObject(Discon event) {
-//                            MinecraftForge.EVENT_BUS.unregister(this);
-//                        }
+                        @SubscribeEvent
+                        public void killObject(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+                            MinecraftForge.EVENT_BUS.unregister(this);
+                        }
                     });
                 }
             } else {
