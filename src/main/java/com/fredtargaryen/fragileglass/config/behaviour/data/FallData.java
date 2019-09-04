@@ -34,7 +34,9 @@ public class FallData extends FragilityData {
             World w = crasher.world;
             if (FallingBlock.canFallThrough(w.getBlockState(pos.down()))) {
                 FallingBlockEntity fallingBlock = new FallingBlockEntity(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, w.getBlockState(pos));
-                fallingBlock.tileEntityData = te.write(new CompoundNBT());
+                if(te != null) {
+                    fallingBlock.tileEntityData = te.write(new CompoundNBT());
+                }
                 w.addEntity(fallingBlock);
             }
         }
