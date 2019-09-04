@@ -2,9 +2,11 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.data.ChangeData;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.TileEntityConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.data.UpdateData;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
@@ -46,38 +48,9 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
                         @Override
-                        public void onCrash(BlockState state, TileEntity te, Entity crasher, double speed) {
+                        public void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq) {
                             for (FragilityData fragData : fragDataList) {
-                                BlockDataManager.FragileBehaviour fb = fragData.getBehaviour();
-                                //If MOD, a mod will define the capability at some point, so ignore
-                                if (fb != BlockDataManager.FragileBehaviour.MOD) {
-                                    //If one of the other behaviours, and the capability has been defined, must ignore.
-                                    if (fb == BlockDataManager.FragileBehaviour.BREAK) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            te.getWorld().destroyBlock(te.getPos(), true);
-                                        }
-                                    } else if (fb == BlockDataManager.FragileBehaviour.UPDATE) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            World w = te.getWorld();
-                                            BlockPos tilePos = te.getPos();
-                                            w.getPendingBlockTicks().scheduleTick(tilePos, w.getBlockState(tilePos).getBlock(), fragData.getUpdateDelay());
-                                        }
-                                    } else if (fb == CHANGE) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            te.getWorld().setBlockState(te.getPos(), fragData.getNewBlockState());
-                                        }
-                                    } else if (fb == FALL) {
-                                        if (speed > fragData.getBreakSpeed()) {
-                                            World w = te.getWorld();
-                                            BlockPos pos = te.getPos();
-                                            if (FallingBlock.canFallThrough(w.getBlockState(pos.down()))) {
-                                                FallingBlockEntity fallingBlock = new FallingBlockEntity(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
-                                                fallingBlock.tileEntityData = te.write(new CompoundNBT());
-                                                w.addEntity(fallingBlock);
-                                            }
-                                        }
-                                    }
-                                }
+                                fragData.onCrash(state, te, te.getPos(), crasher, speedSq);
                             }
                         }
                     };
@@ -100,7 +73,7 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     protected void loadDefaultData() {
         super.loadDefaultData();
         try {
-            this.tileEntityConfigLoader.parseArbitraryString("fragileglassft:tews UPDATE 0.0 10 -");
+            this.tileEntityConfigLoader.parseArbitraryString("fragileglassft:tews UPDATE 0.0 10");
         }
         catch(ConfigLoader.ConfigLoadException cle) {
             System.out.println("FredTargaryen is an idiot; please let him know you saw this");
@@ -125,16 +98,21 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
             "@* Tile entities from other mods are able to use code to achieve more complex crash behaviours.\n",
             "\n@--Limitations--\n",
             "@* This will not work for blocks which are basically air blocks, e.g. Air blocks and 'logic' blocks.\n",
+            "@* Custom mod crash behaviours are currently not supported; however existing behaviours can be added \n",
+            "@  to mod blocks here.\n",
             "\n@--How to customise--\n",
             "@To add a comment to the file, start the line with a @ symbol.\n",
-            "@To make a tile entity fragile, add a new row in this file following this format:\n",
-            "@modid:ID BREAK/UPDATE/CHANGE/FALL/MOD minSpeed updateDelay newState extraValues\n",
-            "@* modid:ID is the ResourceLocation string used to register with Forge.\n",
+            "@EVERY line has at least three parameters, separated by a single space character:\n",
+            "@modid:ID[properties] <behaviour> <breakSpeed>\n",
+            "@* 'modid:ID' is the ResourceLocation string used to register with Forge.\n",
             "@  - modid can be found by looking in the 'modId' entry of the mod's mods.toml file. For vanilla\n",
             "@    Minecraft this is just 'minecraft'. Finding the ID may need some investigation of the mod's code.\n",
-            "@* For all crash behaviours, the 'breaker' entity must be travelling above its minimum speed. If so,\n",
-            "@  it must then be above the speed defined for the block. Meeting both these conditions causes the\n",
-            "@  crash behaviour to trigger.\n",
+            "@* The current list of possible behaviours is:\n",
+            "@  - break: the block breaks immediately.\n",
+            "@  - update: a block update is triggered.\n",
+            "@  - change: the block changes into a specified blockstate.\n",
+            "@  - fall: the block falls immediately.\n",
+            "@  - mod: for mod tile entities with custom behaviours ONLY.\n",
             "@  - 'BREAK': the block breaks immediately.\n",
             "@  - 'UPDATE': a block update is triggered.\n",
             "@  - 'CHANGE': the block changes into a specified blockstate.\n",
@@ -143,24 +121,21 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
             "@           entities and implement IFragileCapability with the behaviour they want. The mod receives all\n",
             "@           the extra values and it is up to the modder how they are used. NOTE: If a tile entity has a\n",
             "@           custom behaviour it will be used regardless of the behaviour value.\n",
-            "@* Crash behaviours can be combined, and will trigger (if fast enough) in the order they are listed in\n",
-            "@  the config messages. However, only the first of each behaviour type will trigger.\n",
-            "@* minSpeed is a minimum speed (must be decimal). The breaker must be moving above their\n",
+            "@* The update behaviour requires one extra value: the number of ticks to wait before updating (a tick\n",
+            "@  is 1/20 of a second).\n",
+            "@* The change behaviour requires one extra value: the state the block will change into. It must have\n",
+            "@  the format of a block or blockstate; you can see examples below. You should not leave a - here. Any\n",
+            "@  unspecified properties will have the default value for the blockstate.\n",
+            "@* breakSpeed is a minimum speed (must be decimal). The breaker must be moving above their\n",
             "@  breaking speed, AND above this speed, to trigger the crash behaviour. Speed is measured in blocks\n",
             "@  per tick, which is metres per second divided by 20.\n",
-            "@* updateDelay is only used by the UPDATE behaviour. It must be an integer. It specifies the\n",
-            "@  delay between the collision and the block update. Delays are measured in ticks and there are 20\n",
-            "@  ticks per second.\n",
-            "@* newState is only used by the CHANGE behaviour. It must have the format of a block or blockstate;\n",
-            "@  you can see examples in fragileglassft_blocks.cfg. This is the state the block will change into. If\n",
-            "@  you aren't using this value you can leave a - here.\n",
-            "@* You can add extra values of any format, separated by spaces, for any mod blocks that might require\n",
-            "@  them.\n",
+            "@* A tile entity can have multiple behaviours using multiple lines, which will trigger in the order\n",
+            "@  they are listed. However, only the first of each behaviour type will trigger.\n",
             "\n@--Fun example lines you may wish to uncomment--\n",
             "@Currently none, but I am open to suggestions!\n",
             "\n@--Default values, in case you break something--\n",
             "@Weak stone:\n",
-            "@fragileglassft:tews UPDATE 0.0 10 -\n\n",
-            "fragileglassft:tews UPDATE 0.0 10 -\n"
+            "@fragileglassft:tews update 0.0 10\n\n",
+            "fragileglassft:tews update 0.0 10\n"
     };
 }

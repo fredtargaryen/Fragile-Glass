@@ -1,6 +1,8 @@
 package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.data.*;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -32,6 +34,21 @@ public abstract class ConfigLoader {
 
     private <P extends Comparable<P>> BlockState applyParsedProperty(BlockState state, IProperty<P> iprop, HashMap newProperties) {
         return state.with(iprop, (P) newProperties.get(iprop));
+    }
+
+    protected FragilityData createDataFromBehaviour(DataManager.FragileBehaviour behaviour, double minSpeed) {
+        switch(behaviour) {
+            case BREAK:
+                return new BreakData(minSpeed);
+            case CHANGE:
+                return new ChangeData(minSpeed);
+            case UPDATE:
+                return new UpdateData(minSpeed);
+            case FALL:
+                return new FallData(minSpeed);
+            default: //MOD
+                return new ModData(minSpeed);
+        }
     }
 
     /**
@@ -103,7 +120,7 @@ public abstract class ConfigLoader {
      * @return
      * @throws ConfigLoadException
      */
-    protected BlockState getNewStateFromOldAndString(BlockState old, String stateString) throws ConfigLoadException {
+    public BlockState getNewStateFromOldAndString(BlockState old, String stateString) throws ConfigLoadException {
         HashMap<String, String> description = this.getDescriptionFromString(stateString);
         String blockString = description.get("block");
         //Acquire the default new state to transform into
@@ -115,7 +132,7 @@ public abstract class ConfigLoader {
             }
             else {
                 //Registry returned air, but something is fishy
-                throw new ConfigLoadException("Could not find a block matching " + blockString);
+                throw new ConfigLoadException("Could not find a block state matching " + blockString);
             }
         }
         //Get property map of this default state
@@ -137,6 +154,18 @@ public abstract class ConfigLoader {
             newState = this.applyParsedProperty(newState, prop, parsedMap);
         }
         return newState;
+    }
+
+    public BlockState getSingleBlockStateFromString(String stateString) throws ConfigLoadException {
+        HashMap<String, String> description = this.getDescriptionFromString(stateString);
+        String blockString = description.get("block");
+        if(blockString.equals("-")) {
+            return Blocks.AIR.getDefaultState();
+        }
+        else {
+            BlockState state = this.getBlockFromString(blockString).getDefaultState();
+            return this.getNewStateFromOldAndString(state, stateString);
+        }
     }
 
     /**
@@ -258,11 +287,14 @@ public abstract class ConfigLoader {
      * Class for exceptions caught while reading config files.
      */
     public class ConfigLoadException extends Exception {
+        public String shortMessage;
+
         public ConfigLoadException(String message) {
             super(ConfigLoader.this.lineNumber == -1 ?
                     "Could not parse command: \n" + ConfigLoader.this.line + "\n" + message + "\nNo changes have been made." :
                     "Error parsing " + ConfigLoader.this.filename + " line " + ConfigLoader.this.lineNumber + ":\n"
                             + ConfigLoader.this.line +"\n" + message + "\n");
+            this.shortMessage = message;
         }
     }
 }

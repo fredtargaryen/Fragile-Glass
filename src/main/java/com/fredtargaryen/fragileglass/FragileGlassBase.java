@@ -39,6 +39,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -590,21 +591,21 @@ public class FragileGlassBase {
                 if (e instanceof PlayerEntity) {
                     MinecraftForge.EVENT_BUS.register(new Object() {
                         private PlayerEntity ep = (PlayerEntity) e;
-                        private double lastSpeed;
+                        private double lastSpeedSq;
 
                         @SubscribeEvent(priority = EventPriority.HIGHEST)
                         public void speedUpdate(TickEvent.ClientTickEvent event) {
                             if (event.phase == TickEvent.Phase.START) {
                                 Vec3d motion = ep.getMotion();
-                                double speed = Math.sqrt(motion.x * motion.y + motion.y * motion.z + motion.z * motion.z);
-                                if (Math.abs(speed - this.lastSpeed) > 0.01) {
+                                double speedSq = Math.max(motion.x * motion.x + motion.y * motion.y + motion.z * motion.z, 0.0);
+                                if (Math.abs(speedSq - this.lastSpeedSq) > 0.001) {
                                     MessageBreakerMovement mbm = new MessageBreakerMovement();
                                     mbm.motionx = motion.x;
                                     mbm.motiony = motion.y;
                                     mbm.motionz = motion.z;
-                                    mbm.speed = speed;
+                                    mbm.speedSq = speedSq;
                                     PacketHandler.INSTANCE.sendToServer(mbm);
-                                    this.lastSpeed = speed;
+                                    this.lastSpeedSq = speedSq;
                                 }
                                 if (ep.removed) {
                                     MinecraftForge.EVENT_BUS.unregister(this);
@@ -612,13 +613,10 @@ public class FragileGlassBase {
                             }
                         }
 
-                        /**
-                         * TODO
-                         */
-//                        @SubscribeEvent
-//                        public void killObject(Discon event) {
-//                            MinecraftForge.EVENT_BUS.unregister(this);
-//                        }
+                        @SubscribeEvent
+                        public void killObject(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+                            MinecraftForge.EVENT_BUS.unregister(this);
+                        }
                     });
                 }
             } else {

@@ -1,11 +1,9 @@
 package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
-import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -54,8 +52,8 @@ public class TileEntityConfigLoader extends ConfigLoader{
     protected void parseLine() throws ConfigLoadException {
         String[] values = line.split(" ");
         //Validate number of values on row
-        if(values.length < 5) {
-            throw new ConfigLoadException("There must be at least 5 values here.");
+        if(values.length < 3) {
+            throw new ConfigLoadException("There must be at least 3 values here.");
         }
         else {
             //Check the first value is a ResourceLocation in the Forge TileEntityType registry, i.e. refers to a valid tile entity
@@ -65,18 +63,16 @@ public class TileEntityConfigLoader extends ConfigLoader{
             } else {
                 try {
                     //Validate behaviour value
-                    DataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1]);
+                    DataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1].toUpperCase());
                     //Validate minSpeed and silently clamp to >= 0
                     double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
-                    //Validate updateDelay and silently clamp to >= 0
-                    int updateDelay = Math.max(Integer.parseInt(values[3]), 0);
-                    //Validate newState
-                    BlockState newState = this.getSingleBlockStateFromString(values[4]);
-                    this.addNewBehaviour(
-                            ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(values[0])),
-                            new FragilityData(
-                                    behaviour, minSpeed, updateDelay, newState,
-                                    Arrays.copyOfRange(values, 5, values.length)));
+
+                    FragilityData newData = this.createDataFromBehaviour(behaviour, minSpeed);
+                    newData.parseExtraData(null, this, Arrays.copyOfRange(values, 3, values.length));
+                    this.addNewBehaviour(ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(values[0])), newData);
+                }
+                catch(FragilityData.FragilityDataParseException fdpe) {
+                    throw new ConfigLoadException(fdpe.getMessage());
                 }
                 catch(NumberFormatException nfe) {
                     //Thrown when the third value can't be parsed as a Double
@@ -84,21 +80,11 @@ public class TileEntityConfigLoader extends ConfigLoader{
                 }
                 catch(IllegalArgumentException iae) {
                     //Thrown when the second value is not one of the supported ones
-                    throw new ConfigLoadException(values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.");
+                    throw new ConfigLoadException(values[1] + " should be break, update, change, fall or mod.");
                 }
             }
         }
     }
 
-    private BlockState getSingleBlockStateFromString(String stateString) throws ConfigLoadException {
-        HashMap<String, String> description = this.getDescriptionFromString(stateString);
-        String blockString = description.get("block");
-        if(blockString.equals("-")) {
-            return Blocks.AIR.getDefaultState();
-        }
-        else {
-            BlockState state = this.getBlockFromString(blockString).getDefaultState();
-            return this.getNewStateFromOldAndString(state, stateString);
-        }
-    }
+
 }

@@ -1,7 +1,7 @@
 package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -102,8 +102,8 @@ public class BlockConfigLoader extends ConfigLoader {
     protected void parseLine() throws ConfigLoadException {
         String[] values = this.line.split(" ");
         //Validate number of values on row
-        if(values.length < 5) {
-            throw new ConfigLoadException("There must be at least 5 values here.");
+        if(values.length < 3) {
+            throw new ConfigLoadException("There must be at least 3 values here.");
         }
         else {
             List<BlockState> states = this.getAllBlockStatesForString(values[0]);
@@ -113,22 +113,22 @@ public class BlockConfigLoader extends ConfigLoader {
             } else {
                 try {
                     //Validate behaviour value
-                    BlockDataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1]);
+                    BlockDataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1].toUpperCase());
                     //Validate minSpeed and silently clamp to >= 0
                     double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
-                    //Validate updateDelay and silently clamp to >= 0
-                    int updateDelay = Math.max(Integer.parseInt(values[3]), 0);
+
                     //For all the states this line describes, work out the new state to transform to then add the
                     //behaviour.
                     for(BlockState state: states) {
-                        //Validate newState
-                        BlockState newState = this.getNewStateFromOldAndString(state, values[4]);
-                        this.addNewBehaviour(
-                                state,
-                                new FragilityData(
-                                        behaviour, minSpeed, updateDelay, newState,
-                                        Arrays.copyOfRange(values, 5, values.length)));
+                        FragilityData newData = this.createDataFromBehaviour(behaviour, minSpeed);
+                        newData.parseExtraData(state, this, Arrays.copyOfRange(values, 3, values.length));
+                        this.addNewBehaviour(state, newData);
                     }
+                }
+                catch(FragilityData.FragilityDataParseException fdpe) {
+                    //Thrown when the FragilityData subclass can't parse an extra parameter.
+                    //Contains just a message; wrap it in a ConfigLoadException that is handled normally
+                    throw new ConfigLoadException(fdpe.getMessage());
                 }
                 catch(NumberFormatException nfe) {
                     //Thrown when the third value can't be parsed as a Double
@@ -136,7 +136,7 @@ public class BlockConfigLoader extends ConfigLoader {
                 }
                 catch(IllegalArgumentException iae) {
                     //Thrown when the second value is not one of the supported ones
-                    throw new ConfigLoadException(values[1] + " should be 'BREAK', 'UPDATE', 'CHANGE', 'FALL' or 'MOD'.");
+                    throw new ConfigLoadException(values[1] + " should be break, update, change, fall or mod.");
                 }
             }
         }
