@@ -10,17 +10,17 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 
 public abstract class FragilityData {
-    protected double breakSpeed;
+    protected double breakSpeedSq;
 
     public FragilityData(double breakSpeed) {
-        this.breakSpeed = breakSpeed;
+        this.breakSpeedSq = breakSpeed * breakSpeed;
     }
 
     public abstract DataManager.FragileBehaviour getBehaviour();
 
     public abstract void parseExtraData(@Nullable BlockState oldState, ConfigLoader cl, String... extraData) throws FragilityDataParseException;
 
-    public abstract void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speed);
+    public abstract void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq);
 
     public class FragilityDataParseException extends Exception {
         public FragilityDataParseException(String message) {

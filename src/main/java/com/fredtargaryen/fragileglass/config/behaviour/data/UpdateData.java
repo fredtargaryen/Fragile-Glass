@@ -29,8 +29,8 @@ public class UpdateData extends FragilityData {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speed) {
-        if (speed > this.breakSpeed) {
+    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
+        if (speedSq > this.breakSpeedSq) {
             crasher.world.getPendingBlockTicks().scheduleTick(pos, crasher.world.getBlockState(pos).getBlock(), this.updateDelay);
         }
     }

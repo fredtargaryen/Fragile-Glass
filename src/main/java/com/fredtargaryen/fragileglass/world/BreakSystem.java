@@ -72,7 +72,7 @@ public class BreakSystem {
                             //Checking whether the block is currently able to break would happen in IFragileCapability#onCrash.
                             if (ibc.isAbleToBreak(e, speedSq)) {
                                 this.breakBlocksInWay(e, ibc.getMotionX(e), ibc.getMotionY(e), ibc.getMotionZ(e),
-                                        Math.sqrt(speedSq), ibc.getNoOfBreaks(e));
+                                        speedSq, ibc.getNoOfBreaks(e));
                             }
                         }
                     });
@@ -117,14 +117,15 @@ public class BreakSystem {
      * @param xToUse The x motion value to use; not necessarily e.motionX, especially in the player's case.
      * @param yToUse The y motion value to use; not necessarily e.motionY, especially in the player's case.
      * @param zToUse The z motion value to use; not necessarily e.motionZ, especially in the player's case.
-     * @param distance The distance in blocks that Entity e will travel in this current tick.
+     * @param speedSq The distance in blocks that Entity e will travel in this current tick, squared.
      * @param noOfBreaks Effectively multiplies the range of blocks to call onCrash on, but does not multiply the
      *                   speed of e when onCrash is called.
      */
-    private void breakBlocksInWay(Entity e, double xToUse, double yToUse, double zToUse, double distance, byte noOfBreaks) {
+    private void breakBlocksInWay(Entity e, double xToUse, double yToUse, double zToUse, double speedSq, byte noOfBreaks) {
         AxisAlignedBB originalAABB = e.getBoundingBox();
         if(originalAABB != null) {
             AxisAlignedBB aabb;
+            double distance = Math.sqrt(speedSq);
             for (byte breaks = 0; breaks < noOfBreaks; ++breaks) {
                 aabb = originalAABB;
                 double xComp = xToUse / distance;
@@ -138,13 +139,13 @@ public class BreakSystem {
                     //block bounding boxes.
                     aabb = aabb.offset(xComp, yComp, zComp);
                     distance -= 1.0;
-                    this.breakNearbyFragileBlocks(e, aabb, distance);
+                    this.breakNearbyFragileBlocks(e, aabb, distance * distance);
                 }
                 //The end of the movement vector is now less than one block away from the current
                 //entity bounding box. Offset the entity bounding box right to the end of the
                 //movement vector, and check that it intersects with the block bounding box.
                 originalAABB = originalAABB.offset(xToUse, yToUse, zToUse);
-                this.breakNearbyFragileBlocks(e, originalAABB, distance);
+                this.breakNearbyFragileBlocks(e, originalAABB, distance * distance);
             }
         }
     }
@@ -152,9 +153,9 @@ public class BreakSystem {
     /**
      * @param e The entity doing the breaking
      * @param aabb The bounding box to break blocks around
-     * @param speed The speed e is travelling at
+     * @param speedSq The square of the speed e is travelling at
      */
-    private void breakNearbyFragileBlocks(Entity e, AxisAlignedBB aabb, double speed) {
+    private void breakNearbyFragileBlocks(Entity e, AxisAlignedBB aabb, double speedSq) {
         BlockPos blockPos;
         Block block;
         for (double x = Math.floor(aabb.minX); x < Math.ceil(aabb.maxX); ++x) {
@@ -172,7 +173,7 @@ public class BreakSystem {
                             if (fragilityDataList != null) {
                                 for (FragilityData fragilityData : fragilityDataList) {
                                     if (fragilityData != null) {
-                                        fragilityData.onCrash(state, null, blockPos, e, speed);
+                                        fragilityData.onCrash(state, null, blockPos, e, speedSq);
                                     }
                                 }
                             }
@@ -180,7 +181,7 @@ public class BreakSystem {
                         else {
                             //Has a Tile Entity; check there's anything in the Tile Entity fragility data before continuing
                             //Tile Entities are dealt with via Capabilities already; no need to obtain fragility data
-                            te.getCapability(FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speed));
+                            te.getCapability(FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speedSq));
                         }
                     }
                 }

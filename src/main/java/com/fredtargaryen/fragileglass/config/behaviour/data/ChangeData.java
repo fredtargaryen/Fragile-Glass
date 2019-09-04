@@ -39,8 +39,8 @@ public class ChangeData extends FragilityData {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speed) {
-        if (speed > this.breakSpeed) {
+    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
+        if (speedSq > this.breakSpeedSq) {
             crasher.world.setBlockState(pos, this.newBlockState);
         }
     }

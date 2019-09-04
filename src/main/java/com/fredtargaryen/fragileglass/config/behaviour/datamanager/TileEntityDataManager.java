@@ -48,9 +48,9 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
                 ICapabilityProvider iCapProv = new ICapabilityProvider() {
                     IFragileCapability inst = new IFragileCapability() {
                         @Override
-                        public void onCrash(BlockState state, TileEntity te, Entity crasher, double speed) {
+                        public void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq) {
                             for (FragilityData fragData : fragDataList) {
-                                fragData.onCrash(state, te, te.getPos(), crasher, speed);
+                                fragData.onCrash(state, te, te.getPos(), crasher, speedSq);
                             }
                         }
                     };
