@@ -19,13 +19,13 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
         protected double prevPosY;
         protected double prevPosZ;
         private double[] motionVec;
-        private double lastDistance;
+        private double lastSpeedSq;
 
         public void init(Entity e) {
             this.prevPosX = e.posX;
             this.prevPosY = e.posY;
             this.prevPosZ = e.posZ;
-            this.lastDistance = 0.0;
+            this.lastSpeedSq = 0.0;
             this.motionVec = new double[] { 0.0, 0.0, 0.0 };
         }
 
@@ -34,7 +34,7 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
 
         @Override
         public double getSpeedSquared(Entity e) {
-            return this.lastDistance * this.lastDistance;
+            return this.lastSpeedSq;
         }
 
         @Override
@@ -66,7 +66,7 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
             this.motionVec[0] = mbm.motionx;
             this.motionVec[1] = mbm.motiony;
             this.motionVec[2] = mbm.motionz;
-            this.lastDistance = mbm.speed;
+            this.lastSpeedSq = mbm.speedSq;
         }
     }
 }

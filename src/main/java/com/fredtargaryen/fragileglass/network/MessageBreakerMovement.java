@@ -14,7 +14,7 @@ public class MessageBreakerMovement {
     public double motionx;
     public double motiony;
     public double motionz;
-    public double speed;
+    public double speedSq;
 
     public void onMessage(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> ctx.get().getSender().getCapability(FragileGlassBase.PLAYERBREAKCAP, null)
@@ -31,13 +31,13 @@ public class MessageBreakerMovement {
         this.motionx = buf.readDouble();
         this.motiony = buf.readDouble();
         this.motionz = buf.readDouble();
-        this.speed = buf.readDouble();
+        this.speedSq = buf.readDouble();
     }
 
     public void toBytes(ByteBuf buf) {
         buf.writeDouble(this.motionx);
         buf.writeDouble(this.motiony);
         buf.writeDouble(this.motionz);
-        buf.writeDouble(this.speed);
+        buf.writeDouble(this.speedSq);
     }
 }

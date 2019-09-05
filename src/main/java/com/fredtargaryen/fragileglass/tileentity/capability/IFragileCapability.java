@@ -24,5 +24,5 @@ public interface IFragileCapability {
      * Whenever this method is called, the projected entity bounding box WILL be inside the 1x1x1 space of a block, BUT
      * not necessarily intersecting the block's bounding box. Implementations will need to check for that.
      */
-    void onCrash(BlockState state, TileEntity te, Entity crasher, double speed);
+    void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq);
 }
