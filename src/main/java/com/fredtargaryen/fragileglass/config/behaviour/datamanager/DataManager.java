@@ -3,8 +3,10 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import net.minecraftforge.fml.loading.FMLPaths;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.HashMap;
 
@@ -16,19 +18,6 @@ public abstract class DataManager<E, D> {
     private String typeString;
 
     protected HashMap<E, D> data;
-
-    public enum FragileBehaviour {
-        //Break if above the break speed
-        BREAK,
-        //Update after the update delay if above the break speed
-        UPDATE,
-        //Change to a different BlockState
-        CHANGE,
-        //Change to an FallingBlockEntity of the given BlockState
-        FALL,
-        //Load the data but don't even construct the capability; let another mod deal with it all
-        MOD
-    }
 
     protected DataManager(String typeString) {
         this.data = new HashMap<>();
@@ -98,6 +87,8 @@ public abstract class DataManager<E, D> {
     }
 
     public abstract void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException;
+
+    public abstract void removeBehaviour(E key, @Nullable FragilityData.FragileBehaviour behaviour);
 
     public void setupDirsAndFiles() {
         this.configDir = FMLPaths.CONFIGDIR.get().toFile();

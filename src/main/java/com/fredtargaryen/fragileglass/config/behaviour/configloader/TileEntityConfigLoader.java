@@ -63,7 +63,7 @@ public class TileEntityConfigLoader extends ConfigLoader{
             } else {
                 try {
                     //Validate behaviour value
-                    DataManager.FragileBehaviour behaviour = BlockDataManager.FragileBehaviour.valueOf(values[1].toUpperCase());
+                    FragilityData.FragileBehaviour behaviour = FragilityData.FragileBehaviour.valueOf(values[1].toUpperCase());
                     //Validate minSpeed and silently clamp to >= 0
                     double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
 

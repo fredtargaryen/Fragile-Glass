@@ -3,8 +3,9 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
-import com.fredtargaryen.fragileglass.config.behaviour.data.BreakerData;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.EntityConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.data.BreakerData;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -127,6 +128,11 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
     @Override
     public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
         this.entityConfigLoader.parseArbitraryString(configLine);
+    }
+
+    @Override
+    public void removeBehaviour(EntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        this.data.remove(key);
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

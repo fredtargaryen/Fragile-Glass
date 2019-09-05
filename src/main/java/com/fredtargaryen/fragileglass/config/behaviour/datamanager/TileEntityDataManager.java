@@ -2,22 +2,15 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.config.behaviour.data.ChangeData;
-import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.TileEntityConfigLoader;
-import com.fredtargaryen.fragileglass.config.behaviour.data.UpdateData;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FallingBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.FallingBlockEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -26,8 +19,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-
-import static com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager.FragileBehaviour.*;
 
 public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList<FragilityData>> {
     /**
@@ -87,6 +78,16 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     @Override
     public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
         this.tileEntityConfigLoader.parseArbitraryString(configLine);
+    }
+
+    @Override
+    public void removeBehaviour(TileEntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        if(behaviour != null) {
+            ArrayList<FragilityData> list = this.data.get(key);
+            if (list != null) {
+                list.removeIf(fd -> fd.getBehaviour() == behaviour);
+            }
+        }
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

@@ -17,8 +17,8 @@ public class ModData extends FragilityData {
     }
 
     @Override
-    public DataManager.FragileBehaviour getBehaviour() {
-        return DataManager.FragileBehaviour.MOD;
+    public FragilityData.FragileBehaviour getBehaviour() {
+        return FragilityData.FragileBehaviour.MOD;
     }
 
     @Override

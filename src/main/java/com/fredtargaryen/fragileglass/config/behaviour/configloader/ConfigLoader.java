@@ -2,7 +2,6 @@ package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.data.*;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -36,7 +35,7 @@ public abstract class ConfigLoader {
         return state.with(iprop, (P) newProperties.get(iprop));
     }
 
-    protected FragilityData createDataFromBehaviour(DataManager.FragileBehaviour behaviour, double minSpeed) {
+    protected FragilityData createDataFromBehaviour(FragilityData.FragileBehaviour behaviour, double minSpeed) {
         switch(behaviour) {
             case BREAK:
                 return new BreakData(minSpeed);

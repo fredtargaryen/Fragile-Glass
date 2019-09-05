@@ -19,8 +19,8 @@ public class FallData extends FragilityData {
     }
 
     @Override
-    public DataManager.FragileBehaviour getBehaviour() {
-        return DataManager.FragileBehaviour.FALL;
+    public FragilityData.FragileBehaviour getBehaviour() {
+        return FragilityData.FragileBehaviour.FALL;
     }
 
     @Override

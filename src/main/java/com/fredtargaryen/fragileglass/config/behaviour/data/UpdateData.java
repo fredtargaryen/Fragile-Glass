@@ -17,8 +17,8 @@ public class UpdateData extends FragilityData {
     }
 
     @Override
-    public DataManager.FragileBehaviour getBehaviour() {
-        return DataManager.FragileBehaviour.UPDATE;
+    public FragilityData.FragileBehaviour getBehaviour() {
+        return FragilityData.FragileBehaviour.UPDATE;
     }
 
     @Override

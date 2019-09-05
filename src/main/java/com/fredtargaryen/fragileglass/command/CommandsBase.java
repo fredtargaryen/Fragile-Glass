@@ -4,6 +4,7 @@ import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -15,8 +16,7 @@ public class CommandsBase {
     private static final String[] MANAGER_SUGGESTIONS = new String[] {
             "blocks",
             "entities",
-            "tileentities",
-            "all"
+            "tileentities"
     };
 
     protected static final SuggestionProvider<CommandSource> MANAGER_SUGGESTER = (context, builder) -> {
@@ -60,7 +60,7 @@ public class CommandsBase {
     }
 
     static LiteralArgumentBuilder baseCommandThen(String literal, RequiredArgumentBuilder restOfCommand) {
-        return  Commands.literal("fg "+literal)
+        return  Commands.literal("fg"+literal)
                 .requires(e -> e.hasPermissionLevel(2))
                 .then(  Commands.argument("manager", StringArgumentType.word())
                         .suggests(MANAGER_SUGGESTER)

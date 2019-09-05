@@ -1,10 +1,11 @@
 package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
-import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.BlockConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import net.minecraft.block.BlockState;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
@@ -45,6 +46,16 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
     @Override
     public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
         this.blockConfigLoader.parseArbitraryString(configLine);
+    }
+
+    @Override
+    public void removeBehaviour(BlockState key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        if(behaviour != null) {
+            ArrayList<FragilityData> list = this.data.get(key);
+            if (list != null) {
+                list.removeIf(fd -> fd.getBehaviour() == behaviour);
+            }
+        }
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

@@ -15,8 +15,8 @@ public class BreakData extends FragilityData {
     }
 
     @Override
-    public DataManager.FragileBehaviour getBehaviour() {
-        return DataManager.FragileBehaviour.BREAK;
+    public FragilityData.FragileBehaviour getBehaviour() {
+        return FragilityData.FragileBehaviour.BREAK;
     }
 
     @Override
