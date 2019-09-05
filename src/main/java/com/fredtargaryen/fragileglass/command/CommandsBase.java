@@ -51,7 +51,7 @@ public class CommandsBase {
 
     public static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
         ModifyCommand.register(dispatcher);
-//        RemoveCommand.register(dispatcher);
+        RemoveCommand.register(dispatcher);
 //        ViewCommand.register(dispatcher);
 //        ReloadCommand.register(dispatcher);
 //        ExportCommand.register(dispatcher);
