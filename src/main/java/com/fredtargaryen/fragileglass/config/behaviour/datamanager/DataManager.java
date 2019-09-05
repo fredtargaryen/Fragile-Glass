@@ -97,6 +97,8 @@ public abstract class DataManager<E, D> {
         this.data.clear();
     }
 
+    public abstract void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException;
+
     public void setupDirsAndFiles() {
         this.configDir = FMLPaths.CONFIGDIR.get().toFile();
         this.configFile = new File(this.configDir, DataReference.MODID + "_"+this.typeString+".cfg");

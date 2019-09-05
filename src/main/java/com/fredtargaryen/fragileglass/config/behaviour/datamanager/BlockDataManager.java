@@ -42,6 +42,11 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
         }
     }
 
+    @Override
+    public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
+        this.blockConfigLoader.parseArbitraryString(configLine);
+    }
+
     //Doesn't look like I can read from assets so sadly all this is needed for now
     private static final String[] defaultFileData = new String[] {
             "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n",

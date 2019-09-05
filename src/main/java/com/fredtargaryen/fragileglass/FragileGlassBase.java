@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
+import com.fredtargaryen.fragileglass.command.CommandsBase;
 import com.fredtargaryen.fragileglass.config.Config;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
@@ -62,6 +63,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ObjectHolder;
@@ -712,6 +714,14 @@ public class FragileGlassBase {
                 }
             }
         });
+    }
+
+    /**
+     * Register the mod's commands.
+     */
+    @SubscribeEvent
+    public void registerCommands(FMLServerStartingEvent event) {
+        CommandsBase.registerCommands(event.getCommandDispatcher());
     }
 
     /**
