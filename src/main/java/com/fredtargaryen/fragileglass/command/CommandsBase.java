@@ -36,7 +36,7 @@ public class CommandsBase {
         ISuggestionProvider.suggest(BEHAVIOUR_SUGGESTIONS, builder);
         return builder.buildFuture();
     };
-    
+
     static DataManager getDataManager(String managerString) {
         switch(managerString) {
             case "blocks":

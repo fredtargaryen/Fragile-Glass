@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.data.BreakerData;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.EntityConfigLoader;
 import com.fredtargaryen.fragileglass.entity.capability.IBreakCapability;
@@ -29,9 +30,14 @@ import javax.annotation.Nullable;
  * Responsible for everything to do with entity break data from fragileglassft_entities.cfg.
  */
 public class EntityDataManager extends DataManager<EntityType, BreakerData> {
+    /**
+     * Processes config lines from files, code or commands
+     */
+    private ConfigLoader entityConfigLoader;
 
     public EntityDataManager() {
         super("entities");
+        this.entityConfigLoader = new EntityConfigLoader(this, this.data);
     }
 
     public void addCapabilityIfPossible(Entity e, AttachCapabilitiesEvent<Entity> evt) {
@@ -115,7 +121,12 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
 
     @Override
     public boolean loadData() {
-        return this.loadDataFromConfigDir(new EntityConfigLoader(this, this.data));
+        return this.loadDataFromConfigDir(this.entityConfigLoader);
+    }
+
+    @Override
+    public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
+        this.entityConfigLoader.parseArbitraryString(configLine);
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

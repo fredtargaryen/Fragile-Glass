@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class BlockDataManager extends DataManager<BlockState, ArrayList<FragilityData>> {
 
     /**
-     * Processes config lines from files or code - maybe commands in the future
+     * Processes config lines from files, code or commands
      */
     private BlockConfigLoader blockConfigLoader;
 

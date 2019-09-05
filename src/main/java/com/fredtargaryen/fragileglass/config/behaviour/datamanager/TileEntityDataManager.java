@@ -30,9 +30,8 @@ import java.util.ArrayList;
 import static com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager.FragileBehaviour.*;
 
 public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList<FragilityData>> {
-
     /**
-     * Processes config lines from files or code - maybe commands in the future
+     * Processes config lines from files, code or commands
      */
     private TileEntityConfigLoader tileEntityConfigLoader;
 
@@ -82,7 +81,12 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
 
     @Override
     public boolean loadData() {
-        return this.loadDataFromConfigDir(new TileEntityConfigLoader(this, this.data));
+        return this.loadDataFromConfigDir(this.tileEntityConfigLoader);
+    }
+
+    @Override
+    public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
+        this.tileEntityConfigLoader.parseArbitraryString(configLine);
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now
