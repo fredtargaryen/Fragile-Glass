@@ -51,7 +51,7 @@ public class CommandsBase {
 
     public static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
         ModifyCommand.register(dispatcher);
-//        RemoveCommand.register(dispatcher);
+        RemoveCommand.register(dispatcher);
 //        ViewCommand.register(dispatcher);
 //        ReloadCommand.register(dispatcher);
 //        ExportCommand.register(dispatcher);
@@ -65,5 +65,10 @@ public class CommandsBase {
                 .then(  Commands.argument("manager", StringArgumentType.word())
                         .suggests(MANAGER_SUGGESTER)
                         .then(restOfCommand));
+    }
+
+    static ArgumentBuilder<CommandSource, ?> behaviourCommand() {
+        return Commands.argument("behaviour", StringArgumentType.word())
+                .suggests(BEHAVIOUR_SUGGESTER);
     }
 }

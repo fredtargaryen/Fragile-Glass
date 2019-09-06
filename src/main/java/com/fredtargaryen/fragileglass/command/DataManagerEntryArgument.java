@@ -15,58 +15,62 @@ import net.minecraft.util.text.StringTextComponent;
 import java.util.Collection;
 import java.util.List;
 
-public class DataManagerEntryArgument implements ArgumentType<DataManagerEntryArgument.DataManagerEntry> {
-    public static DataManagerEntryArgument blockStateSet() { return new DataManagerEntryArgument(); }
-    public static DataManagerEntryArgument entityTypeSet() { return new DataManagerEntryArgument(); }
-    public static DataManagerEntryArgument tileEntityType() { return new DataManagerEntryArgument(); }
+public class DataManagerEntryArgument implements ArgumentType<DataManagerEntry> {
+    public static DataManagerEntryArgument entry() { return new DataManagerEntryArgument(); }
 
     @Override
     public DataManagerEntry parse(StringReader reader) throws CommandSyntaxException {
-        String s = reader.getString();
+        //TODO Currently the first value of a command is always "/fgxxx", the second is always "blocks" or "entities" or
+        //TODO "tileentities". This argument is always the third one if it appears so FOR NOW this is ok. May need a
+        //TODO field later on explaining what position it is on.
+        String[] values = reader.getString().split(" ");
+        String manager = values[1];
+        String entry = values[2];
         DataManagerEntry dme = new DataManagerEntry();
-        try {
+        CommandSyntaxException cse = new SimpleCommandExceptionType(new StringTextComponent("No "+manager+" found matching this string")).create();
+        if(manager.equals("blocks")) {
             //Try to parse as a set of BlockStates
-            List<BlockState> states = KeyParser.getAllBlockStatesForString(s);
-            if(states.isEmpty()) {
-                //Try to parse as a set of EntityTypes
-                Collection<EntityType<?>> entityTypes = KeyParser.getAllEntityTypesForString(s);
-                if(entityTypes.isEmpty()) {
-                    //Try to parse as a TileEntityType
-                    TileEntityType tet = KeyParser.getTileEntityTypeForString(s);
-                    if(tet == null) {
-                        throw new SimpleCommandExceptionType(new StringTextComponent("String does not correctly describe blockstates, entities or tileentities")).create();
-                    }
-                    else {
-                        dme.tileEntityType = tet;
-                    }
+            try {
+                List<BlockState> states = KeyParser.getAllBlockStatesForString(entry);
+                if (states.isEmpty()) {
+                    throw cse;
+                } else {
+                    dme.setBlockStateSet(states);
+                }
+            }
+            catch(Exception e) {
+                throw cse;
+            }
+        }
+        else if(manager.equals("entities")) {
+            //Try to parse as a set of EntityTypes
+            try {
+                Collection<EntityType<?>> entityTypes = KeyParser.getAllEntityTypesForString(entry);
+                if (entityTypes.isEmpty()) {
+                    throw cse;
                 }
                 else {
-                    dme.entityTypeSet = entityTypes;
+                    dme.setEntityTypeSet(entityTypes);
                 }
+            } catch (Exception e) {
+                throw cse;
+            }
+        }
+        else if(manager.equals("tileentities")){
+            //Try to parse as a TileEntityType
+            TileEntityType tet = KeyParser.getTileEntityTypeForString(entry);
+            if(tet == null) {
+                throw cse;
             }
             else {
-                dme.blockStateSet = states;
+                dme.setTileEntityType(tet);
             }
         }
-        catch(Exception e) {
-            throw new SimpleCommandExceptionType(new StringTextComponent("No EntityTypes found for this string.")).create();
-        }
-        return null;
+        while(reader.canRead() && reader.peek() != ' ') reader.skip();
+        return dme;
     }
 
     public static DataManagerEntry getEntry(CommandContext<CommandSource> context, String name) {
         return context.getArgument(name, DataManagerEntry.class);
-    }
-
-    public class DataManagerEntry {
-        private List<BlockState> blockStateSet;
-        private Collection<EntityType<?>> entityTypeSet;
-        private TileEntityType tileEntityType;
-
-        public List<BlockState> getBlockStateSet() { return blockStateSet; }
-
-        public Collection<EntityType<?>> getEntityTypeSet() { return entityTypeSet; }
-
-        public TileEntityType getTileEntityType() { return tileEntityType; }
     }
 }

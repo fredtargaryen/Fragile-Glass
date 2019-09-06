@@ -82,7 +82,10 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
 
     @Override
     public void removeBehaviour(TileEntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
-        if(behaviour != null) {
+        if(behaviour == null) {
+            this.data.remove(key);
+        }
+        else {
             ArrayList<FragilityData> list = this.data.get(key);
             if (list != null) {
                 list.removeIf(fd -> fd.getBehaviour() == behaviour);

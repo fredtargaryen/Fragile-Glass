@@ -31,6 +31,10 @@ public abstract class FragilityData {
 
     public abstract FragileBehaviour getBehaviour();
 
+    public static FragileBehaviour parseBehaviour(String behaviour) {
+        return FragileBehaviour.valueOf(behaviour.toUpperCase());
+    }
+
     public abstract void parseExtraData(@Nullable BlockState oldState, ConfigLoader cl, String... extraData) throws FragilityDataParseException;
 
     public abstract void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq);
