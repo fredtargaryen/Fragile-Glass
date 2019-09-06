@@ -57,7 +57,7 @@ public class TileEntityConfigLoader extends ConfigLoader{
         }
         else {
             //Check the first value is a ResourceLocation in the Forge TileEntityType registry, i.e. refers to a valid tile entity
-            TileEntityType entry = ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(values[0]));
+            TileEntityType entry = KeyParser.getTileEntityTypeForString(values[0]);
             if(entry == null) {
                 throw new ConfigLoadException(values[0] + " has the wrong format; please see the examples.");
             } else {
@@ -69,7 +69,7 @@ public class TileEntityConfigLoader extends ConfigLoader{
 
                     FragilityData newData = this.createDataFromBehaviour(behaviour, minSpeed);
                     newData.parseExtraData(null, this, Arrays.copyOfRange(values, 3, values.length));
-                    this.addNewBehaviour(ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(values[0])), newData);
+                    this.addNewBehaviour(entry, newData);
                 }
                 catch(FragilityData.FragilityDataParseException fdpe) {
                     throw new ConfigLoadException(fdpe.getMessage());
