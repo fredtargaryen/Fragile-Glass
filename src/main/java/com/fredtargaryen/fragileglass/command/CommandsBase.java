@@ -66,4 +66,9 @@ public class CommandsBase {
                         .suggests(MANAGER_SUGGESTER)
                         .then(restOfCommand));
     }
+
+    static ArgumentBuilder<CommandSource, ?> behaviourCommand() {
+        return Commands.argument("behaviour", StringArgumentType.word())
+                .suggests(BEHAVIOUR_SUGGESTER);
+    }
 }

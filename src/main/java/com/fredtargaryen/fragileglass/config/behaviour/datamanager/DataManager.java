@@ -88,6 +88,11 @@ public abstract class DataManager<E, D> {
 
     public abstract void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException;
 
+    /**
+     * Remove a behaviour from a map entry, or if the behaviour is null, remove the whole key
+     * @param key
+     * @param behaviour
+     */
     public abstract void removeBehaviour(E key, @Nullable FragilityData.FragileBehaviour behaviour);
 
     public void setupDirsAndFiles() {

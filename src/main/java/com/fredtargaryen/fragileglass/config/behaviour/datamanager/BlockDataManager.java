@@ -50,7 +50,10 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
 
     @Override
     public void removeBehaviour(BlockState key, @Nullable FragilityData.FragileBehaviour behaviour) {
-        if(behaviour != null) {
+        if(behaviour == null) {
+            this.data.remove(key);
+        }
+        else {
             ArrayList<FragilityData> list = this.data.get(key);
             if (list != null) {
                 list.removeIf(fd -> fd.getBehaviour() == behaviour);
