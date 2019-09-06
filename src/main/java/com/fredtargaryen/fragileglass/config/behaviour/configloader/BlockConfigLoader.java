@@ -47,56 +47,6 @@ public class BlockConfigLoader extends ConfigLoader {
             this.blockStates.put(key, newList);
         }
     }
-
-
-    private List<BlockState> getAllBlockStatesForString(String states) {
-        HashMap<String, String> description = this.getDescriptionFromString(states);
-        List<BlockState> allStates = new ArrayList<>();
-        Collection<Block> blocks;
-        String tag = description.get("tag");
-        if(tag == null) {
-            //Represents a single block
-            //Get all BlockStates with the block named in splitEntryName[0]
-            Block block = this.getBlockFromString(description.get("block"));
-            blocks = new ArrayList<>();
-            if(block == Blocks.AIR) {
-                //The registry potentially doesn't recognise this block
-                String blockString = description.get("block");
-                if(blockString.equals("minecraft:air") || blockString.equals("-")) {
-                    //The user actually wanted an air block
-                    blocks.add(block);
-                }
-                //Else, the block string wasn't found in the registry, so ignore it.
-            }
-            else {
-                //The block was found in the registry
-                blocks.add(block);
-            }
-        }
-        else {
-            //Represents the set of blocks under the given tag
-            blocks = BlockTags.getCollection().getOrCreate(new ResourceLocation(tag)).getAllElements();
-        }
-        String propsString = description.get("properties");
-        for(Block block : blocks) {
-            //Get all valid states of the block
-            Collection<BlockState> filteredStates = block.getStateContainer().getValidStates();
-            if (propsString != null) {
-                //Some properties were specified so change filteredStates
-                //Get the properties specified by the variant text in the config file
-                HashMap<IProperty<?>, ?> specifiedProperties = this.parseStringPropertyMap(
-                        block.getDefaultState(), this.getStringPropertyMapFrom(propsString));
-                for (IProperty<?> iprop : specifiedProperties.keySet()) {
-                    //For each property, filter the states and keep the ones which have the same value for that property
-                    filteredStates = filteredStates.stream()
-                            .filter(state -> state.get(iprop) == specifiedProperties.get(iprop))
-                            .collect(Collectors.toList());
-                }
-            }
-            allStates.addAll(filteredStates);
-        }
-        return allStates;
-    }
     
     @Override
     protected void parseLine() throws ConfigLoadException {
@@ -106,7 +56,7 @@ public class BlockConfigLoader extends ConfigLoader {
             throw new ConfigLoadException("There must be at least 3 values here.");
         }
         else {
-            List<BlockState> states = this.getAllBlockStatesForString(values[0]);
+            List<BlockState> states = KeyParser.getAllBlockStatesForString(values[0]);
             //Validate first value
             if(states.isEmpty()) {
                 throw new ConfigLoadException("No BlockStates were found for the description '" + values[0] + "'.");
