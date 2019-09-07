@@ -1,11 +1,14 @@
 package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
-import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.BlockConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.KeyParser;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import net.minecraft.block.BlockState;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Responsible for everything to do with block fragility data from fragileglassft_blocks.cfg.
@@ -13,7 +16,7 @@ import java.util.ArrayList;
 public class BlockDataManager extends DataManager<BlockState, ArrayList<FragilityData>> {
 
     /**
-     * Processes config lines from files or code - maybe commands in the future
+     * Processes config lines from files, code or commands
      */
     private BlockConfigLoader blockConfigLoader;
 
@@ -40,6 +43,40 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
         catch(ConfigLoader.ConfigLoadException cle) {
             System.out.println("FredTargaryen is an idiot; please let him know you saw this");
         }
+    }
+
+    @Override
+    public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
+        this.blockConfigLoader.parseArbitraryString(configLine);
+    }
+
+    @Override
+    public void removeBehaviour(BlockState key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        if(behaviour == null) {
+            this.data.remove(key);
+        }
+        else {
+            ArrayList<FragilityData> list = this.data.get(key);
+            if (list != null) {
+                list.removeIf(fd -> fd.getBehaviour() == behaviour);
+            }
+        }
+    }
+
+    @Override
+    public String stringifyBehaviour(BlockState key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        StringBuilder sb = new StringBuilder();
+        Iterator<FragilityData> i = this.data.get(key).iterator();
+        while(i.hasNext()) {
+            FragilityData fd = i.next();
+            if(behaviour == null || behaviour == fd.getBehaviour()) {
+                sb.append(KeyParser.cleanBlockStateString(key.toString()));
+                sb.append(" ");
+                sb.append(fd.toString());
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

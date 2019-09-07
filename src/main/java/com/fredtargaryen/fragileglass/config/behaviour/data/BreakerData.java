@@ -11,6 +11,19 @@ public class BreakerData {
         this.extraData = extraData;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Math.sqrt(this.minSpeedSquared));
+        sb.append(" ");
+        sb.append(Math.sqrt(this.maxSpeedSquared));
+        for(String s : this.extraData) {
+            sb.append(" ");
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
     public double getMinSpeedSquared() { return this.minSpeedSquared; }
 
     public double getMaxSpeedSquared() { return this.maxSpeedSquared; }

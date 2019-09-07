@@ -1,5 +1,6 @@
 package com.fredtargaryen.fragileglass.config.behaviour.data;
 
+import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
 import net.minecraft.block.BlockState;
@@ -17,8 +18,8 @@ public class ModData extends FragilityData {
     }
 
     @Override
-    public DataManager.FragileBehaviour getBehaviour() {
-        return DataManager.FragileBehaviour.MOD;
+    public FragilityData.FragileBehaviour getBehaviour() {
+        return FragilityData.FragileBehaviour.MOD;
     }
 
     @Override
@@ -28,6 +29,16 @@ public class ModData extends FragilityData {
 
     @Override
     public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
+        te.getCapability(FragileGlassBase.FRAGILECAP).ifPresent(cap -> cap.onCrash(state, te, crasher, speedSq, extraData));
+    }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString() + " ");
+        for(String s : this.extraData) {
+            sb.append(" ");
+            sb.append(s);
+        }
+        return sb.toString();
     }
 }

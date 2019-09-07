@@ -12,11 +12,28 @@ import javax.annotation.Nullable;
 public abstract class FragilityData {
     protected double breakSpeedSq;
 
+    public enum FragileBehaviour {
+        //Break if above the break speed
+        BREAK,
+        //Update after the update delay if above the break speed
+        UPDATE,
+        //Change to a different BlockState
+        CHANGE,
+        //Change to an FallingBlockEntity of the given BlockState
+        FALL,
+        //Load the data but don't even construct the capability; let another mod deal with it all
+        MOD
+    }
+
     public FragilityData(double breakSpeed) {
         this.breakSpeedSq = breakSpeed * breakSpeed;
     }
 
-    public abstract DataManager.FragileBehaviour getBehaviour();
+    public abstract FragileBehaviour getBehaviour();
+
+    public static FragileBehaviour parseBehaviour(String behaviour) {
+        return FragileBehaviour.valueOf(behaviour.toUpperCase());
+    }
 
     public abstract void parseExtraData(@Nullable BlockState oldState, ConfigLoader cl, String... extraData) throws FragilityDataParseException;
 
@@ -38,5 +55,10 @@ public abstract class FragilityData {
         if(extraData.length != length) {
             throw new FragilityDataParseException("This behaviour must have "+length+" extra parameters after the first 3.");
         }
+    }
+
+    @Override
+    public String toString() {
+        return this.getBehaviour().toString() + " " + Math.sqrt(this.breakSpeedSq);
     }
 }

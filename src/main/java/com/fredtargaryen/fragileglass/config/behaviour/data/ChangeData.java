@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.config.behaviour.data;
 
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.KeyParser;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -17,8 +18,8 @@ public class ChangeData extends FragilityData {
     }
 
     @Override
-    public DataManager.FragileBehaviour getBehaviour() {
-        return DataManager.FragileBehaviour.CHANGE;
+    public FragilityData.FragileBehaviour getBehaviour() {
+        return FragilityData.FragileBehaviour.CHANGE;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class ChangeData extends FragilityData {
         try {
             //Validate newState
             if(oldState == null){
-                this.newBlockState = cl.getSingleBlockStateFromString(extraData[1]);
+                this.newBlockState = cl.getSingleBlockStateFromString(extraData[0]);
             }
             else {
                 this.newBlockState = cl.getNewStateFromOldAndString(oldState, extraData[0]);
@@ -43,5 +44,12 @@ public class ChangeData extends FragilityData {
         if (speedSq > this.breakSpeedSq) {
             crasher.world.setBlockState(pos, this.newBlockState);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString() + " ");
+        sb.append(KeyParser.cleanBlockStateString(this.newBlockState.toString()));
+        return sb.toString();
     }
 }

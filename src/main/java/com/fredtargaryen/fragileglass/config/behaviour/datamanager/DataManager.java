@@ -3,32 +3,23 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import net.minecraftforge.fml.loading.FMLPaths;
 
+import javax.annotation.Nullable;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public abstract class DataManager<E, D> {
-
     protected File configDir;
     protected File configFile;
 
     private String typeString;
 
     protected HashMap<E, D> data;
-
-    public enum FragileBehaviour {
-        //Break if above the break speed
-        BREAK,
-        //Update after the update delay if above the break speed
-        UPDATE,
-        //Change to a different BlockState
-        CHANGE,
-        //Change to an FallingBlockEntity of the given BlockState
-        FALL,
-        //Load the data but don't even construct the capability; let another mod deal with it all
-        MOD
-    }
 
     protected DataManager(String typeString) {
         this.data = new HashMap<>();
@@ -39,7 +30,17 @@ public abstract class DataManager<E, D> {
         this.data.clear();
     }
 
+    public final void export(String filecontents) throws IOException {
+        LocalDateTime now = LocalDateTime.now();
+        FileWriter fw = new FileWriter(new File(this.configDir, DataReference.MODID + "_"+this.typeString+"_"+ now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace(':', '-') +".cfg"));
+        fw.write("@This config data was exported via a Fragile Glass and Thin Ice command on "+now.format(DateTimeFormatter.ISO_LOCAL_DATE)+" at "+now.format(DateTimeFormatter.ISO_LOCAL_TIME) + ".\n\n");
+        fw.write(filecontents);
+        fw.close();
+    }
+
     public final D getData(E key) { return this.data.get(key); }
+
+    public Stream<E> getKeys() { return this.data.keySet().stream(); }
 
     protected abstract String[] getDefaultConfigFileText();
 
@@ -97,6 +98,15 @@ public abstract class DataManager<E, D> {
         this.data.clear();
     }
 
+    public abstract void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException;
+
+    /**
+     * Remove a behaviour from a map entry, or if the behaviour is null, remove the whole key
+     * @param key
+     * @param behaviour
+     */
+    public abstract void removeBehaviour(E key, @Nullable FragilityData.FragileBehaviour behaviour);
+
     public void setupDirsAndFiles() {
         this.configDir = FMLPaths.CONFIGDIR.get().toFile();
         this.configFile = new File(this.configDir, DataReference.MODID + "_"+this.typeString+".cfg");
@@ -115,4 +125,6 @@ public abstract class DataManager<E, D> {
             }
         }
     }
+
+    public abstract String stringifyBehaviour(E key, @Nullable FragilityData.FragileBehaviour behaviour);
 }
