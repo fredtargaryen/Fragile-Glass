@@ -687,6 +687,11 @@ public class FragileGlassBase {
     private static ITextComponent STATUS;
     private static CommandSource cachedCommandSource = null;
 
+    public static ITextComponent setReloadStatus(boolean ok) {
+        STATUS = ok ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
+        return STATUS;
+    }
+
     /**
      * Adds a listener which refreshes DataManager data whenever Tags are reloaded.
      * @param event
@@ -701,7 +706,7 @@ public class FragileGlassBase {
 
             @Override
             protected void apply(Map<ResourceLocation, Tag.Builder<EntityType<?>>> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
-                STATUS = FragileGlassBase.reloadDataManagers() ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
+                setReloadStatus(FragileGlassBase.reloadDataManagers());
                 if(cachedCommandSource != null) {
                     cachedCommandSource.sendFeedback(STATUS, true);
                     cachedCommandSource = null;

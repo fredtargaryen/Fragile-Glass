@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass.command;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.DataManager;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -53,10 +54,18 @@ public class CommandsBase {
         ModifyCommand.register(dispatcher);
         RemoveCommand.register(dispatcher);
         ViewCommand.register(dispatcher);
-//        ReloadCommand.register(dispatcher);
+        ReloadCommand.register(dispatcher);
 //        ExportCommand.register(dispatcher);
 //        FullClearCommand.register(dispatcher);
 //        FullExportCommand.register(dispatcher);
+    }
+
+    static LiteralArgumentBuilder<CommandSource> baseCommand(String literal, Command<CommandSource> command) {
+        return Commands.literal("fg"+literal)
+                .requires(e -> e.hasPermissionLevel(2))
+                .then(  Commands.argument("manager", StringArgumentType.word())
+                        .suggests(MANAGER_SUGGESTER)
+                        .executes(command));
     }
 
     static LiteralArgumentBuilder baseCommandThen(String literal, RequiredArgumentBuilder restOfCommand) {
