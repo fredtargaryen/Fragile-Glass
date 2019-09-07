@@ -1,24 +1,13 @@
 package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
-import com.fredtargaryen.fragileglass.DataReference;
-import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.TileEntityConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
-import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList<FragilityData>> {
     /**
@@ -29,31 +18,6 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     public TileEntityDataManager() {
         super("tileentities");
         this.tileEntityConfigLoader = new TileEntityConfigLoader(this, this.data);
-    }
-
-    public void addCapabilityIfPossible(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
-        ArrayList<FragilityData> fragDataList = this.data.get(te.getType());
-        if (fragDataList != null) {
-            if (!evt.getCapabilities().containsKey(DataReference.FRAGILE_CAP_LOCATION)) {
-                ICapabilityProvider iCapProv = new ICapabilityProvider() {
-                    IFragileCapability inst = new IFragileCapability() {
-                        @Override
-                        public void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq) {
-                            for (FragilityData fragData : fragDataList) {
-                                fragData.onCrash(state, te, te.getPos(), crasher, speedSq);
-                            }
-                        }
-                    };
-
-                    @Nonnull
-                    @Override
-                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                        return cap == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
-                    }
-                };
-                evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
-            }
-        }
     }
 
     @Override
@@ -91,6 +55,22 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
                 list.removeIf(fd -> fd.getBehaviour() == behaviour);
             }
         }
+    }
+
+    @Override
+    public String stringifyBehaviour(TileEntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        StringBuilder sb = new StringBuilder();
+        Iterator<FragilityData> i = this.data.get(key).iterator();
+        while(i.hasNext()) {
+            FragilityData fd = i.next();
+            if(behaviour == null || behaviour == fd.getBehaviour()) {
+                sb.append(key.getRegistryName());
+                sb.append(" ");
+                sb.append(fd.toString());
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

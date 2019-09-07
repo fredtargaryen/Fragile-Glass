@@ -33,6 +33,19 @@ public class KeyParser {
     private static final String TAGS_BLOCK_STATES_REGEX = "#" + BLOCK_STATES_REGEX;
     private static final String OLD_WITHPROPS_REGEX = "\\-\\[" + VARIANTS_REGEX + "\\]";
 
+    /**
+     * Purely to remove the "Block{" and "}" from BlockState#toString().
+     * This format is then usable in config files.
+     * @param blockStateString e.g. "Block{fragileglassft:blackstainedfragileglasspane[facing=north]}"
+     * @return e.g. "fragileglassft:blackstainedfragileglasspane[facing=north]"
+     */
+    public static String cleanBlockStateString(String blockStateString) {
+        String[] parts = blockStateString.substring(6).split("}");
+        if(parts.length == 1) {
+            return parts[0];
+        }
+        return parts[0] + parts[1];
+    }
 
     ///////////////////////////////////
     //METHODS FOR PARSING BLOCKSTATES//

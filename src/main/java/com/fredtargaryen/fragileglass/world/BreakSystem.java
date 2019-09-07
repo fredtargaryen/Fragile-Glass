@@ -172,16 +172,19 @@ public class BreakSystem {
                             ArrayList<FragilityData> fragilityDataList = this.blockDataManager.getData(state);
                             if (fragilityDataList != null) {
                                 for (FragilityData fragilityData : fragilityDataList) {
-                                    if (fragilityData != null) {
-                                        fragilityData.onCrash(state, null, blockPos, e, speedSq);
-                                    }
+                                    fragilityData.onCrash(state, null, blockPos, e, speedSq);
                                 }
                             }
                         }
                         else {
-                            //Has a Tile Entity; check there's anything in the Tile Entity fragility data before continuing
-                            //Tile Entities are dealt with via Capabilities already; no need to obtain fragility data
-                            te.getCapability(FRAGILECAP).ifPresent(ifc -> ifc.onCrash(state, te, e, speedSq));
+                            //Has a Tile Entity; call all FragilityDatas. Mod FragilityDatas call onCrash in
+                            //the TileEntity's capability.
+                            ArrayList<FragilityData> fragilityDataList = this.tileEntityDataManager.getData(te.getType());
+                            if(fragilityDataList != null) {
+                                for(FragilityData fragilityData : fragilityDataList) {
+                                    fragilityData.onCrash(null, te, blockPos, e, speedSq);
+                                }
+                            }
                         }
                     }
                 }

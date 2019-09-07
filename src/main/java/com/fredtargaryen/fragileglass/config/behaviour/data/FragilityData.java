@@ -56,4 +56,9 @@ public abstract class FragilityData {
             throw new FragilityDataParseException("This behaviour must have "+length+" extra parameters after the first 3.");
         }
     }
+
+    @Override
+    public String toString() {
+        return this.getBehaviour().toString() + " " + Math.sqrt(this.breakSpeedSq);
+    }
 }

@@ -3,6 +3,9 @@ package com.fredtargaryen.fragileglass;
 import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.command.CommandsBase;
 import com.fredtargaryen.fragileglass.config.Config;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
@@ -13,10 +16,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.ReloadListener;
@@ -31,7 +31,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -628,6 +627,7 @@ public class FragileGlassBase {
                                 IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
 
                                 @Override
+                                @Nonnull
                                 public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
                                     if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
                                         return LazyOptional.of(() -> (T) inst);
@@ -641,12 +641,6 @@ public class FragileGlassBase {
                 }
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt) {
-        TileEntity te = evt.getObject();
-        tileEntityDataManager.addCapabilityIfPossible(te, evt);
     }
 
     @SubscribeEvent

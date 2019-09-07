@@ -2,11 +2,13 @@ package com.fredtargaryen.fragileglass.config.behaviour.datamanager;
 
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.BlockConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
+import com.fredtargaryen.fragileglass.config.behaviour.configloader.KeyParser;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import net.minecraft.block.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Responsible for everything to do with block fragility data from fragileglassft_blocks.cfg.
@@ -59,6 +61,22 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
                 list.removeIf(fd -> fd.getBehaviour() == behaviour);
             }
         }
+    }
+
+    @Override
+    public String stringifyBehaviour(BlockState key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        StringBuilder sb = new StringBuilder();
+        Iterator<FragilityData> i = this.data.get(key).iterator();
+        while(i.hasNext()) {
+            FragilityData fd = i.next();
+            if(behaviour == null || behaviour == fd.getBehaviour()) {
+                sb.append(KeyParser.cleanBlockStateString(key.toString()));
+                sb.append(" ");
+                sb.append(fd.toString());
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

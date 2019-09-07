@@ -42,8 +42,12 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
     }
 
     public void addCapabilityIfPossible(Entity e, AttachCapabilitiesEvent<Entity> evt) {
+        //A player would reasonably expect many existing entities to be able to break fragile blocks, but it is
+        //very unlikely that anyone would go to the trouble of writing out all the config lines for every entity.
+        //The following code does some type checks and creates BreakerDatas if the entity probably would break a block.
         BreakerData breakerData = this.data.get(e.getType());
         if (breakerData == null) {
+            //A breakerdata for this entitytype has not been created yet
             if (e instanceof LivingEntity
                     || e instanceof ArrowEntity
                     || e instanceof FireballEntity
@@ -52,16 +56,13 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
                     || e instanceof BoatEntity
                     || e instanceof TNTEntity
                     || e instanceof FallingBlockEntity) {
-                evt.addCapability(DataReference.BREAK_LOCATION, new ICapabilityProvider() {
-                    IBreakCapability inst = FragileGlassBase.BREAKCAP.getDefaultInstance();
-
-                    @Override
-                    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-                        return capability == FragileGlassBase.BREAKCAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
-                    }
-                });
+                breakerData = new BreakerData(DataReference.MINIMUM_ENTITY_SPEED_SQUARED, DataReference.MAXIMUM_ENTITY_SPEED_SQUARED, new String[]{});
+                this.data.put(e.getType(), breakerData);
             }
-        } else {
+        }
+        if(breakerData != null){
+            //The entity was predefined (via configs or commands) as being able to break a block,
+            //or a BreakerData was automatically created above.
             ICapabilityProvider iCapProv = new ICapabilityProvider() {
                 IBreakCapability inst = new IBreakCapability() {
                     @Override
@@ -82,6 +83,8 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
 
                     @Override
                     public boolean isAbleToBreak(Entity e, double speedSq) {
+                        BreakerData breakerData = EntityDataManager.this.data.get(e.getType());
+                        if(breakerData == null) return false;
                         return speedSq >= breakerData.getMinSpeedSquared()
                                 && speedSq <= breakerData.getMaxSpeedSquared();
                     }
@@ -133,6 +136,11 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
     @Override
     public void removeBehaviour(EntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
         this.data.remove(key);
+    }
+
+    @Override
+    public String stringifyBehaviour(EntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
+        return key.getRegistryName() + " " + this.data.get(key).toString();
     }
 
     //Doesn't look like I can read from assets so sadly all this is needed for now

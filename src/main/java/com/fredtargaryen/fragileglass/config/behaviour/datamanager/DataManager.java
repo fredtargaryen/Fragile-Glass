@@ -113,4 +113,6 @@ public abstract class DataManager<E, D> {
             }
         }
     }
+
+    public abstract String stringifyBehaviour(E key, @Nullable FragilityData.FragileBehaviour behaviour);
 }
