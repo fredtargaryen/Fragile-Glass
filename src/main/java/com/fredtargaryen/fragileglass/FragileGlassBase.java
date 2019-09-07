@@ -1,7 +1,11 @@
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
+import com.fredtargaryen.fragileglass.command.CommandsBase;
 import com.fredtargaryen.fragileglass.config.Config;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
+import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.entity.capability.*;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import com.fredtargaryen.fragileglass.network.PacketHandler;
@@ -12,10 +16,7 @@ import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
-import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -31,7 +32,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -63,6 +63,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ObjectHolder;
@@ -627,6 +628,7 @@ public class FragileGlassBase {
                                 IPlayerBreakCapability inst = PLAYERBREAKCAP.getDefaultInstance();
 
                                 @Override
+                                @Nonnull
                                 public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
                                     if (capability == PLAYERBREAKCAP || capability == BREAKCAP) {
                                         return LazyOptional.of(() -> (T) inst);
@@ -640,12 +642,6 @@ public class FragileGlassBase {
                 }
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onTileConstructed(AttachCapabilitiesEvent<TileEntity> evt) {
-        TileEntity te = evt.getObject();
-        tileEntityDataManager.addCapabilityIfPossible(te, evt);
     }
 
     @SubscribeEvent
@@ -692,6 +688,11 @@ public class FragileGlassBase {
     private static ITextComponent STATUS;
     private static CommandSource cachedCommandSource = null;
 
+    public static ITextComponent setReloadStatus(boolean ok) {
+        STATUS = ok ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
+        return STATUS;
+    }
+
     /**
      * Adds a listener which refreshes DataManager data whenever Tags are reloaded.
      * @param event
@@ -706,13 +707,21 @@ public class FragileGlassBase {
 
             @Override
             protected void apply(Map<ResourceLocation, Tag.Builder<EntityType<?>>> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
-                STATUS = FragileGlassBase.reloadDataManagers() ? SUCCESS_MESSAGE : FAILURE_MESSAGE;
+                setReloadStatus(FragileGlassBase.reloadDataManagers());
                 if(cachedCommandSource != null) {
                     cachedCommandSource.sendFeedback(STATUS, true);
                     cachedCommandSource = null;
                 }
             }
         });
+    }
+
+    /**
+     * Register the mod's commands.
+     */
+    @SubscribeEvent
+    public void registerCommands(FMLServerStartingEvent event) {
+        CommandsBase.registerCommands(event.getCommandDispatcher());
     }
 
     /**

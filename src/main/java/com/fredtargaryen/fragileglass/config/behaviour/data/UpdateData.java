@@ -17,8 +17,8 @@ public class UpdateData extends FragilityData {
     }
 
     @Override
-    public DataManager.FragileBehaviour getBehaviour() {
-        return DataManager.FragileBehaviour.UPDATE;
+    public FragilityData.FragileBehaviour getBehaviour() {
+        return FragilityData.FragileBehaviour.UPDATE;
     }
 
     @Override
@@ -33,5 +33,12 @@ public class UpdateData extends FragilityData {
         if (speedSq > this.breakSpeedSq) {
             crasher.world.getPendingBlockTicks().scheduleTick(pos, crasher.world.getBlockState(pos).getBlock(), this.updateDelay);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString() + " ");
+        sb.append(this.updateDelay);
+        return sb.toString();
     }
 }
