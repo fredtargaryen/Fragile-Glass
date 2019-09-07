@@ -15,14 +15,18 @@ public abstract class FragilityData {
     public enum FragileBehaviour {
         //Break if above the break speed
         BREAK,
-        //Update after the update delay if above the break speed
-        UPDATE,
         //Change to a different BlockState
         CHANGE,
+        //Execute a server command
+        COMMAND,
+        //Deal damage to the crashing entity
+        DAMAGE,
         //Change to an FallingBlockEntity of the given BlockState
         FALL,
-        //Load the data but don't even construct the capability; let another mod deal with it all
-        MOD
+        //Behaviour depends on implementation of IFragileCapability
+        MOD,
+        //Update after the update delay if above the break speed
+        UPDATE,
     }
 
     public FragilityData(double breakSpeed) {

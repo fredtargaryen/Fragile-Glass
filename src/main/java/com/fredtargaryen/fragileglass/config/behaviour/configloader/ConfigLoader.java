@@ -33,12 +33,19 @@ public abstract class ConfigLoader {
                 return new BreakData(minSpeed);
             case CHANGE:
                 return new ChangeData(minSpeed);
-            case UPDATE:
-                return new UpdateData(minSpeed);
+            case COMMAND:
+                return new CommandData(minSpeed);
+            case DAMAGE:
+                return new DamageData(minSpeed);
             case FALL:
                 return new FallData(minSpeed);
-            default: //MOD
+            case MOD:
                 return new ModData(minSpeed);
+            case UPDATE:
+                return new UpdateData(minSpeed);
+            default:
+                //Something has gone wrong
+                return new BreakData(minSpeed);
         }
     }
 

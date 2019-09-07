@@ -2,15 +2,12 @@ package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.IProperty;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class BlockConfigLoader extends ConfigLoader {
 
@@ -24,22 +21,27 @@ public class BlockConfigLoader extends ConfigLoader {
     }
 
     /**
-     * When a behaviour has been validated and confirmed usable, this method is called to conditionally add it to the
-     * fragility data map.
+     * When a behaviour has been validated and confirmed usable, this method is called to add it to the fragility data map.
      * The maps map to ArrayLists of crash behaviours, which are executed in the order specified in the config file.
      * No two crash behaviours in a list can be the same, i.e. you cannot have two breakages, but you can have a break
      * followed by a block change (an example being ice breaking and being immediately replaced with water).
+     * A Data which has a behaviour that already exists in the list will overwrite the previous one.
      * @param key The ResourceLocation or block state the fragilitydatas should apply to.
      * @param fragilityData The new crash behaviour to add.
      */
     private void addNewBehaviour(BlockState key, FragilityData fragilityData) {
         if(this.blockStates.containsKey(key)) {
             ArrayList<FragilityData> dataList = this.blockStates.get(key);
-            boolean allowNewBehaviour = true;
+            boolean appendBehaviour = true;
+            int existingIndex = -1;
             for(FragilityData fdata : dataList) {
-                if(fdata.getBehaviour() == fragilityData.getBehaviour()) allowNewBehaviour = false;
+                if(fdata.getBehaviour() == fragilityData.getBehaviour()) {
+                    appendBehaviour = false;
+                    existingIndex = dataList.indexOf(fdata);
+                }
             }
-            if(allowNewBehaviour) dataList.add(fragilityData);
+            if(appendBehaviour) { dataList.add(fragilityData); }
+            else { dataList.set(existingIndex, fragilityData); }
         }
         else {
             ArrayList<FragilityData> newList = new ArrayList<>();
@@ -67,8 +69,7 @@ public class BlockConfigLoader extends ConfigLoader {
                     //Validate minSpeed and silently clamp to >= 0
                     double minSpeed = Math.max(Double.parseDouble(values[2]), 0.0);
 
-                    //For all the states this line describes, work out the new state to transform to then add the
-                    //behaviour.
+                    //For all the states this line describes, compute and add the behaviour.
                     for(BlockState state: states) {
                         FragilityData newData = this.createDataFromBehaviour(behaviour, minSpeed);
                         newData.parseExtraData(state, this, Arrays.copyOfRange(values, 3, values.length));
