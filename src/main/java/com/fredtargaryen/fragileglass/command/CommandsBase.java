@@ -56,7 +56,7 @@ public class CommandsBase {
         ViewCommand.register(dispatcher);
         ReloadCommand.register(dispatcher);
         ExportCommand.register(dispatcher);
-//        FullClearCommand.register(dispatcher);
+        RemoveAllCommand.register(dispatcher);
 //        FullExportCommand.register(dispatcher);
     }
 
