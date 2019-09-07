@@ -55,7 +55,7 @@ public class CommandsBase {
         RemoveCommand.register(dispatcher);
         ViewCommand.register(dispatcher);
         ReloadCommand.register(dispatcher);
-//        ExportCommand.register(dispatcher);
+        ExportCommand.register(dispatcher);
 //        FullClearCommand.register(dispatcher);
 //        FullExportCommand.register(dispatcher);
     }
@@ -68,7 +68,7 @@ public class CommandsBase {
                         .executes(command));
     }
 
-    static LiteralArgumentBuilder baseCommandThen(String literal, RequiredArgumentBuilder restOfCommand) {
+    static LiteralArgumentBuilder<CommandSource> baseCommandThen(String literal, RequiredArgumentBuilder<CommandSource, ?> restOfCommand) {
         return  Commands.literal("fg"+literal)
                 .requires(e -> e.hasPermissionLevel(2))
                 .then(  Commands.argument("manager", StringArgumentType.word())
