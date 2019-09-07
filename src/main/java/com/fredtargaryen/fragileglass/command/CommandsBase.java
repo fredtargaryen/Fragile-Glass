@@ -57,7 +57,7 @@ public class CommandsBase {
         ReloadCommand.register(dispatcher);
         ExportCommand.register(dispatcher);
         RemoveAllCommand.register(dispatcher);
-//        FullExportCommand.register(dispatcher);
+        ExportAllCommand.register(dispatcher);
     }
 
     static LiteralArgumentBuilder<CommandSource> baseCommand(String literal, Command<CommandSource> command) {

@@ -11,6 +11,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public abstract class DataManager<E, D> {
     protected File configDir;
@@ -32,12 +33,14 @@ public abstract class DataManager<E, D> {
     public final void export(String filecontents) throws IOException {
         LocalDateTime now = LocalDateTime.now();
         FileWriter fw = new FileWriter(new File(this.configDir, DataReference.MODID + "_"+this.typeString+"_"+ now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace(':', '-') +".cfg"));
-        fw.write("@This config data was exported via the /fgexport command on "+now.format(DateTimeFormatter.ISO_LOCAL_DATE)+" at "+now.format(DateTimeFormatter.ISO_LOCAL_TIME) + ".\n\n");
+        fw.write("@This config data was exported via a Fragile Glass and Thin Ice command on "+now.format(DateTimeFormatter.ISO_LOCAL_DATE)+" at "+now.format(DateTimeFormatter.ISO_LOCAL_TIME) + ".\n\n");
         fw.write(filecontents);
         fw.close();
     }
 
     public final D getData(E key) { return this.data.get(key); }
+
+    public Stream<E> getKeys() { return this.data.keySet().stream(); }
 
     protected abstract String[] getDefaultConfigFileText();
 
