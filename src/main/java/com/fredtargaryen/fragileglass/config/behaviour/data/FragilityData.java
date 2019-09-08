@@ -21,6 +21,8 @@ public abstract class FragilityData {
         COMMAND,
         //Deal damage to the crashing entity
         DAMAGE,
+        //Create an explosion at the block's position
+        EXPLODE,
         //Change to an FallingBlockEntity of the given BlockState
         FALL,
         //Behaviour depends on implementation of IFragileCapability

@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 public class DamageData extends FragilityData {
     private DamageSource damageSource;
     private float damageAmount;
+    private boolean speedScale;
 
     public DamageData(double breakSpeed) {
         super(breakSpeed);
@@ -24,21 +25,35 @@ public class DamageData extends FragilityData {
 
     @Override
     public void parseExtraData(@Nullable BlockState state, ConfigLoader cl, String... extraData) throws FragilityData.FragilityDataParseException {
-        this.lengthCheck(extraData, 2);
+        this.lengthCheck(extraData, 3);
         this.damageSource = this.parseDamageSource(extraData[0]);
-        //Validate updateDelay and silently clamp to >= 0
-        this.damageAmount = Float.parseFloat(extraData[1]);
+        try {
+            this.damageAmount = Float.parseFloat(extraData[1]);
+        }
+        catch(NumberFormatException nfe) {
+            throw new FragilityDataParseException("Damage amount ("+extraData[1]+") must be a number.");
+        }
+        try {
+            this.speedScale = Boolean.parseBoolean(extraData[2]);
+        }
+        catch(Exception e) {
+            throw new FragilityDataParseException("Speed scale ("+extraData[2]+") must be true if you want damage to scale with speed, or false otherwise.");
+        }
     }
 
     @Override
     public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
-        crasher.attackEntityFrom(this.damageSource, this.damageAmount);
+        crasher.attackEntityFrom(this.damageSource, this.speedScale ? (float) (this.damageAmount * Math.sqrt(speedSq)) : this.damageAmount);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString() + " ");
+        sb.append(this.damageSource.damageType.toLowerCase());
+        sb.append(" ");
         sb.append(this.damageAmount);
+        sb.append(" ");
+        sb.append(this.speedScale);
         return sb.toString();
     }
 

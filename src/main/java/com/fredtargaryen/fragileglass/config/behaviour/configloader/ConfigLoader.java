@@ -37,6 +37,8 @@ public abstract class ConfigLoader {
                 return new CommandData(minSpeed);
             case DAMAGE:
                 return new DamageData(minSpeed);
+            case EXPLODE:
+                return new ExplodeData(minSpeed);
             case FALL:
                 return new FallData(minSpeed);
             case MOD:
