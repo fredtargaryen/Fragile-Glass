@@ -20,6 +20,7 @@ import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
@@ -590,27 +591,30 @@ public class FragileGlassBase {
         final Entity e = evt.getObject();
         if (e.world != null) {
             if (e.world.isRemote) {
-                if (e == Minecraft.getInstance().player) {
+                if (e instanceof ClientPlayerEntity) {
                     MinecraftForge.EVENT_BUS.register(new Object() {
                         private PlayerEntity ep = (PlayerEntity) e;
                         private double lastSpeedSq;
+                        private final Minecraft game = Minecraft.getInstance();
 
                         @SubscribeEvent(priority = EventPriority.HIGHEST)
                         public void speedUpdate(TickEvent.ClientTickEvent event) {
-                            if (event.phase == TickEvent.Phase.START) {
-                                Vec3d motion = ep.getMotion();
-                                double speedSq = Math.max(motion.x * motion.x + motion.y * motion.y + motion.z * motion.z, 0.0);
-                                if (Math.abs(speedSq - this.lastSpeedSq) > 0.001) {
-                                    MessageBreakerMovement mbm = new MessageBreakerMovement();
-                                    mbm.motionx = motion.x;
-                                    mbm.motiony = motion.y;
-                                    mbm.motionz = motion.z;
-                                    mbm.speedSq = speedSq;
-                                    PacketHandler.INSTANCE.sendToServer(mbm);
-                                    this.lastSpeedSq = speedSq;
-                                }
-                                if (ep.removed) {
-                                    MinecraftForge.EVENT_BUS.unregister(this);
+                            if(ep == game.player) {
+                                if (event.phase == TickEvent.Phase.START) {
+                                    Vec3d motion = ep.getMotion();
+                                    double speedSq = Math.max(motion.x * motion.x + motion.y * motion.y + motion.z * motion.z, 0.0);
+                                    if (Math.abs(speedSq - this.lastSpeedSq) > 0.001) {
+                                        MessageBreakerMovement mbm = new MessageBreakerMovement();
+                                        mbm.motionx = motion.x;
+                                        mbm.motiony = motion.y;
+                                        mbm.motionz = motion.z;
+                                        mbm.speedSq = speedSq;
+                                        PacketHandler.INSTANCE.sendToServer(mbm);
+                                        this.lastSpeedSq = speedSq;
+                                    }
+                                    if (ep.removed) {
+                                        MinecraftForge.EVENT_BUS.unregister(this);
+                                    }
                                 }
                             }
                         }
