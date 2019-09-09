@@ -10,7 +10,7 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/fragile-glass-and-thin-
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="banner.png"
 # A text field displayed in the mod UI
-credits="Thanks to Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12; McJty"
+credits="Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12; McJty - general help. incrediblestrandofhair - behaviour suggestions."
 # A text field displayed in the mod UI
 authors="FredTargaryen"
 # A list of mods - how many allowed here is determined by the individual mod loader
@@ -18,7 +18,7 @@ authors="FredTargaryen"
 # The modid of the mod
 modId="fragileglassft"
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="2.4"
+version="2.5"
  # A display name for the mod
 displayName="Fragile Glass and Thin Ice"
 # A URL to query for updates for this mod. See the JSON update specification <here>

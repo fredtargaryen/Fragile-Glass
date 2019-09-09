@@ -16,21 +16,23 @@ import net.minecraft.tileentity.TileEntity;
  *
  * @SubscribeEvent
  * public void addModCrashBehaviour(TileEntity te, AttachCapabilitiesEvent<TileEntity> evt) {
- *     ICapabilityProvider iCapProv = new ICapabilityProvider() {
- *         IFragileCapability inst = new IFragileCapability() {
+ *     if(evt.getObject().getType() == [the type of the TileEntity needed]) {
+ *         ICapabilityProvider iCapProv = new ICapabilityProvider() {
+ *             IFragileCapability inst = new IFragileCapability() {
+ *                 @Override
+ *                 public void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq, String[] extraData) {
+ *                     //Do whatever in here
+ *                 }
+ *             };
+ *
+ *             @Nonnull
  *             @Override
- *             public void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq) {
- *                 //Do whatever in here
+ *             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+ *                 return cap == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
  *             }
  *         };
- *
- *         @Nonnull
- *         @Override
- *         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
- *             return cap == FragileGlassBase.FRAGILECAP ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
- *         }
- *     };
- *     evt.addCapability(DataReference.FRAGILE_CAP_LOCATION, iCapProv);
+ *         evt.addCapability(new ResourceLocation("fragileglassft:ifragilecapability"), iCapProv);
+ *     }
  * }
  *
  * Please note that there are no ways to stipulate the format of the extra data. However, the modder can provide users a

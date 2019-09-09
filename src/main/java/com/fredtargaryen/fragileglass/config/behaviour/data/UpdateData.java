@@ -25,7 +25,12 @@ public class UpdateData extends FragilityData {
     public void parseExtraData(@Nullable BlockState state, ConfigLoader cl, String... extraData) throws FragilityDataParseException {
         this.lengthCheck(extraData, 1);
         //Validate updateDelay and silently clamp to >= 0
-        this.updateDelay = Math.max(Integer.parseInt(extraData[0]), 0);
+        try {
+            this.updateDelay = Math.max(Integer.parseInt(extraData[0]), 0);
+        }
+        catch(NumberFormatException nfe) {
+            throw new FragilityDataParseException("Update delay (" + extraData[0] + ") must be a number.");
+        }
     }
 
     @Override
