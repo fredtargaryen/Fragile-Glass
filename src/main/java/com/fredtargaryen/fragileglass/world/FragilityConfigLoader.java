@@ -163,7 +163,14 @@ public class FragilityConfigLoader {
                         throw new FragilityConfigLoadException(filename, "There must be at least 5 values here.", line, lineNumber);
                     } else {
                         //Validate first value
-                        if (!this.validateEntryName(values[0])) {
+                        boolean isTe = false;
+                        String configKey = values[0];
+                        if(configKey.charAt(0) == 'T') {
+                            //Assume the user is specifying a tile entity
+                            isTe = true;
+                            configKey = values[0].substring(1);
+                        }
+                        if (!this.validateEntryName(configKey)) {
                             throw new FragilityConfigLoadException(filename, values[0] + " has the wrong format; please see the examples.", line, lineNumber);
                         } else {
                             try {
@@ -181,22 +188,26 @@ public class FragilityConfigLoader {
                                     }
                                 }
                                 //Determine which registry to add the data to
-                                if (this.manager.isResourceLocationValidBlock(values[0].split("\\[")[0])) {
-                                    //It's a block or blockstate
-                                    this.addBlockStates(values[0], behaviour, minSpeed, updateDelay, values[4],
-                                            Arrays.copyOfRange(values, 5, values.length));
-                                } else {
-                                    //It may or may not be a tile entity, but cannot validate this at this point
-                                    this.tileEntities.put(values[0], new FragilityData(
+                                if(isTe) {
+                                    //Add to the TileEntity registry
+                                    //It may or may not be valid, but cannot validate this at this point
+                                    this.tileEntities.put(configKey, new FragilityData(
                                             behaviour, minSpeed, updateDelay, newState,
                                             Arrays.copyOfRange(values, 5, values.length)));
+                                }
+                                else {
+                                    if (this.manager.isResourceLocationValidBlock(configKey.split("\\[")[0])) {
+                                        //It's a block or blockstate
+                                        this.addBlockStates(configKey, behaviour, minSpeed, updateDelay, values[4],
+                                                Arrays.copyOfRange(values, 5, values.length));
+                                    }
                                 }
                             } catch (NumberFormatException nfe) {
                                 //Thrown when the third value can't be parsed as a Double
                                 throw new FragilityConfigLoadException(filename, values[2] + " can't be read as a decimal number.", line, lineNumber);
                             } catch (IllegalArgumentException iae) {
                                 //Thrown when the second value is not one of the supported ones
-                                throw new FragilityConfigLoadException(filename, values[1] + " should be 'break', 'update', 'change', 'fall' or 'mod'.", line, lineNumber);
+                                throw new FragilityConfigLoadException(filename, values[1] + " should be BREAK, UPDATE, CHANGE, FALL or MOD.", line, lineNumber);
                             }
                         }
                     }

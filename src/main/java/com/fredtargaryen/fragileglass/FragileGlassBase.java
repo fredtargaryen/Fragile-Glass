@@ -44,6 +44,7 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -90,6 +91,11 @@ public class FragileGlassBase {
     private static PatchGen patchGenStone;
 
     public static BreakSystem breakSystem;
+
+    /**
+     * For compatibility with the Repose mod.
+     */
+    public static boolean reposeInstalled;
 
     //Declare all blocks here
     @ObjectHolder("fragileglass")
@@ -250,6 +256,7 @@ public class FragileGlassBase {
     public void postInit(FMLPostInitializationEvent event) {
         iceBlocks = new ArrayList<>();
         iceBlocks.addAll(OreDictionary.getOres("blockIce").stream().map(ItemStack::getItem).collect(Collectors.toList()));
+        reposeInstalled = Loader.isModLoaded("repose");
     }
 
     /**
@@ -454,7 +461,7 @@ public class FragileGlassBase {
     /**
      * Only load stuff on world start, so that if there's an invalid config line, players can be told via chat
      */
-    @SubscribeEvent
+    @Mod.EventHandler
     public void onWorldStart(FMLServerAboutToStartEvent event) {
         breakerDataManager.clearData();
         breakerDataManager.loadEntityData();

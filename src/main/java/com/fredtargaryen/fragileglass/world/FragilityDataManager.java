@@ -154,6 +154,9 @@ public class FragilityDataManager {
                                         if (BlockFalling.canFallThrough(w.getBlockState(pos.down()))) {
                                             EntityFallingBlock fallingBlock = new EntityFallingBlock(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state);
                                             fallingBlock.tileEntityData = te.writeToNBT(new NBTTagCompound());
+                                            if(FragileGlassBase.reposeInstalled) {
+                                                crasher.world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+                                            }
                                             w.spawnEntity(fallingBlock);
                                         }
                                     }
@@ -309,6 +312,7 @@ public class FragilityDataManager {
             "#* 'modid:ID' is the ResourceLocation string used to register with Forge.\n",
             "#  - 'modid' can be found by looking in the 'modid' entry of the mod's mcmod.info file.\n",
             "#    For vanilla Minecraft this is just 'minecraft'.\n",
+            "#  - If applying the behaviour to a tile entity, prefix the modid with a capital T.\n",
             "#  - For blocks WITH tile entities, 'ID' is the name used to register the Tile Entity with Forge.\n",
             "#    You can find these by searching for 'GameRegistry.registerTileEntity' in the mod's source code...\n",
             "#    or by asking the developer. These are easy to guess in vanilla Minecraft.\n",
@@ -365,13 +369,13 @@ public class FragilityDataManager {
             "#minecraft:lava CHANGE 0.0 0 minecraft:slime\n",
             "#\n#--Default values, in case you break something--\n",
             "#All fragile glass blocks:\n",
-            "#fragileglassft:tefg BREAK 0.165 0 -\n",
+            "#Tfragileglassft:tefg BREAK 0.165 0 -\n",
             "#Thin ice:\n",
             "#fragileglassft:thinice BREAK 0.0 0 -\n",
             "#Weak stone:\n",
-            "#fragileglassft:tews UPDATE 0.0 10 -\n\n",
-            "fragileglassft:tefg BREAK 0.165 0 -\n",
+            "#Tfragileglassft:tews UPDATE 0.0 10 -\n\n",
+            "Tfragileglassft:tefg BREAK 0.165 0 -\n",
             "fragileglassft:thinice BREAK 0.0 0 -\n",
-            "fragileglassft:tews UPDATE 0.0 10 -\n"
+            "Tfragileglassft:tews UPDATE 0.0 10 -\n"
     };
 }

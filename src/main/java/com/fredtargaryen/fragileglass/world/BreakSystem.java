@@ -8,6 +8,7 @@ import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -195,6 +196,9 @@ public class BreakSystem {
                                                         blockPos.getX() + 0.5D,
                                                         blockPos.getY(),
                                                         blockPos.getZ() + 0.5D, e.world.getBlockState(blockPos));
+                                                if(FragileGlassBase.reposeInstalled) {
+                                                    e.world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 3);
+                                                }
                                                 e.world.spawnEntity(efb);
                                             }
                                             break;
