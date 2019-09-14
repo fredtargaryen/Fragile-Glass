@@ -83,8 +83,8 @@
       "to": [ 16, 1, 16],
       "faces":
       {
-        "east": { "uv": [ 0, 4, 16, 4 ], "texture": "#leg" },
-        "west": { "uv": [ 0, 4, 16, 4 ], "texture": "#leg" }
+        "east": { "uv": [ 0, 4, 16, 5 ], "texture": "#leg" },
+        "west": { "uv": [ 0, 4, 16, 5 ], "texture": "#leg" }
       }
     },
     {
