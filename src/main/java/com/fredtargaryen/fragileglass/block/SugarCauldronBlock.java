@@ -155,17 +155,11 @@ public class SugarCauldronBlock extends Block {
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random r) {
         int m = state.get(AGE_0_7);
-        if(m > 2 && m < 6) {
-            boolean shouldBubble = true;
-            if(m == 3) {
-                shouldBubble = r.nextInt(2) == 0;
-            }
-            else if(m == 4) {
-                shouldBubble = r.nextBoolean();
-            }
-            if(shouldBubble) {
-                world.addParticle(ParticleTypes.BUBBLE_COLUMN_UP, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 0.5, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.005, 0.0);
-            }
+        if(m == 3) {
+            if(r.nextInt(3) == 0) world.addParticle(FragileGlassBase.BUBBLE, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 0.1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.01, 0.0);
+        }
+        else if(m == 4) {
+            if(r.nextBoolean()) world.addParticle(FragileGlassBase.BUBBLE, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 0.1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.016, 0.0);
         }
     }
 
@@ -190,28 +184,6 @@ public class SugarCauldronBlock extends Block {
         w.addParticle(ParticleTypes.SPLASH, x + 0.75, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
         w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.25, 0.0, 0.0, 0.0);
         w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.75, 0.0, 0.0, 0.0);
-    }
-
-    /*
-     * Makes particles not spawn if out of render range - thanks to LapisSea
-     * For use instead of addEffect
-     */
-    @OnlyIn(Dist.CLIENT)
-    private void spawnParticle(Particle particleFX) {
-        // TODO Minecraft mc = Minecraft.getInstance();
-        // TODO Entity renderViewEntity = mc.getRenderViewEntity();
-        // TODO if (renderViewEntity != null && mc.particles != null) {
-        // TODO     int i = mc.gameSettings.particleSetting;
-        // TODO     AxisAlignedBB aabb = particleFX.getBoundingBox();
-        // TODO     double d6 = renderViewEntity.posX - aabb.minX;
-        // TODO     double d7 = renderViewEntity.posY - aabb.minY;
-        // TODO     double d8 = renderViewEntity.posZ - aabb.minZ;
-        // TODO     double d9 = Math.sqrt(mc.gameSettings.renderDistanceChunks) * 45;
-        // TODO     if (i <= 1) {
-        // TODO         if (d6 * d6 + d7 * d7 + d8 * d8 <= d9 * d9)
-        // TODO             mc.particles.addEffect(particleFX);
-        // TODO     }
-        // TODO }
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -1,7 +1,7 @@
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
-import com.fredtargaryen.fragileglass.command.CommandsBase;
+import com.fredtargaryen.fragileglass.client.particle.MyBubbleParticle;
 import com.fredtargaryen.fragileglass.config.Config;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
@@ -30,6 +30,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
@@ -41,6 +43,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -251,6 +254,10 @@ public class FragileGlassBase {
     @ObjectHolder("weakstone")
     public static Item ITEM_WEAK_STONE;
 
+    //Declare ParticleTypes here
+    @ObjectHolder("bubble")
+    public static BasicParticleType BUBBLE;
+
     //Declare TileEntityTypes here
     @ObjectHolder("tews")
     public static TileEntityType TEWS_TYPE;
@@ -442,6 +449,16 @@ public class FragileGlassBase {
                 new BlockItem(BLACK_STAINED_FRAGILE_GLASS_PANE, new Item.Properties().group(ItemGroup.DECORATIONS))
                         .setRegistryName("blackstainedfragileglasspane")
         );
+    }
+
+    @SubscribeEvent
+    public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
+        event.getRegistry().register(new BasicParticleType(false).setRegistryName("bubble"));
+    }
+
+    @SubscribeEvent
+    public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+        Minecraft.getInstance().particles.registerFactory(BUBBLE, MyBubbleParticle.Factory::new);
     }
 
     @SubscribeEvent

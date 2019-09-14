@@ -1,17 +1,29 @@
 package com.fredtargaryen.fragileglass.client.particle;
 
+import com.fredtargaryen.fragileglass.FragileGlassBase;
+import jdk.nashorn.internal.ir.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.*;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 //Normal bubbles will only work in water >:(
 public class MyBubbleParticle extends SpriteTexturedParticle {
-    private MyBubbleParticle(World p_i1198_1_, double p_i1198_2_, double p_i1198_4_, double p_i1198_6_) {
-        super(p_i1198_1_, p_i1198_2_, p_i1198_4_, p_i1198_6_, 0.0D, 0.0D, 0.0D);
+    private BlockPos cauldronPos;
+
+    private MyBubbleParticle(World w, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, IAnimatedSprite spriteSet) {
+        super(w, x, y, z, 0.0D, 0.0D, 0.0D);
         this.motionX = 0.0D;
+        this.motionY = ySpeed;
         this.motionZ = 0.0D;
+        this.maxAge = 50;
+        this.setSprite(spriteSet.get(0, 50));
+        this.cauldronPos = new BlockPos(this.posX, this.posY, this.posZ);
     }
     /**
      * Called to update the entity's position/logic.
@@ -21,9 +33,11 @@ public class MyBubbleParticle extends SpriteTexturedParticle {
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
         this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionY *= 0.8500000238418579D;
-
-        if (this.maxAge-- <= 0)
+        //Calculate whether to expire
+        BlockState state = this.world.getBlockState(this.cauldronPos);
+        if (this.maxAge-- <= 0 ||
+                state.getBlock() != FragileGlassBase.SUGAR_CAULDRON ||
+                state.get(BlockStateProperties.AGE_0_7) == 6)
         {
             this.setExpired();
         }
@@ -36,17 +50,14 @@ public class MyBubbleParticle extends SpriteTexturedParticle {
 
     @OnlyIn(Dist.CLIENT)
     public static class Factory implements IParticleFactory<BasicParticleType> {
-        private final IAnimatedSprite field_217510_a;
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite p_i50227_1_) {
-            this.field_217510_a = p_i50227_1_;
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-//            MyBubbleParticle bubbleparticle = new MyBubbleParticle(worldIn, x, y, z);
-//            bubbleparticle.func_217568_a(this.field_217510_a);
-//            return bubbleparticle;
-            return new BubbleParticle.Factory(this.field_217510_a).makeParticle(typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
+        public Particle makeParticle(BasicParticleType type, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            return new MyBubbleParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }
 }
