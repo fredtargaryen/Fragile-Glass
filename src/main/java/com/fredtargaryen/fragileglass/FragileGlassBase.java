@@ -255,7 +255,7 @@ public class FragileGlassBase {
 
     //Declare ParticleTypes here
     @ObjectHolder("bubble")
-    public static ParticleType BUBBLE;
+    public static BasicParticleType BUBBLE;
 
     //Declare TileEntityTypes here
     @ObjectHolder("tews")
@@ -451,13 +451,13 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public void onRegisterParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particles.registerFactory(BUBBLE, MyBubbleParticle.Factory::new);
+    public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
+        event.getRegistry().register(new BasicParticleType(false).setRegistryName("bubble"));
     }
 
     @SubscribeEvent
-    public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
-        event.getRegistry().register(new BasicParticleType(false).setRegistryName("bubble"));//May need to be true
+    public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+        Minecraft.getInstance().particles.registerFactory(BUBBLE, MyBubbleParticle.Factory::new);
     }
 
     @SubscribeEvent
