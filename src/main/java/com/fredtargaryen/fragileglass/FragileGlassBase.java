@@ -2,6 +2,7 @@ package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.client.particle.MyBubbleParticle;
+import com.fredtargaryen.fragileglass.command.CommandsBase;
 import com.fredtargaryen.fragileglass.config.Config;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
