@@ -155,17 +155,11 @@ public class SugarCauldronBlock extends Block {
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random r) {
         int m = state.get(AGE_0_7);
-        if(m > 2 && m < 6) {
-            boolean shouldBubble = true;
-            if(m == 3) {
-                shouldBubble = r.nextInt(2) == 0;
-            }
-            else if(m == 4) {
-                shouldBubble = r.nextBoolean();
-            }
-            if(shouldBubble) {
-                world.addParticle(FragileGlassBase.BUBBLE, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 0.5, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.005, 0.0);
-            }
+        if(m == 3) {
+            if(r.nextInt(3) == 0) world.addParticle(FragileGlassBase.BUBBLE, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 0.1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.01, 0.0);
+        }
+        else if(m == 4) {
+            if(r.nextBoolean()) world.addParticle(FragileGlassBase.BUBBLE, pos.getX() + 0.125 + r.nextFloat() * 0.75, pos.getY() + 0.1, pos.getZ() + 0.125 + r.nextFloat() * 0.75, 0.0, 0.016, 0.0);
         }
     }
 
