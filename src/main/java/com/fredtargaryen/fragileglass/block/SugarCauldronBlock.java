@@ -120,6 +120,7 @@ public class SugarCauldronBlock extends Block {
             {
                 w.setBlockState(pos, this.getDefaultState().with(AGE_0_7, 3), 3);
                 w.getPendingBlockTicks().scheduleTick(pos, this, thirdOfCookTime);
+                w.playSound(null, pos, SoundEvents.BLOCK_LAVA_AMBIENT, SoundCategory.BLOCKS, 0.9F, 1.0F);
             }
             else
             {
