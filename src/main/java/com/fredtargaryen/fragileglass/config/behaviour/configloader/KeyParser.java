@@ -52,6 +52,9 @@ public class KeyParser {
     ///////////////////////////////////
     public static List<BlockState> getAllBlockStatesForString(String states) {
         HashMap<String, String> description = getDescriptionFromString(states);
+        if(description == null) {
+            return new ArrayList<>();
+        }
         List<BlockState> allStates = new ArrayList<>();
         Collection<Block> blocks;
         String tag = description.get("tag");

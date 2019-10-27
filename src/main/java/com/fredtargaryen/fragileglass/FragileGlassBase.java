@@ -35,6 +35,7 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -44,8 +45,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -484,11 +485,8 @@ public class FragileGlassBase {
         CapabilityManager.INSTANCE.register(IFragileCapability.class, new FragileCapStorage(), new FragileCapFactory());
 
         blockDataManager = new BlockDataManager();
-        blockDataManager.setupDirsAndFiles();
         entityDataManager = new EntityDataManager();
-        entityDataManager.setupDirsAndFiles();
         tileEntityDataManager = new TileEntityDataManager();
-        tileEntityDataManager.setupDirsAndFiles();
         new FeatureManager().registerGenerators();
     }
 
@@ -716,12 +714,17 @@ public class FragileGlassBase {
     }
 
     /**
+     * Sets the directory the config managers will be working from.
      * Adds a listener which refreshes DataManager data whenever Tags are reloaded.
      * @param event
      */
     @SubscribeEvent
-    public void addFragileConfigReloadListener(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener(new ReloadListener<Map<ResourceLocation, Tag.Builder<EntityType<?>>>>() {
+    public void handleServerAboutToStart(FMLServerAboutToStartEvent event) {
+        MinecraftServer ms = event.getServer();
+        blockDataManager.setupDirsAndFiles(ms);
+        entityDataManager.setupDirsAndFiles(ms);
+        tileEntityDataManager.setupDirsAndFiles(ms);
+        ms.getResourceManager().addReloadListener(new ReloadListener<Map<ResourceLocation, Tag.Builder<EntityType<?>>>>() {
             @Override
             protected Map<ResourceLocation, Tag.Builder<EntityType<?>>> prepare(IResourceManager iResourceManager, IProfiler iProfiler) {
                 return null;

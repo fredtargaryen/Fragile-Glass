@@ -4,7 +4,7 @@ import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -107,8 +107,9 @@ public abstract class DataManager<E, D> {
      */
     public abstract void removeBehaviour(E key, @Nullable FragilityData.FragileBehaviour behaviour);
 
-    public void setupDirsAndFiles() {
-        this.configDir = FMLPaths.CONFIGDIR.get().toFile();
+    public void setupDirsAndFiles(MinecraftServer ms) {
+        //Get path to serverconfigs folder of world as File object
+        this.configDir = ms.getActiveAnvilConverter().getFile(ms.getFolderName(), "serverconfig");
         this.configFile = new File(this.configDir, DataReference.MODID + "_"+this.typeString+".cfg");
         if(!this.configFile.exists()) {
             try {
