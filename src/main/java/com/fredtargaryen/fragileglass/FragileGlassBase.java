@@ -7,6 +7,7 @@ import com.fredtargaryen.fragileglass.block.*;
 import com.fredtargaryen.fragileglass.client.particle.MyBubbleParticle;
 import com.fredtargaryen.fragileglass.command.CommandsBase;
 import com.fredtargaryen.fragileglass.config.Config;
+import com.fredtargaryen.fragileglass.config.WorldgenConfig;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
@@ -759,8 +760,16 @@ public class FragileGlassBase {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEntity pe = event.getPlayer();
-        if (pe.hasPermissionLevel(2) || pe.world.getServer().isSinglePlayer()) {
-            pe.sendStatusMessage(STATUS, false);
+        //Only ops or single players can see the message
+        if(pe.hasPermissionLevel(2) || pe.world.getServer().isSinglePlayer()) {
+            //Always show the failure message
+            if(STATUS == FAILURE_MESSAGE) {
+                pe.sendStatusMessage(STATUS, false);
+            }
+            //Only show the success message if enabled in config
+            else if(WorldgenConfig.SHOW_SUCCESS_MESSAGE.get()) {
+                pe.sendStatusMessage(STATUS, false);
+            }
         }
     }
 
