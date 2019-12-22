@@ -33,7 +33,7 @@ public class IcePatchGen extends Feature<IcePatchGenConfig> {
     public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> chunkGen, Random random, BlockPos pos, IcePatchGenConfig config) {
         if(FragileGlassBase.ICE_BLOCKS == null)
             FragileGlassBase.ICE_BLOCKS = BlockTags.getCollection().getOrCreate(ICE_TAG);
-        BlockPos.MutableBlockPos nextBlockPos = new BlockPos.MutableBlockPos(0, 0, 0);
+        BlockPos.Mutable nextBlockPos = new BlockPos.Mutable(0, 0, 0);
         Block nextBlock;
         int patchRadius = (int) (((2 * random.nextGaussian()) + config.avePatchSize) / 2);
         BlockPos patchCentre = pos;

@@ -2,14 +2,12 @@ package com.fredtargaryen.fragileglass.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.extensions.IForgeBlock;
@@ -30,8 +28,9 @@ public class ThinIceBlock extends Block implements IForgeBlock {
     /**
      * Ticks the block if it's been scheduled
      */
-    public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-        if (worldIn.getLightFor(LightType.BLOCK, pos) > 11 - state.getOpacity(worldIn, pos)) {
+    @Override
+    public void func_225534_a_(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+        if (worldIn.getLight(pos) > 11 - state.getOpacity(worldIn, pos)) {
             worldIn.removeBlock(pos, false);
         }
     }
@@ -43,13 +42,6 @@ public class ThinIceBlock extends Block implements IForgeBlock {
         boolean nearIsIce = near == Blocks.ICE || near == this;
         return nearIsIce || super.isSideInvisible(thisState, neighbourState, face);
     }
-
-    @OnlyIn(Dist.CLIENT)
-    public BlockRenderLayer getRenderLayer()
-    {
-        return BlockRenderLayer.TRANSLUCENT;
-    }
-
 
     @Deprecated
     @OnlyIn(Dist.CLIENT)

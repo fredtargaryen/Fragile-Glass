@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
@@ -21,7 +22,8 @@ public class IcePatchPlacement extends Placement<IcePatchPlacementConfig> {
     public Stream<BlockPos> getPositions(IWorld world, ChunkGenerator<? extends GenerationSettings> iChunkGenerator, Random random, IcePatchPlacementConfig icePatchPlacementConfig, BlockPos blockPos) {
         if(random.nextInt(icePatchPlacementConfig.genChance) == 0) {
             BlockPos surfacePos = world.getHeight(Heightmap.Type.WORLD_SURFACE, blockPos).down();
-            Biome b = world.getBiome(surfacePos);
+            Biome b = iChunkGenerator.getBiomeProvider().func_225526_b_(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
+            //Biome b = world.getBiome(surfacePos);
             if (b.getTemperature(surfacePos) < 0.015F) {
                 //Coords of "top left" blocks in chunk
                 int chunkBlockX = surfacePos.getX() * 16;

@@ -3,6 +3,9 @@ package com.fredtargaryen.fragileglass.worldgen;
 import com.fredtargaryen.fragileglass.config.WorldgenConfig;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 
 import java.util.Iterator;
 
@@ -18,7 +21,7 @@ public class FeatureManager {
             Iterator<Biome> i = Biome.BIOMES.iterator();
             while(i.hasNext()) {
                 Biome b = i.next();
-                b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION, Biome.createDecoratedFeature(ipg, ipgc, ipp, ippc));
+                b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION, new ConfiguredFeature<>(ipg, ipgc));
             }
         }
         if(WorldgenConfig.GEN_WEAK_STONE.get()) {
@@ -31,7 +34,7 @@ public class FeatureManager {
             Iterator<Biome> i = Biome.BIOMES.iterator();
             while(i.hasNext()) {
                 Biome b = i.next();
-                b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, Biome.createDecoratedFeature(spg, spgc, spp, sppc));
+                b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, new ConfiguredFeature<>(spg, spgc));
             }
         }
     }

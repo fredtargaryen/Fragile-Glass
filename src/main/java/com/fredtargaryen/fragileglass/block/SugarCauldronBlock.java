@@ -3,7 +3,6 @@ package com.fredtargaryen.fragileglass.block;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -20,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,12 +52,12 @@ public class SugarCauldronBlock extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (w.isRemote) {
             if(state.get(AGE_0_7).equals(1)) {
                 this.splash(w, pos.getX(), pos.getY(), pos.getZ());
             }
-            return true;
+            return ActionResultType.PASS;
         }
         else {
             int i1 = state.get(AGE_0_7);
@@ -70,7 +70,7 @@ public class SugarCauldronBlock extends Block {
                     w.playSound(null, pos, SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     w.setBlockState(pos, state.with(AGE_0_7, 1));
                 }
-                return true;
+                return ActionResultType.PASS;
             }
             else if(i1 == 1)
             {
@@ -86,17 +86,17 @@ public class SugarCauldronBlock extends Block {
                     w.playSound(null, pos, SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     w.setBlockState(pos, state.with(AGE_0_7, 2), 3);
                 }
-                return true;
+                return ActionResultType.PASS;
             }
             else if(i1 == 6)
             {
                 w.addEntity(new ItemEntity(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, new ItemStack(FragileGlassBase.FRAGILE_GLASS, 16)));
                 w.addEntity(new ExperienceOrbEntity(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, 4));
                 w.setBlockState(pos, state.with(AGE_0_7, 0), 3);
-                return true;
+                return ActionResultType.PASS;
             }
         }
-        return false;
+        return ActionResultType.FAIL;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class SugarCauldronBlock extends Block {
     }
 
     @Override
-    public void tick(BlockState state, World w, BlockPos pos, Random random)
+    public void func_225534_a_(BlockState state, ServerWorld w, BlockPos pos, Random random)
     {
         BlockState stateBelow = w.getBlockState(pos.down());
         Block below = stateBelow.getBlock();
@@ -185,13 +185,6 @@ public class SugarCauldronBlock extends Block {
         w.addParticle(ParticleTypes.SPLASH, x + 0.75, y + 0.8, z + 0.5, 0.0, 0.0, 0.0);
         w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.25, 0.0, 0.0, 0.0);
         w.addParticle(ParticleTypes.SPLASH, x + 0.5, y + 0.8, z + 0.75, 0.0, 0.0, 0.0);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public BlockRenderLayer getRenderLayer()
-    {
-        return BlockRenderLayer.TRANSLUCENT;
     }
 
     @Deprecated

@@ -1,3 +1,6 @@
+/**
+ * Fragile blocks are opaque
+ */
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
