@@ -33,7 +33,7 @@ public class StonePatchGen extends Feature<StonePatchGenConfig> {
     @Override
     public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> chunkGen, Random random, BlockPos pos, StonePatchGenConfig config) {
         BlockPos.Mutable nextBlockPos = new BlockPos.Mutable(0, 0, 0);
-        Block nextBlock;
+        BlockState nextBlockState;
         int patchRadius = (int) (((2 * random.nextGaussian()) + config.avePatchSize) / 2);
         BlockPos patchCentre = pos;
         int cornerX = (patchCentre.getX() / 16) * 16;
