@@ -3,7 +3,9 @@ package com.fredtargaryen.fragileglass.worldgen;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -31,7 +33,7 @@ public class StonePatchGen extends Feature<StonePatchGenConfig> {
     @Override
     public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> chunkGen, Random random, BlockPos pos, StonePatchGenConfig config) {
         BlockPos.MutableBlockPos nextBlockPos = new BlockPos.MutableBlockPos(0, 0, 0);
-        Block nextBlock;
+        BlockState nextBlockState;
         int patchRadius = (int) (((2 * random.nextGaussian()) + config.avePatchSize) / 2);
         BlockPos patchCentre = pos;
         int cornerX = (patchCentre.getX() / 16) * 16;
@@ -48,8 +50,8 @@ public class StonePatchGen extends Feature<StonePatchGenConfig> {
                 int nextX = (int) (centreX + (rad * Math.cos(r)));
                 int nextZ = (int) (centreZ + (rad * Math.sin(r)));
                 nextBlockPos.setPos(nextX, centreY, nextZ);
-                nextBlock = world.getBlockState(nextBlockPos).getBlock();
-                if(nextBlock == Blocks.STONE) {
+                nextBlockState = world.getBlockState(nextBlockPos);
+                if(nextBlockState.getMaterial() == Material.ROCK) {
                     //Adds a little randomness to the outside of patches, to avoid perfect circles all the time
                     if (rad > patchRadius - 2) {
                         if (random.nextBoolean()) {
