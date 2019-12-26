@@ -83,6 +83,8 @@ public class FragileGlassBase {
     public static int genChanceStone;
     //Config var - Glass Shards compatibility
     public static boolean glassShards;
+    //Config var - debug settings
+    public static boolean showSuccessMessage;
 
     private static BreakerDataManager breakerDataManager;
     private static FragilityDataManager fragDataManager;
@@ -157,7 +159,8 @@ public class FragileGlassBase {
         genWeakStone = config.getBoolean("genWeakStone", "Worldgen - Weak Stone", false, "If true, weak stone patches will generate. Expect falls into lava!");
         avePatchSizeStone = config.getInt("avePatchSizeStone", "Worldgen - Weak Stone", 5, 1, 14, "Average patch diameter");
         genChanceStone = config.getInt("genChanceStone", "Worldgen - Weak Stone", 3, 1, 5, "1 in x chance of patch appearing");
-        glassShards = config.getBoolean("glassShards", "Mod Compatibility", false, "If true, broken fragile glass blocks will drop Glass Shards,");
+        glassShards = config.getBoolean("glassShards", "Mod Compatibility", false, "If true, broken fragile glass blocks will drop Glass Shards");
+        showSuccessMessage = config.getBoolean("showSuccessMessage", "Other", true, "If true, show a message on login if config files loaded successfully");
         config.save();
         breakerDataManager = BreakerDataManager.getInstance();
         breakerDataManager.setupDirsAndFiles(event.getModConfigurationDirectory());
@@ -491,8 +494,16 @@ public class FragileGlassBase {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         EntityPlayer ep = event.player;
+        //Only ops or single players can see the message
         if(ep.canUseCommand(2, "") || ep.world.getMinecraftServer().isSinglePlayer()) {
-            ep.sendStatusMessage(STATUS, false);
+            //Always show the failure message
+            if(STATUS == FAILURE_MESSAGE) {
+                ep.sendStatusMessage(STATUS, false);
+            }
+            //Only show the success message if enabled in config
+            else if(FragileGlassBase.showSuccessMessage) {
+                ep.sendStatusMessage(STATUS, false);
+            }
         }
     }
 }
