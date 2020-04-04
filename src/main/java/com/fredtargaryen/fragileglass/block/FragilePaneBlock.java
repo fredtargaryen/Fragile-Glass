@@ -9,7 +9,7 @@ import net.minecraft.state.StateContainer;
 
 public class FragilePaneBlock extends PaneBlock {
 	public FragilePaneBlock() {
-		super(Block.Properties.create(Material.GLASS).sound(SoundType.GLASS));
+		super(Block.Properties.create(Material.GLASS).sound(SoundType.GLASS).notSolid());
         this.setDefaultState(this.getStateContainer().getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false).with(WATERLOGGED, false));
 	}
 

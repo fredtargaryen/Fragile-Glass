@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
@@ -31,7 +30,7 @@ public class IcePatchPlacement extends Placement<IcePatchPlacementConfig> {
             if(FragileGlassBase.ICE_BLOCKS == null)
                 FragileGlassBase.ICE_BLOCKS = BlockTags.getCollection().getOrCreate(ICE_TAG);
             BlockPos surfacePos = world.getHeight(Heightmap.Type.WORLD_SURFACE, blockPos).down();
-            Biome b = iChunkGenerator.getBiomeProvider().func_225526_b_(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
+            Biome b = iChunkGenerator.getBiomeProvider().getNoiseBiome(surfacePos.getX(), surfacePos.getY(), surfacePos.getZ());
             //Biome b = world.getBiome(surfacePos);
             if (b.getTemperature(surfacePos) < 0.015F) {
                 //Coords of "top left" blocks in chunk

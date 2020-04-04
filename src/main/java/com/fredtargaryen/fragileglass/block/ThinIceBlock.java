@@ -7,18 +7,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.LightType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.extensions.IForgeBlock;
 
 import java.util.Random;
 
-public class ThinIceBlock extends Block implements IForgeBlock {
+public class ThinIceBlock extends Block {
     private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0, 14.0, 0.0, 16.0, 16.0, 16.0);
 
     public ThinIceBlock() {
-        super(Properties.create(Material.ICE).slipperiness(0.98F).sound(SoundType.GLASS).tickRandomly());
+        super(Properties.create(Material.ICE).slipperiness(0.98F).sound(SoundType.GLASS).tickRandomly().notSolid());
     }
 
     public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
@@ -29,9 +29,11 @@ public class ThinIceBlock extends Block implements IForgeBlock {
      * Ticks the block if it's been scheduled
      */
     @Override
-    public void func_225534_a_(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        if (worldIn.getLight(pos) > 11 - state.getOpacity(worldIn, pos)) {
-            worldIn.removeBlock(pos, false);
+    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+        if (worldIn.getLightFor(LightType.BLOCK, pos) > 11 - state.getOpacity(worldIn, pos)) {
+            if (worldIn.dimension.doesWaterVaporize()) {
+                worldIn.removeBlock(pos, false);
+            }
         }
     }
 

@@ -1,6 +1,3 @@
-/**
- * Fragile blocks are opaque
- */
 package com.fredtargaryen.fragileglass;
 
 import com.fredtargaryen.fragileglass.block.*;
@@ -23,6 +20,8 @@ import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
 import com.fredtargaryen.fragileglass.world.BreakSystem;
 import com.fredtargaryen.fragileglass.worldgen.FeatureManager;
+import com.fredtargaryen.fragileglass.worldgen.IcePatchGenConfig;
+import com.fredtargaryen.fragileglass.worldgen.StonePatchGenConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -49,6 +48,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -71,6 +71,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -260,6 +261,12 @@ public class FragileGlassBase {
     @ObjectHolder("weakstone")
     public static Item ITEM_WEAK_STONE;
 
+    //Declare Features here
+    @ObjectHolder("icepatchgen")
+    public static Feature<IcePatchGenConfig> ICE_FEATURE;
+    @ObjectHolder("stonepatchgen")
+    public static Feature<StonePatchGenConfig> STONE_FEATURE;
+
     //Declare ParticleTypes here
     @ObjectHolder("bubble")
     public static BasicParticleType BUBBLE;
@@ -267,6 +274,8 @@ public class FragileGlassBase {
     //Declare TileEntityTypes here
     @ObjectHolder("tews")
     public static TileEntityType TEWS_TYPE;
+
+    public static FeatureManager FEATURE_MANAGER;
 
     // Says where the client and server 'proxy' code is loaded.
     private static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
@@ -279,6 +288,7 @@ public class FragileGlassBase {
         IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the setup method for modloading
         loadingBus.addListener(this::postRegistration);
+        loadingBus.addListener(this::clientSetup);
 
         // Register ourselves for server, registry and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -458,6 +468,12 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
+    public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+        FEATURE_MANAGER = new FeatureManager();
+        FEATURE_MANAGER.registerFeatures(event);
+    }
+
+    @SubscribeEvent
     public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
         event.getRegistry().register(new BasicParticleType(false).setRegistryName("bubble"));
     }
@@ -476,6 +492,11 @@ public class FragileGlassBase {
         );
     }
 
+    public void clientSetup(FMLClientSetupEvent event)
+    {
+        proxy.setupRenderTypes();
+    }
+
     /**
      * Called after all registry events. Runs in parallel with other SetupEvent handlers.
      * @param event
@@ -491,7 +512,7 @@ public class FragileGlassBase {
         blockDataManager = new BlockDataManager();
         entityDataManager = new EntityDataManager();
         tileEntityDataManager = new TileEntityDataManager();
-        new FeatureManager().registerGenerators();
+        FEATURE_MANAGER.registerGenerators();
     }
 
     ////////////////////////

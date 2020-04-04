@@ -51,7 +51,7 @@ public class CommandData extends FragilityData implements ICommandSource {
             }
             //Don't validate the command; too troublesome
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < extraData.length - 1; ++i) {
+            for (int i = 1; i < extraData.length - 1; ++i) {
                 sb.append(extraData[i]);
                 sb.append(" ");
             }

@@ -41,7 +41,7 @@ public class SugarCauldronBlock extends Block {
     private static final int thirdOfCookTime = 100;
 
     public SugarCauldronBlock() {
-        super(Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(5.0F, 10.0F));
+        super(Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(5.0F, 10.0F).notSolid());
         this.setDefaultState(this.stateContainer.getBaseState().with(AGE_0_7, 0));
     }
 
@@ -52,7 +52,7 @@ public class SugarCauldronBlock extends Block {
     }
 
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (w.isRemote) {
             if(state.get(AGE_0_7).equals(1)) {
                 this.splash(w, pos.getX(), pos.getY(), pos.getZ());
@@ -105,7 +105,7 @@ public class SugarCauldronBlock extends Block {
     }
 
     @Override
-    public void func_225534_a_(BlockState state, ServerWorld w, BlockPos pos, Random random)
+    public void tick(BlockState state, ServerWorld w, BlockPos pos, Random random)
     {
         BlockState stateBelow = w.getBlockState(pos.down());
         Block below = stateBelow.getBlock();
