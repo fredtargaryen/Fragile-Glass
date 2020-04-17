@@ -41,4 +41,10 @@ public class ModData extends FragilityData {
         }
         return sb.toString();
     }
+
+    /**
+     * @return false because this MAY depend on an entity or tile entity which may not exist when the wait is over.
+     */
+    @Override
+    public boolean canBeQueued() { return false; }
 }

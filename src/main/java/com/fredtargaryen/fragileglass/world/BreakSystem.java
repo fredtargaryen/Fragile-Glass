@@ -2,43 +2,98 @@ package com.fredtargaryen.fragileglass.world;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
-import com.fredtargaryen.fragileglass.config.behaviour.data.ChangeData;
-import com.fredtargaryen.fragileglass.config.behaviour.data.UpdateData;
+import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
+import com.fredtargaryen.fragileglass.config.behaviour.data.WaitData;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.BlockDataManager;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.EntityDataManager;
-import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import com.fredtargaryen.fragileglass.config.behaviour.datamanager.TileEntityDataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FallingBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.DimensionSavedDataManager;
+import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import static com.fredtargaryen.fragileglass.FragileGlassBase.BREAKCAP;
-import static com.fredtargaryen.fragileglass.FragileGlassBase.FRAGILECAP;
 
-public class BreakSystem {
+public class BreakSystem extends WorldSavedData {
     private World world;
     private BlockDataManager blockDataManager;
     private EntityDataManager entityDataManager;
     private TileEntityDataManager tileEntityDataManager;
+    public HashMap<BlockPos, BehaviourQueue> queuedBehaviours;
+    /**
+     * Code inspection will tell you the access can be private, but it jolly well can't
+     */
+    public BreakSystem() { super(DataReference.MODID); }
+
+    public static BreakSystem forWorld(World world) {
+        ServerWorld serverWorld = world.getServer().getWorld(DimensionType.OVERWORLD);
+        DimensionSavedDataManager storage = serverWorld.getSavedData();
+        return storage.getOrCreate(BreakSystem::new, DataReference.MODID);
+    }
+
+    @Override
+    public void read(CompoundNBT nbt) {
+        for(int i = 0; i < nbt.size(); i++) {
+            CompoundNBT queue = nbt.getCompound(Integer.toString(i));
+            BlockPos bp = NBTUtil.readBlockPos(queue.getCompound("pos"));
+            String[] rlParts = queue.getString("tileentitytype").split(":");
+            TileEntityType<?> tet = ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(rlParts[0], rlParts[1]));
+            BehaviourQueue bq = new BehaviourQueue(
+                    queue.getInt("countdown"),
+                    NBTUtil.readBlockState(queue.getCompound("state")),
+                    tet,
+                    queue.getDouble("speedsquared"),
+                    queue.getInt("nextbehaviour")
+            );
+            this.queuedBehaviours.put(bp, bq);
+        }
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        int i = 0;
+        for(BlockPos bp : this.queuedBehaviours.keySet())
+        {
+            BehaviourQueue bq = this.queuedBehaviours.get(bp);
+            CompoundNBT queue = new CompoundNBT();
+            queue.put("pos", NBTUtil.writeBlockPos(bp));
+            queue.putInt("countdown", bq.countdown);
+            queue.put("state", NBTUtil.writeBlockState(bq.state));
+            queue.putString("tileentitytype", bq.tileEntityType == null ? "null" : bq.tileEntityType.getRegistryName().toString());
+            queue.putDouble("speedsquared", bq.speedSq);
+            queue.putInt("nextbehaviour", bq.nextBehaviourIndex);
+            compound.put(Integer.toString(i), queue);
+            i++;
+        }
+        return compound;
+    }
 
     public void init(World world) {
         this.world = world;
+        this.queuedBehaviours = new HashMap<>();
         MinecraftForge.EVENT_BUS.register(this);
         this.blockDataManager = FragileGlassBase.getBlockDataManager();
         this.entityDataManager = FragileGlassBase.getEntityDataManager();
@@ -54,6 +109,9 @@ public class BreakSystem {
     @SubscribeEvent(priority= EventPriority.HIGHEST)
     public void breakCheck(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
+            //Update all BehaviourQueues
+            for(BlockPos pos : this.queuedBehaviours.keySet())
+                this.updateBehaviourQueue(pos, this.queuedBehaviours.get(pos));
             //Intended to avoid ConcurrentModificationExceptions
             CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(((ServerWorld)event.world).getEntities().collect(Collectors.toList()));
             Iterator<Entity> i = entityList.iterator();
@@ -170,10 +228,8 @@ public class BreakSystem {
                         if(te == null) {
                             //No Tile Entity. The specific BlockState might be covered in the fragility data
                             ArrayList<FragilityData> fragilityDataList = this.blockDataManager.getData(state);
-                            if (fragilityDataList != null) {
-                                for (FragilityData fragilityData : fragilityDataList) {
-                                    fragilityData.onCrash(state, null, blockPos, e, speedSq);
-                                }
+                            if(fragilityDataList != null) {
+                                this.initialUpdateFragilityDataList(state, null, blockPos, e, speedSq, fragilityDataList);
                             }
                         }
                         else {
@@ -181,9 +237,7 @@ public class BreakSystem {
                             //the TileEntity's capability.
                             ArrayList<FragilityData> fragilityDataList = this.tileEntityDataManager.getData(te.getType());
                             if(fragilityDataList != null) {
-                                for(FragilityData fragilityData : fragilityDataList) {
-                                    fragilityData.onCrash(null, te, blockPos, e, speedSq);
-                                }
+                                this.initialUpdateFragilityDataList(state, te, blockPos, e, speedSq, fragilityDataList);
                             }
                         }
                     }
@@ -193,10 +247,100 @@ public class BreakSystem {
     }
 
     /**
+     * Go through all behaviours associated with the BlockState state or TileEntity te.
+     * Execute all behaviours until a WAIT behaviour is encountered; at which point put a BehaviourQueue in
+     * queuedBehaviours.
+     * @param state
+     * @param te
+     * @param pos
+     * @param e
+     * @param speedSq
+     * @param fragDataList
+     */
+    private void initialUpdateFragilityDataList(BlockState state, @Nullable TileEntity te, BlockPos pos, Entity e, double speedSq, ArrayList<FragilityData> fragDataList) {
+        int i = 0;
+        int listSize = fragDataList.size();
+        boolean stop = false;
+        while(!stop && i < listSize)
+        {
+            FragilityData fData = fragDataList.get(i);
+            if(fData.getBehaviour() == FragilityData.FragileBehaviour.WAIT) {
+                if(speedSq >= fData.getBreakSpeedSq()) {
+                    this.queuedBehaviours.put(pos, new BehaviourQueue(
+                            ((WaitData) fData).getTicks(),
+                            state,
+                            te == null ? null : te.getType(),
+                            speedSq,
+                            i + 1));
+                    stop = true;
+                }
+            }
+            else {
+                fData.onCrash(state, te, pos, e, speedSq);
+            }
+            i++;
+        }
+    }
+
+    /**
      * Moving faster than MAXIMUM_ENTITY_SPEED_SQUARED means moving faster than chunks can be loaded.
      * If this is happening there is not much point trying to break blocks.
      */
     private boolean isValidMoveSpeedSquared(double blocksPerTick) {
         return blocksPerTick <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
+    }
+
+    private void updateBehaviourQueue(BlockPos pos, BehaviourQueue bq) {
+        if(bq.countdown == 0) {
+            ArrayList<FragilityData> fragDataList;
+            if(bq.tileEntityType == null) {
+                fragDataList = this.blockDataManager.getData(bq.state);
+            }
+            else {
+                fragDataList = this.tileEntityDataManager.getData(bq.tileEntityType);
+            }
+            if(fragDataList != null && bq.nextBehaviourIndex < fragDataList.size()) {
+                // Execute all behaviours up to the end of the next WAIT
+                int i = bq.nextBehaviourIndex;
+                boolean stop = false;
+                while(!stop && i < fragDataList.size()) {
+                    FragilityData fd = fragDataList.get(i);
+                    if(fd.getBehaviour() == FragilityData.FragileBehaviour.WAIT) {
+                        if(bq.speedSq > fd.getBreakSpeedSq()) {
+                            bq.countdown = ((WaitData) fd).getTicks();
+                            bq.nextBehaviourIndex = i + 1;
+                            stop = true;
+                        }
+                    }
+                    else {
+                        fd.onCrash(bq.state, null, pos, null, bq.speedSq);
+                    }
+                    i++;
+                }
+                if(i == fragDataList.size()) this.queuedBehaviours.remove(pos);
+            }
+            else {
+                this.queuedBehaviours.remove(pos);
+            }
+        }
+        else {
+            bq.countdown--;
+        }
+    }
+
+    private class BehaviourQueue {
+        public int countdown;
+        public BlockState state;
+        public TileEntityType<?> tileEntityType;
+        public double speedSq;
+        public int nextBehaviourIndex;
+
+        public BehaviourQueue(int countdown, BlockState state, TileEntityType<?> tileEntityType, double speedSq, int nextBehaviourIndex) {
+            this.countdown = countdown;
+            this.state = state;
+            this.tileEntityType = tileEntityType;
+            this.speedSq = speedSq;
+            this.nextBehaviourIndex = nextBehaviourIndex;
+        }
     }
 }

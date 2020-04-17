@@ -57,6 +57,12 @@ public class DamageData extends FragilityData {
         return sb.toString();
     }
 
+    /**
+     * @return false, because this depends on an entity which may not exist when the wait is over.
+     */
+    @Override
+    public boolean canBeQueued() { return false; }
+
     private DamageSource parseDamageSource(String sourceString) throws FragilityDataParseException {
         String lowerString = sourceString.toLowerCase();
         switch (lowerString) {

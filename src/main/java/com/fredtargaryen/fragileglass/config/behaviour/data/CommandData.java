@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -65,7 +66,7 @@ public class CommandData extends FragilityData implements ICommandSource {
         CommandSource cs = new CommandSource(
                 this, //Some ICommandSource
                 this.executeFromCrasherPos ? crasher.getPositionVec() : new Vec3d(pos.getX(), pos.getY(), pos.getZ()), //position
-                crasher.getPitchYaw(), //rotation
+                this.executeFromCrasherPos ? crasher.getPitchYaw() : Vec2f.ZERO, //rotation
                 (ServerWorld) crasher.world, //world
                 2, //permission level
                 "", //internal name
@@ -78,6 +79,15 @@ public class CommandData extends FragilityData implements ICommandSource {
     @Override
     public String toString() {
         return super.toString() + " " + (this.executeFromCrasherPos ? "entity" : "block") + " " + this.command;
+    }
+
+    /**
+     * @return true only if the command executes relative to a block. Otherwise, this depends on an entity which may not
+     * exist when the wait is over.
+     */
+    @Override
+    public boolean canBeQueued() {
+        return !this.executeFromCrasherPos;
     }
 
     /////////////////////////////////

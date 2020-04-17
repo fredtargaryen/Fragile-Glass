@@ -22,25 +22,30 @@ public class TileEntityConfigLoader extends ConfigLoader{
     /**
      * When a behaviour has been validated and confirmed usable, this method is called to add it to the fragility data map.
      * The maps map to ArrayLists of crash behaviours, which are executed in the order specified in the config file.
-     * No two crash behaviours in a list can be the same, i.e. you cannot have two breakages, but you can have a break
-     * followed by a block change (an example being ice breaking and being immediately replaced with water).
-     * A Data which has a behaviour that already exists in the list will overwrite the previous one.
+     * The only thing that can stop a behaviour being added at this point, is whether a WAIT behaviour was added first.
      * @param key The ResourceLocation or block state the fragilitydatas should apply to.
      * @param fragilityData The new crash behaviour to add.
      */
-    private void addNewBehaviour(TileEntityType key, FragilityData fragilityData) {
+    private void tryAddNewBehaviour(TileEntityType key, FragilityData fragilityData) throws ConfigLoadException {
         if(this.tileEntities.containsKey(key)) {
             ArrayList<FragilityData> dataList = this.tileEntities.get(key);
-            boolean appendBehaviour = true;
-            int existingIndex = -1;
-            for(FragilityData fdata : dataList) {
-                if(fdata.getBehaviour() == fragilityData.getBehaviour()) {
-                    appendBehaviour = false;
-                    existingIndex = dataList.indexOf(fdata);
+            if(fragilityData.canBeQueued())
+            {
+                //Add, no question
+                dataList.add(fragilityData);
+            }
+            else {
+                // Check for a WAIT behaviour
+                boolean add = false;
+                for (FragilityData fd : dataList) {
+                    add |= fd.getBehaviour() == FragilityData.FragileBehaviour.WAIT;
+                }
+                if (add) {
+                    dataList.add(fragilityData);
+                } else {
+                    throw new ConfigLoadException("This behaviour type can't be added when a wait behaviour has been previously added.\nIt may depend on data which may not exist by the time the wait is over.\nCheck the config file for more information on wait.");
                 }
             }
-            if(appendBehaviour) { dataList.add(fragilityData); }
-            else { dataList.set(existingIndex, fragilityData); }
         }
         else {
             ArrayList<FragilityData> newList = new ArrayList<>();
@@ -70,7 +75,7 @@ public class TileEntityConfigLoader extends ConfigLoader{
 
                     FragilityData newData = this.createDataFromBehaviour(behaviour, minSpeed);
                     newData.parseExtraData(null, this, Arrays.copyOfRange(values, 3, values.length));
-                    this.addNewBehaviour(entry, newData);
+                    this.tryAddNewBehaviour(entry, newData);
                 }
                 catch(FragilityData.FragilityDataParseException fdpe) {
                     throw new ConfigLoadException(fdpe.getMessage());
@@ -81,7 +86,7 @@ public class TileEntityConfigLoader extends ConfigLoader{
                 }
                 catch(IllegalArgumentException iae) {
                     //Thrown when the second value is not one of the supported ones
-                    throw new ConfigLoadException(values[1] + " should be break, update, change, fall or mod.");
+                    throw new ConfigLoadException(values[1] + " should be break, change, command, damage, explode, fall, mod, update or wait.");
                 }
             }
         }

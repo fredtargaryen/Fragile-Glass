@@ -23,12 +23,14 @@ public abstract class FragilityData {
         DAMAGE,
         //Create an explosion at the block's position
         EXPLODE,
-        //Change to an FallingBlockEntity of the given BlockState
+        //Change to a FallingBlockEntity of the given BlockState
         FALL,
         //Behaviour depends on implementation of IFragileCapability
         MOD,
         //Update after the update delay if above the break speed
         UPDATE,
+        //Wait a set number of ticks before continuing down the list of behaviours
+        WAIT,
     }
 
     public FragilityData(double breakSpeed) {
@@ -40,6 +42,8 @@ public abstract class FragilityData {
     public static FragileBehaviour parseBehaviour(String behaviour) {
         return FragileBehaviour.valueOf(behaviour.toUpperCase());
     }
+
+    public final double getBreakSpeedSq() { return this.breakSpeedSq; }
 
     public abstract void parseExtraData(@Nullable BlockState oldState, ConfigLoader cl, String... extraData) throws FragilityDataParseException;
 
@@ -67,4 +71,13 @@ public abstract class FragilityData {
     public String toString() {
         return this.getBehaviour().toString() + " " + Math.sqrt(this.breakSpeedSq);
     }
+
+    /**
+     * Return true if the behaviour can be placed in a BehaviourQueue, i.e. a behaviour that is guaranteed to still
+     * function correctly after any amount of time. Behaviours which utilise the crasher entity or a tile entity cannot
+     * be queued, as there is no guarantee that the entity or tile entity will still exist when onCrash is eventually
+     * called. Furthermore, storing references to tile entities or entities in NBT data is difficult.
+     * @return whether the behaviour can be added to a BehaviourQueue.
+     */
+    public boolean canBeQueued() { return true; }
 }
