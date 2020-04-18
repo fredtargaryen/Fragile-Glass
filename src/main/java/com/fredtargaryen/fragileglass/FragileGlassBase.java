@@ -98,8 +98,6 @@ public class FragileGlassBase {
     private static EntityDataManager entityDataManager;
     private static TileEntityDataManager tileEntityDataManager;
 
-    public static BreakSystem breakSystem;
-
     //Declare all blocks here
     @ObjectHolder("fragileglass")
     public static Block FRAGILE_GLASS;
@@ -699,8 +697,7 @@ public class FragileGlassBase {
     public void loadSystem(WorldEvent.Load event) {
         World w = (World) event.getWorld();
         if(!w.isRemote) {
-            breakSystem = new BreakSystem();
-            breakSystem.init(w);
+            BreakSystem.forWorld(w).init(w);
         }
     }
 
@@ -708,9 +705,7 @@ public class FragileGlassBase {
     public void stopSystem(WorldEvent.Unload event) {
         World w = (World) event.getWorld();
         if(!w.isRemote) {
-            if(breakSystem != null) {
-                breakSystem.end(w);
-            }
+            BreakSystem.forWorld(w).end(w);
         }
     }
 

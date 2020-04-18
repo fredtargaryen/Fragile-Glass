@@ -29,15 +29,14 @@ public class FallData extends FragilityData {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
+    public void onCrash(World world, BlockState state, @Nullable TileEntity te, BlockPos pos, @Nullable Entity crasher, double speedSq) {
         if (speedSq > this.breakSpeedSq) {
-            World w = crasher.world;
-            if (FallingBlock.canFallThrough(w.getBlockState(pos.down()))) {
-                FallingBlockEntity fallingBlock = new FallingBlockEntity(w, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, w.getBlockState(pos));
+            if (FallingBlock.canFallThrough(world.getBlockState(pos.down()))) {
+                FallingBlockEntity fallingBlock = new FallingBlockEntity(world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, world.getBlockState(pos));
                 if(te != null) {
                     fallingBlock.tileEntityData = te.write(new CompoundNBT());
                 }
-                w.addEntity(fallingBlock);
+                world.addEntity(fallingBlock);
             }
         }
     }

@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -33,8 +34,15 @@ public class WaitData extends FragilityData {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
+    public void onCrash(World world, BlockState state, @Nullable TileEntity te, BlockPos pos, @Nullable Entity crasher, double speedSq) {
         //Does nothing. This is a special-case behaviour that is not used in the usual way.
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString() + " ");
+        sb.append(this.ticks);
+        return sb.toString();
     }
 
     public int getTicks() { return this.ticks; }

@@ -11,6 +11,7 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
@@ -62,18 +63,18 @@ public class CommandData extends FragilityData implements ICommandSource {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
+    public void onCrash(World world, BlockState state, @Nullable TileEntity te, BlockPos pos, @Nullable Entity crasher, double speedSq) {
         CommandSource cs = new CommandSource(
                 this, //Some ICommandSource
                 this.executeFromCrasherPos ? crasher.getPositionVec() : new Vec3d(pos.getX(), pos.getY(), pos.getZ()), //position
                 this.executeFromCrasherPos ? crasher.getPitchYaw() : Vec2f.ZERO, //rotation
-                (ServerWorld) crasher.world, //world
+                (ServerWorld) world, //world
                 2, //permission level
                 "", //internal name
                 new StringTextComponent(""), //name for display
-                crasher.world.getServer(), //server
+                world.getServer(), //server
                 crasher);
-        crasher.world.getServer().getCommandManager().handleCommand(cs, this.command);
+        world.getServer().getCommandManager().handleCommand(cs, this.command);
     }
 
     @Override

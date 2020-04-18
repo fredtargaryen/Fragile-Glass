@@ -3,13 +3,16 @@ package com.fredtargaryen.fragileglass.tileentity.capability;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 /**
  * Mod devs making use of fragileglassft_tileentities.cfg for fragility can work with extra data supplied by their end
  * users. A config line would look like:
  * modname:modtile mod 0.2 a b c d
  * Where newmod:modtile is the registry name of the TileEntity's type, mod specifies that a mod behaviour is being created,
- * 0.2 is the minimum break speed and a, b, c and d are extra data parsed in the method below.
+ * 0.2 is the minimum break speed and the rest is any amount of extra data parsed in the method below.
  *
  * The modder must subscribe to AttachCapabilitiesEvent<TileEntity>, and in the event handler provide an implementation
  * of IFragileCapability, with the TileEntity's behaviour in the body of onCrash. The code is roughly this:
@@ -20,7 +23,7 @@ import net.minecraft.tileentity.TileEntity;
  *         ICapabilityProvider iCapProv = new ICapabilityProvider() {
  *             IFragileCapability inst = new IFragileCapability() {
  *                 @Override
- *                 public void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq, String[] extraData) {
+ *                 public void onCrash(World world, BlockState state, @Nullable TileEntity te, @Nullable Entity crasher, double speedSq, String[] extraData) {
  *                     //Do whatever in here
  *                 }
  *             };
@@ -47,5 +50,5 @@ public interface IFragileCapability {
      * Whenever this method is called, the projected entity bounding box WILL be inside the 1x1x1 space of a block, BUT
      * not necessarily intersecting the block's bounding box. Implementations will need to check for that if needed.
      */
-    void onCrash(BlockState state, TileEntity te, Entity crasher, double speedSq, String[] extraData);
+    void onCrash(World world, BlockState state, @Nullable TileEntity te, @Nullable Entity crasher, double speedSq, String[] extraData);
 }

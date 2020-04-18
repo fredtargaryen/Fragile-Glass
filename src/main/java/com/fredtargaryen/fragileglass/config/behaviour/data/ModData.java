@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -28,8 +29,8 @@ public class ModData extends FragilityData {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
-        te.getCapability(FragileGlassBase.FRAGILECAP).ifPresent(cap -> cap.onCrash(state, te, crasher, speedSq, extraData));
+    public void onCrash(World world, BlockState state, @Nullable TileEntity te, BlockPos pos, @Nullable Entity crasher, double speedSq) {
+        if(te != null) te.getCapability(FragileGlassBase.FRAGILECAP).ifPresent(cap -> cap.onCrash(world, state, te, crasher, speedSq, extraData));
     }
 
     @Override

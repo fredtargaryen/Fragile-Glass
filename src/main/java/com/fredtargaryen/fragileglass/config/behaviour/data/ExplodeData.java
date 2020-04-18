@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -36,9 +37,9 @@ public class ExplodeData extends FragilityData {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
+    public void onCrash(World world, BlockState state, @Nullable TileEntity te, BlockPos pos, @Nullable Entity crasher, double speedSq) {
         if (speedSq > this.breakSpeedSq) {
-            crasher.world.createExplosion(null, (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(), this.strength, Explosion.Mode.BREAK);
+            world.createExplosion(null, (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(), this.strength, Explosion.Mode.BREAK);
         }
     }
 

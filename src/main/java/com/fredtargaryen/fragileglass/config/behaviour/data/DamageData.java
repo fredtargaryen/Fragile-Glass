@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -42,8 +43,8 @@ public class DamageData extends FragilityData {
     }
 
     @Override
-    public void onCrash(@Nullable BlockState state, @Nullable TileEntity te, BlockPos pos, Entity crasher, double speedSq) {
-        crasher.attackEntityFrom(this.damageSource, this.speedScale ? (float) (this.damageAmount * Math.sqrt(speedSq)) : this.damageAmount);
+    public void onCrash(World world, BlockState state, @Nullable TileEntity te, BlockPos pos, @Nullable Entity crasher, double speedSq) {
+        if(crasher != null) crasher.attackEntityFrom(this.damageSource, this.speedScale ? (float) (this.damageAmount * Math.sqrt(speedSq)) : this.damageAmount);
     }
 
     @Override

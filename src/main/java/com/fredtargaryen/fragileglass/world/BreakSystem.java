@@ -49,7 +49,7 @@ public class BreakSystem extends WorldSavedData {
     public BreakSystem() { super(DataReference.MODID); }
 
     public static BreakSystem forWorld(World world) {
-        ServerWorld serverWorld = world.getServer().getWorld(DimensionType.OVERWORLD);
+        ServerWorld serverWorld = world.getServer().getWorld(world.dimension.getType());
         DimensionSavedDataManager storage = serverWorld.getSavedData();
         return storage.getOrCreate(BreakSystem::new, DataReference.MODID);
     }
@@ -59,16 +59,45 @@ public class BreakSystem extends WorldSavedData {
         for(int i = 0; i < nbt.size(); i++) {
             CompoundNBT queue = nbt.getCompound(Integer.toString(i));
             BlockPos bp = NBTUtil.readBlockPos(queue.getCompound("pos"));
-            String[] rlParts = queue.getString("tileentitytype").split(":");
-            TileEntityType<?> tet = ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(rlParts[0], rlParts[1]));
-            BehaviourQueue bq = new BehaviourQueue(
-                    queue.getInt("countdown"),
-                    NBTUtil.readBlockState(queue.getCompound("state")),
-                    tet,
-                    queue.getDouble("speedsquared"),
-                    queue.getInt("nextbehaviour")
-            );
-            this.queuedBehaviours.put(bp, bq);
+            BlockState state = NBTUtil.readBlockState(queue.getCompound("state"));
+            //Check state is valid in this session
+            if(state == null) {
+                FragileGlassBase.warn("Ignored a pending break system behaviour with a block state that doesn't exist. Are you missing a mod which you had last session?");
+            }
+            else {
+                String rl = queue.getString("tileentitytype");
+                if (rl.equals("null")) {
+                    //This must be a BlockState behaviour queue.
+                    BehaviourQueue bq = new BehaviourQueue(
+                            queue.getInt("countdown"),
+                            NBTUtil.readBlockState(queue.getCompound("state")),
+                            null,
+                            queue.getDouble("speedsquared"),
+                            queue.getInt("nextbehaviour")
+                    );
+                    this.queuedBehaviours.put(bp, bq);
+                } else {
+                    String[] rlParts = rl.split(":");
+                    if (rlParts.length == 2) {
+                        TileEntityType<?> tet = ForgeRegistries.TILE_ENTITIES.getValue(new ResourceLocation(rlParts[0], rlParts[1]));
+                        if (tet != null) {// Replace with default value of ForgeRegistries.TILE_ENTITIES if different
+                            //The TileEntityType has been found
+                            BehaviourQueue bq = new BehaviourQueue(
+                                    queue.getInt("countdown"),
+                                    NBTUtil.readBlockState(queue.getCompound("state")),
+                                    tet,
+                                    queue.getDouble("speedsquared"),
+                                    queue.getInt("nextbehaviour")
+                            );
+                            this.queuedBehaviours.put(bp, bq);
+                        }
+                        //Otherwise tet no longer exists in the game
+                        FragileGlassBase.warn("Ignored a pending break system behaviour with a tile entity type that doesn't exist. Are you missing a mod which you had last session?");
+                    } else {
+                        FragileGlassBase.warn("Ignored a queued BreakSystem behaviour with invalid TileEntityType. Please do not manually edit the BreakSystem NBT.");
+                    }
+                }
+            }
         }
     }
 
@@ -108,16 +137,16 @@ public class BreakSystem extends WorldSavedData {
 
     @SubscribeEvent(priority= EventPriority.HIGHEST)
     public void breakCheck(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.world == this.world && event.phase == TickEvent.Phase.START) {
             //Update all BehaviourQueues
-            for(BlockPos pos : this.queuedBehaviours.keySet())
+            for (BlockPos pos : this.queuedBehaviours.keySet())
                 this.updateBehaviourQueue(pos, this.queuedBehaviours.get(pos));
             //Intended to avoid ConcurrentModificationExceptions
-            CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(((ServerWorld)event.world).getEntities().collect(Collectors.toList()));
+            CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(((ServerWorld) event.world).getEntities().collect(Collectors.toList()));
             Iterator<Entity> i = entityList.iterator();
-            while(i.hasNext()) {
+            while (i.hasNext()) {
                 Entity e = i.next();
-                if(!e.removed) {
+                if (!e.removed) {
                     //Entities must have an instance of IBreakCapability or they will never be able to break blocks with
                     //IFragileCapability.
                     e.getCapability(BREAKCAP).ifPresent(ibc -> {
@@ -265,18 +294,20 @@ public class BreakSystem extends WorldSavedData {
         {
             FragilityData fData = fragDataList.get(i);
             if(fData.getBehaviour() == FragilityData.FragileBehaviour.WAIT) {
-                if(speedSq >= fData.getBreakSpeedSq()) {
-                    this.queuedBehaviours.put(pos, new BehaviourQueue(
-                            ((WaitData) fData).getTicks(),
-                            state,
-                            te == null ? null : te.getType(),
-                            speedSq,
-                            i + 1));
+                if(!this.queuedBehaviours.containsKey(pos)) {
+                    if(speedSq >= fData.getBreakSpeedSq()) {
+                        this.queuedBehaviours.put(pos, new BehaviourQueue(
+                                ((WaitData) fData).getTicks(),
+                                state,
+                                te == null ? null : te.getType(),
+                                speedSq,
+                                i + 1));
+                    }
                     stop = true;
                 }
             }
             else {
-                fData.onCrash(state, te, pos, e, speedSq);
+                fData.onCrash(this.world, state, te, pos, e, speedSq);
             }
             i++;
         }
@@ -312,8 +343,8 @@ public class BreakSystem extends WorldSavedData {
                             stop = true;
                         }
                     }
-                    else {
-                        fd.onCrash(bq.state, null, pos, null, bq.speedSq);
+                    else if(fd.canBeQueued()){
+                        fd.onCrash(this.world, bq.state, null, pos, null, bq.speedSq);
                     }
                     i++;
                 }

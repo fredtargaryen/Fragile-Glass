@@ -45,6 +45,8 @@ public abstract class ConfigLoader {
                 return new ModData(minSpeed);
             case UPDATE:
                 return new UpdateData(minSpeed);
+            case WAIT:
+                return new WaitData(minSpeed);
             default:
                 //Something has gone wrong
                 return new BreakData(minSpeed);
