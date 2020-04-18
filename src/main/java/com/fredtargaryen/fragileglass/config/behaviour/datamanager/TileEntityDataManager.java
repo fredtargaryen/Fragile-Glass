@@ -24,17 +24,6 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     protected String[] getDefaultConfigFileText() { return defaultFileData; }
 
     @Override
-    protected void loadDefaultData() {
-        super.loadDefaultData();
-        try {
-            this.tileEntityConfigLoader.parseArbitraryString("fragileglassft:tews UPDATE 0.0 10");
-        }
-        catch(ConfigLoader.ConfigLoadException cle) {
-            System.out.println("FredTargaryen is an idiot; please let him know you saw this");
-        }
-    }
-
-    @Override
     public boolean loadData() {
         return this.loadDataFromConfigDir(this.tileEntityConfigLoader);
     }
@@ -137,9 +126,5 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
 
             "\n@--Fun example lines you may wish to uncomment--\n",
             "@Currently none, but I am open to suggestions! You can look in fragileglassft_blocks.cfg for block examples.\n",
-            "\n@--Default values, in case you break something--\n",
-            "@Weak stone:\n",
-            "@fragileglassft:tews update 0.0 10\n\n",
-            "fragileglassft:tews update 0.0 10\n"
     };
 }

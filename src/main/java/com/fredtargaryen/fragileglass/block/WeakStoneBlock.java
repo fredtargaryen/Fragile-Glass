@@ -1,6 +1,5 @@
 package com.fredtargaryen.fragileglass.block;
 
-import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -9,32 +8,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class WeakStoneBlock extends FallingBlock {
     public WeakStoneBlock()
     {
         super(Properties.create(Material.ROCK));
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        try {
-            return new TileEntityWeakStone();
-        }
-        catch(Exception e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

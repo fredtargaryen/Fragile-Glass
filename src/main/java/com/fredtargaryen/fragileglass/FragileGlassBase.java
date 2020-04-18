@@ -14,7 +14,6 @@ import com.fredtargaryen.fragileglass.network.PacketHandler;
 import com.fredtargaryen.fragileglass.proxy.ClientProxy;
 import com.fredtargaryen.fragileglass.proxy.IProxy;
 import com.fredtargaryen.fragileglass.proxy.ServerProxy;
-import com.fredtargaryen.fragileglass.tileentity.TileEntityWeakStone;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapFactory;
 import com.fredtargaryen.fragileglass.tileentity.capability.FragileCapStorage;
 import com.fredtargaryen.fragileglass.tileentity.capability.IFragileCapability;
@@ -40,7 +39,6 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.Tag;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -269,10 +267,6 @@ public class FragileGlassBase {
     @ObjectHolder("bubble")
     public static BasicParticleType BUBBLE;
 
-    //Declare TileEntityTypes here
-    @ObjectHolder("tews")
-    public static TileEntityType TEWS_TYPE;
-
     public static FeatureManager FEATURE_MANAGER;
 
     // Says where the client and server 'proxy' code is loaded.
@@ -479,15 +473,6 @@ public class FragileGlassBase {
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
         Minecraft.getInstance().particles.registerFactory(BUBBLE, MyBubbleParticle.Factory::new);
-    }
-
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().registerAll(
-                TileEntityType.Builder.create(TileEntityWeakStone::new)
-                        .build(null)
-                        .setRegistryName(new ResourceLocation(DataReference.MODID, "tews"))
-        );
     }
 
     public void clientSetup(FMLClientSetupEvent event)

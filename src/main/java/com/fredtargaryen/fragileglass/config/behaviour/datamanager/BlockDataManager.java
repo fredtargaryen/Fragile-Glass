@@ -168,7 +168,10 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
             "@#fragileglassft:fragile_glass break 0.165\n",
             "@Thin ice:\n",
             "@fragileglassft:thinice break 0.0\n\n",
+            "@Weak stone:\n",
+            "@fragileglassft:weakstone update 0.0 10\n\n",
             "#fragileglassft:fragile_glass break 0.165\n",
-            "fragileglassft:thinice break 0.0\n"
+            "fragileglassft:thinice break 0.0\n",
+            "fragileglassft:weakstone update 0.0 10\n",
     };
 }
