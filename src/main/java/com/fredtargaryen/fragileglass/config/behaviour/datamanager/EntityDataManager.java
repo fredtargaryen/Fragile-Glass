@@ -151,10 +151,12 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
             "@THINK VERY CAREFULLY AND BACK UP YOUR WORLDS BEFORE ADDING ENTRIES HERE!\n",
             "@(You probably don't really want to make ZOMBIES ABLE TO BREAK EVERYTHING, for example.)\n",
             "@Here is where you can configure the speeds required for each entity to break a fragile block.\n",
+
             "\n@--Limitations--\n",
             "@* This will not work for entities which only appear on the client, such as particles.\n",
             "@* If your entry is not for a valid block, the mod will assume you entered a tile entity. However it\n",
             "@  cannot check if tile entities are valid, so you won't be warned. Check your spellings carefully.\n",
+
             "\n@--How to customise--\n",
             "@To add a comment to the file, start the line with a @ symbol.\n",
             "@To make an entity able to break fragile blocks, add a new row in this file following this format:\n",
@@ -170,14 +172,16 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
             "@  - If the max speed is less than the min speed they will be switched around internally.\n",
             "@* You can add extra values of any format, separated by spaces, for any mod entities that might require\n",
             "@  them.\n",
+
             "\n@--Tips--\n",
             "@* Certain entities will get a default break speed if not in this file, just so that the file doesn't\n",
             "@  become totally huge. This applies to: mobs and animals; arrows; fireballs; minecarts; firework\n",
             "@  rockets; boats; primed TNT; falling blocks. Writing an entity in here will override the default.\n",
             "@* It is more realistic if the smaller the mob, the larger the break speed.\n",
             "@* Giving a mob a minimum speed of 0 is risky; a single step towards a fragile block will break it.\n",
+
             "\n@--Example lines which you might want to uncomment--\n",
             "@Lets raiders break fragile blocks\n",
-            "@#minecraft:raiders 0.05 6.0\n",
+            "@#minecraft:raiders 0.05 6.0\n\n",
     };
 }

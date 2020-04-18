@@ -5,11 +5,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class WeakStoneBlock extends FallingBlock {
@@ -26,8 +25,20 @@ public class WeakStoneBlock extends FallingBlock {
      * change. Cases may include when redstone power is updated, cactus blocks popping off due to a neighboring solid
      * block, etc.
      */
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
+    @Override
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
     {
+    }
+
+    /**
+     * Update the provided state given the provided neighbor facing and neighbor state, returning a new state.
+     * For example, fences make their connections to the passed in state if possible, and wet concrete powder immediately
+     * returns its solidified counterpart.
+     * Note that this method should ideally consider only the specific face passed in.
+     */
+    @Override
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+        return stateIn;
     }
 
     public void onEndFalling(World worldIn, BlockPos pos, BlockState p_176502_3_, BlockState p_176502_4_) {
@@ -35,15 +46,10 @@ public class WeakStoneBlock extends FallingBlock {
     }
 
     /**
-     * This gets a complete list of items dropped from this block.
-     *
-     * @param drops add all items this block drops to this drops list
-     * @param world The current world
-     * @param pos Block position in world
-     * @param state Current state
-     * @param fortune Breakers fortune level
+     * How many world ticks before ticking
      */
-    public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune) {
-        drops.add(new ItemStack(Item.getItemFromBlock(Blocks.GRAVEL), 1, new CompoundNBT()));
+    @Override
+    public int tickRate(IWorldReader worldIn) {
+        return 0;
     }
 }

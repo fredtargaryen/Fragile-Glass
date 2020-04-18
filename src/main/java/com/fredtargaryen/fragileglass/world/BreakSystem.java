@@ -139,8 +139,13 @@ public class BreakSystem extends WorldSavedData {
     public void breakCheck(TickEvent.WorldTickEvent event) {
         if (event.world == this.world && event.phase == TickEvent.Phase.START) {
             //Update all BehaviourQueues
-            for (BlockPos pos : this.queuedBehaviours.keySet())
-                this.updateBehaviourQueue(pos, this.queuedBehaviours.get(pos));
+            Iterator<BlockPos> posIterator = this.queuedBehaviours.keySet().iterator();
+            while(posIterator.hasNext()) {
+                BlockPos pos = posIterator.next();
+                if(!this.updateBehaviourQueue(pos, this.queuedBehaviours.get(pos))) {
+                    posIterator.remove();
+                }
+            }
             //Intended to avoid ConcurrentModificationExceptions
             CopyOnWriteArrayList<Entity> entityList = new CopyOnWriteArrayList<>(((ServerWorld) event.world).getEntities().collect(Collectors.toList()));
             Iterator<Entity> i = entityList.iterator();
@@ -321,7 +326,15 @@ public class BreakSystem extends WorldSavedData {
         return blocksPerTick <= DataReference.MAXIMUM_ENTITY_SPEED_SQUARED;
     }
 
-    private void updateBehaviourQueue(BlockPos pos, BehaviourQueue bq) {
+    /**
+     * Process a BehaviourQueue in this.queuedBehaviours. If the queue is waiting decrease the amount of time it has to
+     * wait. If it is no longer waiting execute all crash behaviours up to the next wait behaviour or the end of the
+     * queue.
+     * @param pos The position at which the queue of behaviours is executing
+     * @param bq The behaviours being executed.
+     * @return True if the queue should continue executing; false if the end of the queue has been reached.
+     */
+    private boolean updateBehaviourQueue(BlockPos pos, BehaviourQueue bq) {
         if(bq.countdown == 0) {
             ArrayList<FragilityData> fragDataList;
             if(bq.tileEntityType == null) {
@@ -348,15 +361,16 @@ public class BreakSystem extends WorldSavedData {
                     }
                     i++;
                 }
-                if(i == fragDataList.size()) this.queuedBehaviours.remove(pos);
+                if(i == fragDataList.size()) return false;
             }
             else {
-                this.queuedBehaviours.remove(pos);
+                return false;
             }
         }
         else {
             bq.countdown--;
         }
+        return true;
     }
 
     private class BehaviourQueue {

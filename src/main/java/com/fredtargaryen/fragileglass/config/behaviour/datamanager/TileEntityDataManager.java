@@ -118,7 +118,7 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
             "@  execute multiple times. To ensure a behaviour triggers only once, add a behaviour that gets rid of\n",
             "@  the tile entity, such as break or change.\n",
 
-            "\n--The wait behaviour--\n",
+            "\n@--The wait behaviour--\n",
             "@Certain behaviours cannot be added after a wait behaviour. These behaviours are:\n",
             "@* command, if the word is entity: this depends on an entity which may not exist when the wait is over.\n",
             "@* damage: this depends on an entity which may not exist when the wait is over.\n",
