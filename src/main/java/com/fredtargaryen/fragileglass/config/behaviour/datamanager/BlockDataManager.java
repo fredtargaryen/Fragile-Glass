@@ -37,8 +37,9 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
     protected void loadDefaultData() {
         super.loadDefaultData();
         try {
-            this.blockConfigLoader.parseArbitraryString("#fragileglassft:fragile_glass BREAK 0.165");
-            this.blockConfigLoader.parseArbitraryString("fragileglassft:thinice BREAK 0.0");
+            this.blockConfigLoader.parseArbitraryString("#fragileglassft:fragile_glass break 0.165");
+            this.blockConfigLoader.parseArbitraryString("fragileglassft:thinice break 0.0");
+            this.blockConfigLoader.parseArbitraryString("fragileglassft:weakstone update 0.0 20");
         }
         catch(ConfigLoader.ConfigLoadException cle) {
             System.out.println("FredTargaryen is an idiot; please let him know you saw this");
@@ -172,10 +173,10 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
             "@Thin ice:\n",
             "@fragileglassft:thinice break 0.0\n",
             "@Weak stone:\n",
-            "@fragileglassft:weakstone update 0.0 10\n\n",
+            "@fragileglassft:weakstone update 0.0 20\n\n",
 
             "#fragileglassft:fragile_glass break 0.165\n",
             "fragileglassft:thinice break 0.0\n",
-            "fragileglassft:weakstone update 0.0 10\n",
+            "fragileglassft:weakstone update 0.0 20\n",
     };
 }
