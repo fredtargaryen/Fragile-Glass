@@ -18,7 +18,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
@@ -43,10 +42,14 @@ public class BreakSystem extends WorldSavedData {
     private EntityDataManager entityDataManager;
     private TileEntityDataManager tileEntityDataManager;
     public HashMap<BlockPos, BehaviourQueue> queuedBehaviours;
+
     /**
      * Code inspection will tell you the access can be private, but it jolly well can't
      */
-    public BreakSystem() { super(DataReference.MODID); }
+    public BreakSystem() {
+        super(DataReference.MODID);
+        this.queuedBehaviours = new HashMap<>();
+    }
 
     public static BreakSystem forWorld(World world) {
         ServerWorld serverWorld = world.getServer().getWorld(world.dimension.getType());
@@ -122,7 +125,6 @@ public class BreakSystem extends WorldSavedData {
 
     public void init(World world) {
         this.world = world;
-        this.queuedBehaviours = new HashMap<>();
         MinecraftForge.EVENT_BUS.register(this);
         this.blockDataManager = FragileGlassBase.getBlockDataManager();
         this.entityDataManager = FragileGlassBase.getEntityDataManager();
@@ -344,7 +346,7 @@ public class BreakSystem extends WorldSavedData {
                 fragDataList = this.tileEntityDataManager.getData(bq.tileEntityType);
             }
             if(fragDataList != null && bq.nextBehaviourIndex < fragDataList.size()) {
-                // Execute all behaviours up to the end of the next WAIT
+                // Execute all behaviours up to the end or the next WAIT
                 int i = bq.nextBehaviourIndex;
                 boolean stop = false;
                 while(!stop && i < fragDataList.size()) {
@@ -361,6 +363,7 @@ public class BreakSystem extends WorldSavedData {
                     }
                     i++;
                 }
+                this.markDirty();
                 if(i == fragDataList.size()) return false;
             }
             else {
@@ -369,6 +372,7 @@ public class BreakSystem extends WorldSavedData {
         }
         else {
             bq.countdown--;
+            this.markDirty();
         }
         return true;
     }
