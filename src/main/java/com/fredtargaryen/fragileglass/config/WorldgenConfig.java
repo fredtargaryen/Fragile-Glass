@@ -25,13 +25,13 @@ public class WorldgenConfig {
         GEN_THIN_ICE = serverBuilder.comment("If true, thin ice patches will generate on frozen bodies of water")
                 .define("thinice.enable", true);
         AVG_PATCH_SIZE_ICE = serverBuilder.comment("Average patch diameter")
-                .defineInRange("thinice.avgPatchSize", 5, 1, 14);
+                .defineInRange("thinice.avgPatchSize", 5, 1, 12);
         GEN_CHANCE_ICE = serverBuilder.comment("1 in x chance of patch appearing")
                 .defineInRange("thinice.genChance", 3, 1, 5);
         GEN_WEAK_STONE = serverBuilder.comment("If true, weak stone patches will generate on cave ceilings. Expect falls into lava!")
                 .define("weakstone.enable", false);
         AVG_PATCH_SIZE_STONE = serverBuilder.comment("Average patch diameter")
-                .defineInRange("weakstone.avgPatchSize", 5, 1, 14);
+                .defineInRange("weakstone.avgPatchSize", 5, 1, 12);
         GEN_CHANCE_STONE = serverBuilder.comment("1 in x chance of patch appearing")
                 .defineInRange("weakstone.genChance", 3, 1, 5);
     }
