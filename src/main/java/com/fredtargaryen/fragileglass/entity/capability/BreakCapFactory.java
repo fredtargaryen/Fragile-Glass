@@ -2,7 +2,7 @@ package com.fredtargaryen.fragileglass.entity.capability;
 
 import com.fredtargaryen.fragileglass.DataReference;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.concurrent.Callable;
 
@@ -20,7 +20,7 @@ public class BreakCapFactory implements Callable<IBreakCapability> {
 
         @Override
         public double getSpeedSquared(Entity e) {
-            Vec3d motion = e.getMotion();
+            Vector3d motion = e.getMotion();
             return motion.x * motion.x + motion.y * motion.y + motion.z * motion.z;
         }
 

@@ -2,19 +2,12 @@ package com.fredtargaryen.fragileglass.config.behaviour.configloader;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.data.*;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.state.Property;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 public abstract class ConfigLoader {
@@ -23,8 +16,8 @@ public abstract class ConfigLoader {
     protected int lineNumber;
     protected String line;
 
-    private <P extends Comparable<P>> BlockState applyParsedProperty(BlockState state, IProperty<P> iprop, HashMap newProperties) {
-        return state.with(iprop, (P) newProperties.get(iprop));
+    private <P extends Comparable<P>> BlockState applyParsedProperty(BlockState state, Property<P> prop, HashMap newProperties) {
+        return state.with(prop, (P) newProperties.get(prop));
     }
 
     protected FragilityData createDataFromBehaviour(FragilityData.FragileBehaviour behaviour, double minSpeed) {
@@ -89,8 +82,8 @@ public abstract class ConfigLoader {
         //properties with the same String name be transferred to the new state, even if they are different IProperties.
         this.updateStringPropertyMap(newMap, oldMap);
         this.updateStringPropertyMap(newMap, setMap);
-        HashMap<IProperty<?>, ?> parsedMap = KeyParser.parseStringPropertyMap(newState, newMap);
-        for(IProperty<?> prop : parsedMap.keySet()) {
+        HashMap<Property<?>, ?> parsedMap = KeyParser.parseStringPropertyMap(newState, newMap);
+        for(Property<?> prop : parsedMap.keySet()) {
             newState = this.applyParsedProperty(newState, prop, parsedMap);
         }
         return newState;

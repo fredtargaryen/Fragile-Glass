@@ -12,13 +12,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.item.FallingBlockEntity;
-import net.minecraft.entity.item.FireworkRocketEntity;
 import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.FireballEntity;
+import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -77,7 +77,7 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
 
                     @Override
                     public double getSpeedSquared(Entity e) {
-                        Vec3d motion = e.getMotion();
+                        Vector3d motion = e.getMotion();
                         return motion.x * motion.x + motion.y * motion.y + motion.z * motion.z;
                     }
 

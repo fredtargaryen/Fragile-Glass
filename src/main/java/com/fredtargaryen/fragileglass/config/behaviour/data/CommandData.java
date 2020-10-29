@@ -7,14 +7,15 @@ import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class CommandData extends FragilityData implements ICommandSource {
     private boolean executeFromCrasherPos;
@@ -66,8 +67,8 @@ public class CommandData extends FragilityData implements ICommandSource {
     public void onCrash(World world, BlockState state, @Nullable TileEntity te, BlockPos pos, @Nullable Entity crasher, double speedSq) {
         CommandSource cs = new CommandSource(
                 this, //Some ICommandSource
-                this.executeFromCrasherPos ? crasher.getPositionVec() : new Vec3d(pos.getX(), pos.getY(), pos.getZ()), //position
-                this.executeFromCrasherPos ? crasher.getPitchYaw() : Vec2f.ZERO, //rotation
+                this.executeFromCrasherPos ? crasher.getPositionVec() : new Vector3d(pos.getX(), pos.getY(), pos.getZ()), //position
+                this.executeFromCrasherPos ? crasher.getPitchYaw() : Vector2f.ZERO, //rotation
                 (ServerWorld) world, //world
                 2, //permission level
                 "", //internal name
@@ -95,7 +96,7 @@ public class CommandData extends FragilityData implements ICommandSource {
     //ICOMMANDSOURCE IMPLEMENTATION//
     /////////////////////////////////
     @Override
-    public void sendMessage(ITextComponent iTextComponent) {
+    public void sendMessage(ITextComponent iTextComponent, UUID uuid) {
 
     }
 

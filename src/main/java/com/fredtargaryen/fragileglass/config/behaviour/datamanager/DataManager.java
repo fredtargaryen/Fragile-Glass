@@ -5,6 +5,7 @@ import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.fredtargaryen.fragileglass.config.behaviour.configloader.ConfigLoader;
 import com.fredtargaryen.fragileglass.config.behaviour.data.FragilityData;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.storage.FolderName;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -61,6 +62,7 @@ public abstract class DataManager<E, D> {
     public abstract boolean loadData();
 
     protected boolean loadDataFromConfigDir(ConfigLoader cl) {
+        if(this.configDir == null) return false;
         boolean ok = true;
         try {
             File[] fileList = this.configDir.listFiles();
@@ -109,7 +111,7 @@ public abstract class DataManager<E, D> {
 
     public void setupDirsAndFiles(MinecraftServer ms) {
         //Get path to serverconfigs folder of world as File object
-        this.configDir = ms.getActiveAnvilConverter().getFile(ms.getFolderName(), "serverconfig");
+        this.configDir = ms.func_240776_a_(new FolderName("serverconfig")).toFile();//ms.getActiveAnvilConverter().getFile(ms.getFolderName(), "serverconfig");
         this.configFile = new File(this.configDir, DataReference.MODID + "_"+this.typeString+".cfg");
         if(!this.configFile.exists()) {
             try {

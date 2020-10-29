@@ -67,17 +67,17 @@ public class DamageData extends FragilityData {
     private DamageSource parseDamageSource(String sourceString) throws FragilityDataParseException {
         String lowerString = sourceString.toLowerCase();
         switch (lowerString) {
-            case "infire":
+            case "inFire":
                 return DamageSource.IN_FIRE;
-            case "lightningbolt":
+            case "lightningBolt":
                 return DamageSource.LIGHTNING_BOLT;
-            case "onfire":
+            case "onFire":
                 return DamageSource.ON_FIRE;
             case "lava":
                 return DamageSource.LAVA;
-            case "hotfloor":
+            case "hotFloor":
                 return DamageSource.HOT_FLOOR;
-            case "inwall":
+            case "inWall":
                 return DamageSource.IN_WALL;
             case "cramming":
                 return DamageSource.CRAMMING;
@@ -89,9 +89,9 @@ public class DamageData extends FragilityData {
                 return DamageSource.CACTUS;
             case "fall":
                 return DamageSource.FALL;
-            case "flyintowall":
+            case "flyIntoWall":
                 return DamageSource.FLY_INTO_WALL;
-            case "outofworld":
+            case "outOfWorld":
                 return DamageSource.OUT_OF_WORLD;
             case "generic":
                 return DamageSource.GENERIC;
@@ -101,15 +101,13 @@ public class DamageData extends FragilityData {
                 return DamageSource.WITHER;
             case "anvil":
                 return DamageSource.ANVIL;
-            case "fallingblock":
+            case "fallingBlock":
                 return DamageSource.FALLING_BLOCK;
-            case "dragonbreath":
+            case "dragonBreath":
                 return DamageSource.DRAGON_BREATH;
-            case "fireworks":
-                return DamageSource.FIREWORKS;
             case "dryout":
                 return DamageSource.DRYOUT;
-            case "sweetberrybush":
+            case "sweetBerryBush":
                 return DamageSource.SWEET_BERRY_BUSH;
             default:
                 throw new FragilityDataParseException("No damage source found. Please remove any underscores.");

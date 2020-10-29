@@ -36,12 +36,14 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -55,10 +57,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -90,7 +89,7 @@ public class FragileGlassBase {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static Tag<Block> ICE_BLOCKS;
+    public static ITag<Block> ICE_BLOCKS;
 
     private static BlockDataManager blockDataManager;
     private static EntityDataManager entityDataManager;
@@ -495,7 +494,6 @@ public class FragileGlassBase {
         blockDataManager = new BlockDataManager();
         entityDataManager = new EntityDataManager();
         tileEntityDataManager = new TileEntityDataManager();
-        FEATURE_MANAGER.registerGenerators();
     }
 
     ////////////////////////
@@ -625,7 +623,7 @@ public class FragileGlassBase {
                         public void speedUpdate(TickEvent.ClientTickEvent event) {
                             if(ep == game.player) {
                                 if (event.phase == TickEvent.Phase.START) {
-                                    Vec3d motion = ep.getMotion();
+                                    Vector3d motion = ep.getMotion();
                                     double speedSq = Math.max(motion.x * motion.x + motion.y * motion.y + motion.z * motion.z, 0.0);
                                     if (Math.abs(speedSq - this.lastSpeedSq) > 0.001) {
                                         MessageBreakerMovement mbm = new MessageBreakerMovement();
@@ -708,8 +706,8 @@ public class FragileGlassBase {
     //////////////////////////////
     //DATA MANAGER ERROR LOGGING//
     //////////////////////////////
-    private static final ITextComponent SUCCESS_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Data reloaded without errors!").applyTextStyle(TextFormatting.GREEN);
-    private static final ITextComponent FAILURE_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Errors found in config files; please check config folder for more information.").applyTextStyle(TextFormatting.RED);
+    private static final ITextComponent SUCCESS_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Data reloaded without errors!").mergeStyle(TextFormatting.GREEN);
+    private static final ITextComponent FAILURE_MESSAGE = new StringTextComponent("[FRAGILE GLASS] Errors found in config files; please check config folder for more information.").mergeStyle(TextFormatting.RED);
     private static ITextComponent STATUS;
     private static CommandSource cachedCommandSource = null;
 
@@ -729,14 +727,24 @@ public class FragileGlassBase {
         blockDataManager.setupDirsAndFiles(ms);
         entityDataManager.setupDirsAndFiles(ms);
         tileEntityDataManager.setupDirsAndFiles(ms);
-        ms.getResourceManager().addReloadListener(new ReloadListener<Map<ResourceLocation, Tag.Builder<EntityType<?>>>>() {
+        setReloadStatus(FragileGlassBase.reloadDataManagers());
+        if(cachedCommandSource != null) {
+            cachedCommandSource.sendFeedback(STATUS, true);
+            cachedCommandSource = null;
+        }
+    }
+
+    @SubscribeEvent
+    public void addReloadListener(AddReloadListenerEvent arle)
+    {
+        arle.addListener(new ReloadListener<Map<ResourceLocation, Tag.Builder>>() {
             @Override
-            protected Map<ResourceLocation, Tag.Builder<EntityType<?>>> prepare(IResourceManager iResourceManager, IProfiler iProfiler) {
+            protected Map<ResourceLocation, Tag.Builder> prepare(IResourceManager iResourceManager, IProfiler iProfiler) {
                 return null;
             }
 
             @Override
-            protected void apply(Map<ResourceLocation, Tag.Builder<EntityType<?>>> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
+            protected void apply(Map<ResourceLocation, Tag.Builder> resourceLocationBuilderMap, IResourceManager iResourceManager, IProfiler iProfiler) {
                 setReloadStatus(FragileGlassBase.reloadDataManagers());
                 if(cachedCommandSource != null) {
                     cachedCommandSource.sendFeedback(STATUS, true);
@@ -750,8 +758,8 @@ public class FragileGlassBase {
      * Register the mod's commands.
      */
     @SubscribeEvent
-    public void registerCommands(FMLServerStartingEvent event) {
-        CommandsBase.registerCommands(event.getCommandDispatcher());
+    public void registerCommands(RegisterCommandsEvent event) {
+        CommandsBase.registerCommands(event.getDispatcher());
     }
 
     /**

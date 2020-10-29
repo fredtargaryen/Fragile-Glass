@@ -6,8 +6,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tileentity.TileEntityType;
@@ -79,7 +79,8 @@ public class KeyParser {
         }
         else {
             //Represents the set of blocks under the given tag
-            blocks = BlockTags.getCollection().getOrCreate(new ResourceLocation(tag)).getAllElements();
+            //was getOrCreate
+            blocks = BlockTags.getCollection().get(new ResourceLocation(tag)).getAllElements();
         }
         String propsString = description.get("properties");
         for(Block block : blocks) {
@@ -88,9 +89,9 @@ public class KeyParser {
             if (propsString != null) {
                 //Some properties were specified so change filteredStates
                 //Get the properties specified by the variant text in the config file
-                HashMap<IProperty<?>, ?> specifiedProperties = parseStringPropertyMap(
+                HashMap<Property<?>, ?> specifiedProperties = parseStringPropertyMap(
                         block.getDefaultState(), getStringPropertyMapFrom(propsString));
-                for (IProperty<?> iprop : specifiedProperties.keySet()) {
+                for (Property<?> iprop : specifiedProperties.keySet()) {
                     //For each property, filter the states and keep the ones which have the same value for that property
                     filteredStates = filteredStates.stream()
                             .filter(state -> state.get(iprop) == specifiedProperties.get(iprop))
@@ -171,7 +172,7 @@ public class KeyParser {
      */
     public static HashMap<String, String> getStringPropertyMapFrom(BlockState state) {
         HashMap<String, String> map = new HashMap<>();
-        for(IProperty<?> prop : state.getProperties()) {
+        for(Property<?> prop : state.getProperties()) {
             map.put(prop.getName(), state.get(prop).toString());
         }
         return map;
@@ -192,11 +193,11 @@ public class KeyParser {
         return map;
     }
 
-    public static HashMap<IProperty<?>, Object> parseStringPropertyMap(BlockState reference, HashMap<String, String> map) {
+    public static HashMap<Property<?>, Object> parseStringPropertyMap(BlockState reference, HashMap<String, String> map) {
         if(map == null) map = new HashMap<>();
-        HashMap<IProperty<?>, Object> properties = new HashMap<>();
-        Collection<IProperty<?>> existingProps = reference.getProperties();
-        for(IProperty<?> prop : existingProps) {
+        HashMap<Property<?>, Object> properties = new HashMap<>();
+        Collection<Property<?>> existingProps = reference.getProperties();
+        for(Property<?> prop : existingProps) {
             String propName = prop.getName();
             if(map.containsKey(propName)) {
                 String value = map.get(propName);
@@ -225,7 +226,7 @@ public class KeyParser {
         if (value.charAt(0) == '#') {
             //values[0] is a tag representing multiple entities
             entityTypes = EntityTypeTags.getCollection()
-                    .getOrCreate(new ResourceLocation(value.substring(1)))
+                    .get(new ResourceLocation(value.substring(1))) // Hopefully replaces GetOrCreate
                     .getAllElements();
         } else {
             //value is a single entity

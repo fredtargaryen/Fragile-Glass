@@ -1,20 +1,18 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
 import com.fredtargaryen.fragileglass.config.WorldgenConfig;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.serialization.Codec;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
 public class IcePatchGenConfig implements IFeatureConfig {
     public int avePatchSize;
 
-    @Override
-    public <T> Dynamic<T> serialize(DynamicOps<T> p_214634_1_) {
-        return null;
-    }
+    public static final Codec<IcePatchGenConfig> factory;
 
-    public static IcePatchGenConfig factory(Dynamic data) {
-        return new IcePatchGenConfig();
+    public static final IcePatchGenConfig config = new IcePatchGenConfig();
+
+    static {
+        factory = Codec.unit(() -> config);
     }
 
     public IcePatchGenConfig() {

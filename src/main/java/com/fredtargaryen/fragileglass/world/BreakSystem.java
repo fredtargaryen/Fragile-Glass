@@ -52,7 +52,7 @@ public class BreakSystem extends WorldSavedData {
     }
 
     public static BreakSystem forWorld(World world) {
-        ServerWorld serverWorld = world.getServer().getWorld(world.dimension.getType());
+        ServerWorld serverWorld = world.getServer().getWorld(world.getDimensionKey());
         DimensionSavedDataManager storage = serverWorld.getSavedData();
         return storage.getOrCreate(BreakSystem::new, DataReference.MODID);
     }

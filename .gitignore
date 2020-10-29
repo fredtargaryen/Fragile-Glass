@@ -16,9 +16,12 @@ out
 # gradle
 build
 .gradle
+gradlew
+gradlew.bat
 
 # other
 eclipse
+logs
 run
 
 # Files from Forge MDK

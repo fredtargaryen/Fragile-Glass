@@ -3,8 +3,7 @@ package com.fredtargaryen.fragileglass.entity.capability;
 import com.fredtargaryen.fragileglass.DataReference;
 import com.fredtargaryen.fragileglass.network.MessageBreakerMovement;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.concurrent.Callable;
 
@@ -23,7 +22,7 @@ public class PlayerBreakFactory implements Callable<IPlayerBreakCapability>
         private double lastSpeedSq;
 
         public void init(Entity e) {
-            Vec3d vec = e.getPositionVec();
+            Vector3d vec = e.getPositionVec();
             this.prevPosX = vec.x;
             this.prevPosY = vec.y;
             this.prevPosZ = vec.z;

@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -41,15 +42,8 @@ public class WeakStoneBlock extends FallingBlock {
         return stateIn;
     }
 
-    public void onEndFalling(World worldIn, BlockPos pos, BlockState p_176502_3_, BlockState p_176502_4_) {
-        worldIn.setBlockState(pos, Blocks.GRAVEL.getDefaultState());
-    }
-
-    /**
-     * How many world ticks before ticking
-     */
     @Override
-    public int tickRate(IWorldReader worldIn) {
-        return 0;
+    public void onEndFalling(World worldIn, BlockPos pos, BlockState fallingState, BlockState hitState, FallingBlockEntity p_176502_5_) {
+        worldIn.setBlockState(pos, Blocks.GRAVEL.getDefaultState());
     }
 }
