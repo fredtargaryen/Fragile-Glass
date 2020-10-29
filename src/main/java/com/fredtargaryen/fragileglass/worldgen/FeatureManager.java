@@ -1,5 +1,6 @@
 package com.fredtargaryen.fragileglass.worldgen;
 
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.placement.ChanceConfig;
@@ -12,8 +13,8 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class FeatureManager {
-    public static final IcePatchPlacement ICE_PLACEMENT = new IcePatchPlacement(ChanceConfig.field_236950_a_);
-    public static final StonePatchPlacement STONE_PLACEMENT = new StonePatchPlacement(ChanceConfig.field_236950_a_);
+    public static final IcePatchPlacement ICE_PLACEMENT = new IcePatchPlacement(ChanceConfig.CODEC);
+    public static final StonePatchPlacement STONE_PLACEMENT = new StonePatchPlacement(ChanceConfig.CODEC);
     public static final Feature<IcePatchGenConfig> ICE_FEATURE = new IcePatchGen(IcePatchGenConfig.factory);
     public static final Feature<StonePatchGenConfig> STONE_FEATURE = new StonePatchGen(StonePatchGenConfig.factory);
 
@@ -36,8 +37,7 @@ public class FeatureManager {
     public static void loadBiome(BiomeLoadingEvent ble)
     {
         BiomeGenerationSettingsBuilder generation = ble.getGeneration();
-
-        if(ble.getClimate().field_242461_c < 0.2f)
+        if(ble.getClimate().precipitation == Biome.RainType.SNOW)
         {
             generation.getFeatures(GenerationStage.Decoration.TOP_LAYER_MODIFICATION).add(() -> ICE_FEATURE.withConfiguration(new IcePatchGenConfig()));
         }
