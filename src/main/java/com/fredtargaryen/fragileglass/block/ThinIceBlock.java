@@ -30,10 +30,8 @@ public class ThinIceBlock extends Block {
      */
     @Override
     public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        if (worldIn.getLightFor(LightType.BLOCK, pos) > 11 - state.getOpacity(worldIn, pos)) {
-            if (worldIn.func_230315_m_().func_236040_e_()) {
-                worldIn.removeBlock(pos, false);
-            }
+        if (worldIn.getDimensionType().isUltrawarm()) {
+            worldIn.removeBlock(pos, false);
         }
     }
 
