@@ -49,6 +49,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -256,12 +257,6 @@ public class FragileGlassBase {
     @ObjectHolder("weakstone")
     public static Item ITEM_WEAK_STONE;
 
-    //Declare Features here
-    @ObjectHolder("icepatchgen")
-    public static Feature<IcePatchGenConfig> ICE_FEATURE;
-    @ObjectHolder("stonepatchgen")
-    public static Feature<StonePatchGenConfig> STONE_FEATURE;
-
     //Declare ParticleTypes here
     @ObjectHolder("bubble")
     public static BasicParticleType BUBBLE;
@@ -459,14 +454,19 @@ public class FragileGlassBase {
     }
 
     @SubscribeEvent
-    public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
-        FEATURE_MANAGER = new FeatureManager();
-        FEATURE_MANAGER.registerFeatures(event);
+    public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
+        event.getRegistry().register(new BasicParticleType(false).setRegistryName("bubble"));
     }
 
     @SubscribeEvent
-    public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
-        event.getRegistry().register(new BasicParticleType(false).setRegistryName("bubble"));
+    public static void registerPlacements(RegistryEvent.Register<Placement<?>> event) {
+        FEATURE_MANAGER = new FeatureManager();
+        FEATURE_MANAGER.registerPlacements(event);
+    }
+
+    @SubscribeEvent
+    public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+        FEATURE_MANAGER.registerFeatures(event);
     }
 
     @SubscribeEvent

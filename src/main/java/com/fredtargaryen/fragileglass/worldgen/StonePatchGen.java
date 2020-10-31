@@ -32,8 +32,8 @@ public class StonePatchGen extends Feature<StonePatchGenConfig> {
         BlockState nextBlockState;
         int patchRadius = (int) (((2 * random.nextGaussian()) + config.avePatchSize) / 2);
         BlockPos patchCentre = pos;
-        int cornerX = (patchCentre.getX() / 16) * 16;
-        int cornerZ = (patchCentre.getZ() / 16) * 16;
+        int cornerX = patchCentre.getX();
+        int cornerZ = patchCentre.getZ();
         //Move centre of patch so that patches cannot go outside the chunk
         double centreX = Math.max(patchCentre.getX(), cornerX + patchRadius);
         centreX = Math.min(centreX, cornerX + 16 - patchRadius);
@@ -59,7 +59,9 @@ public class StonePatchGen extends Feature<StonePatchGenConfig> {
                 }
             }
         }
-        world.setBlockState(patchCentre, FragileGlassBase.WEAK_STONE.getDefaultState(), 18);
+        if(world.getBlockState(patchCentre).getMaterial() == Material.ROCK) {
+            world.setBlockState(patchCentre, FragileGlassBase.WEAK_STONE.getDefaultState(), 18);
+        }
         return true;
     }
 }
