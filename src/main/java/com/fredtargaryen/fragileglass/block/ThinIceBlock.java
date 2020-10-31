@@ -21,16 +21,11 @@ public class ThinIceBlock extends Block {
         super(Properties.create(Material.ICE).slipperiness(0.98F).sound(SoundType.GLASS).tickRandomly().notSolid());
     }
 
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return Blocks.WATER.getDefaultState().getOpacity(worldIn, pos);
-    }
-
     /**
-     * Ticks the block if it's been scheduled
+     * Performs a random tick on a block.
      */
-    @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        if (worldIn.getDimensionType().isUltrawarm()) {
+    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+        if (worldIn.getLightFor(LightType.BLOCK, pos) > 11 - state.getOpacity(worldIn, pos)) {
             worldIn.removeBlock(pos, false);
         }
     }
