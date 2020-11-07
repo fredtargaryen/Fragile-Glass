@@ -31,12 +31,12 @@ public class PatchGenIce extends PatchGen
      *
      */
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+        //Coords of "top left" blocks in chunk
+        int chunkBlockX = chunkX * 16;
+        int chunkBlockZ = chunkZ * 16;
         //145 is the TerraFirmaCraft sea level - guessing other mods don't go any higher than this
-        Biome b = world.getBiome(new BlockPos(chunkX, 145, chunkZ));
+        Biome b = world.getBiome(new BlockPos(chunkBlockX, 145, chunkBlockZ));
         if (b.getEnableSnow()) {
-            //Coords of "top left" blocks in chunk
-            int chunkBlockX = chunkX * 16;
-            int chunkBlockZ = chunkZ * 16;
             //The BlockPos where patch generation will be attempted
             BlockPos patchCentre;
             //Possible middle block in patch
