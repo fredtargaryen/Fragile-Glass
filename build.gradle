@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.6.1'
+version = '2.7.0'
 group = 'com.fredtargaryen.fragileglass' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'Fragile Glass and Thin Ice 1.15.2'
 

@@ -14,8 +14,8 @@ logoFile="banner.png"
 # The modid of the mod
 modId="fragileglassft"
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="2.6.1"
-# A display name for the mod
+version="2.7.0" #mandatory
+ # A display name for the mod
 displayName="Fragile Glass and Thin Ice"
 # A URL to query for updates for this mod. See the JSON update specification <here>
 # updateJSONURL="http://myurl.me/" #optional
@@ -23,10 +23,12 @@ displayName="Fragile Glass and Thin Ice"
 authors="FredTargaryen"
 # A text field displayed in the mod UI
 credits='''
-Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12; McJty - general help
-incrediblestrandofhair - EXPLODE and DAMAGE behaviour suggestions; example behaviour config files
-MajoraLuna - WAIT behaviour suggestion
-'''
+    Ivorius; coolAlias; wuppy; Choonster; TheGreyGhost; LapisSea; Draco18s; oldcheese; naqaden; DieSieben07; captain_qua; DWX12; McJty; gigaherz - general help
+    incrediblestrandofhair - EXPLODE and DAMAGE behaviour suggestions; example behaviour config files
+    MajoraLuna - WAIT behaviour suggestion
+    bluebird9281 - configurable amount of Fragile Glass blocks per Sugar Block suggestion
+    and the numerous bug reporters
+    '''
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 A Minecraft Forge mod which does the following things:
