@@ -268,7 +268,7 @@ public class FragileGlassBase {
 
     public FragileGlassBase() {
         //Register the config
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG_SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG_SPEC);
 
         //Event bus
         IEventBus loadingBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -280,7 +280,7 @@ public class FragileGlassBase {
         MinecraftForge.EVENT_BUS.register(this);
 
         //Load the config
-        Config.loadConfig(FMLPaths.CONFIGDIR.get().resolve(DataReference.MODID + ".toml"));
+        Config.loadConfig(FMLPaths.CONFIGDIR.get().resolve(DataReference.MODID + "-common.toml"));
     }
 
     @SubscribeEvent

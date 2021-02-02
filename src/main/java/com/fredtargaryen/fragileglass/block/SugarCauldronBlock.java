@@ -1,6 +1,7 @@
 package com.fredtargaryen.fragileglass.block;
 
 import com.fredtargaryen.fragileglass.FragileGlassBase;
+import com.fredtargaryen.fragileglass.config.WorldgenConfig;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ExperienceOrbEntity;
@@ -53,47 +54,47 @@ public class SugarCauldronBlock extends Block {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        ItemStack heldItemStack = player.inventory.getCurrentItem();
+        Item heldItem = heldItemStack.getItem();
         if (w.isRemote) {
-            if(state.get(AGE_0_7).equals(1)) {
+            if(state.get(AGE_0_7).equals(1) && heldItem == FragileGlassBase.ITEM_SUGAR_BLOCK) {
                 this.splash(w, pos.getX(), pos.getY(), pos.getZ());
             }
-            return ActionResultType.PASS;
+            return ActionResultType.SUCCESS;
         }
         else {
             int i1 = state.get(AGE_0_7);
-            ItemStack itemstack = player.inventory.getCurrentItem();
             if(i1 == 0){
-                if (itemstack.getItem() == Items.WATER_BUCKET) {
+                if (heldItem == Items.WATER_BUCKET) {
                     if (!player.abilities.isCreativeMode) {
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
                     }
                     w.playSound(null, pos, SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     w.setBlockState(pos, state.with(AGE_0_7, 1));
+                    return ActionResultType.SUCCESS;
                 }
-                return ActionResultType.PASS;
             }
             else if(i1 == 1)
             {
-                Item i = itemstack.getItem();
-                if(i == Item.getItemFromBlock(FragileGlassBase.SUGAR_BLOCK))
+                if(heldItem == FragileGlassBase.ITEM_SUGAR_BLOCK)
                 {
                     if (!player.abilities.isCreativeMode)
                     {
-                        ItemStack newStack = itemstack.copy();
+                        ItemStack newStack = heldItemStack.copy();
                         newStack.grow(-1);
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, newStack);
                     }
                     w.playSound(null, pos, SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     w.setBlockState(pos, state.with(AGE_0_7, 2), 3);
+                    return ActionResultType.CONSUME;
                 }
-                return ActionResultType.PASS;
             }
             else if(i1 == 6)
             {
-                w.addEntity(new ItemEntity(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, new ItemStack(FragileGlassBase.FRAGILE_GLASS, 16)));
+                w.addEntity(new ItemEntity(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, new ItemStack(FragileGlassBase.FRAGILE_GLASS, WorldgenConfig.GLASS_YIELD.get())));
                 w.addEntity(new ExperienceOrbEntity(w, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.0D, (double)pos.getZ() + 0.5D, 4));
                 w.setBlockState(pos, state.with(AGE_0_7, 0), 3);
-                return ActionResultType.PASS;
+                return ActionResultType.SUCCESS;
             }
         }
         return ActionResultType.FAIL;
@@ -171,7 +172,7 @@ public class SugarCauldronBlock extends Block {
             double x = pos.getX();
             double y = pos.getY();
             double z = pos.getZ();
-            ItemEntity entityItem = new ItemEntity(w, x + 0.5D, y + 1.0D, z + 0.5D, new ItemStack(FragileGlassBase.FRAGILE_GLASS, 16));
+            ItemEntity entityItem = new ItemEntity(w, x + 0.5D, y + 1.0D, z + 0.5D, new ItemStack(FragileGlassBase.FRAGILE_GLASS, WorldgenConfig.GLASS_YIELD.get()));
             w.addEntity(entityItem);
             w.addEntity(new ExperienceOrbEntity(w, x + 0.5, y + 0.5, z + 0.5, 4));
         }

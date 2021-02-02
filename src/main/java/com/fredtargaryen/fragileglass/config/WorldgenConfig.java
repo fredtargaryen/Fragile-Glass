@@ -17,10 +17,14 @@ public class WorldgenConfig {
 
     public static ForgeConfigSpec.BooleanValue SHOW_SUCCESS_MESSAGE;
 
+    public static ForgeConfigSpec.IntValue GLASS_YIELD;
+
     public static void init(ForgeConfigSpec.Builder serverBuilder) {
-        serverBuilder.comment("Status messages");
+        serverBuilder.comment("Misc. settings");
         SHOW_SUCCESS_MESSAGE = serverBuilder.comment("If true, enable successful load message on login")
                 .define("settings.showstatus", true);
+        GLASS_YIELD = serverBuilder.comment("The amount of Fragile Glass obtained by boiling one Sugar Block")
+                .defineInRange("settings.glassproduced", 16, 1, 64);
         serverBuilder.comment("Customise generation of thin ice and weak stone");
         GEN_THIN_ICE = serverBuilder.comment("If true, thin ice patches will generate on frozen bodies of water")
                 .define("thinice.enable", true);

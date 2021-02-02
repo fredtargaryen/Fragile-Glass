@@ -14,20 +14,20 @@ import java.nio.file.Path;
  */
 @Mod.EventBusSubscriber
 public class Config {
-    private static final ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
+    private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
 
-    public static final ForgeConfigSpec SERVER_CONFIG_SPEC;
+    public static final ForgeConfigSpec COMMON_CONFIG_SPEC;
 
     static {
-        WorldgenConfig.init(SERVER_BUILDER);
-        SERVER_CONFIG_SPEC = SERVER_BUILDER.build();
+        WorldgenConfig.init(COMMON_BUILDER);
+        COMMON_CONFIG_SPEC = COMMON_BUILDER.build();
     }
 
     public static void loadConfig(Path path)
     {
         final CommentedFileConfig configData = CommentedFileConfig.builder(path).sync().autosave().writingMode(WritingMode.REPLACE).build();
         configData.load();
-        SERVER_CONFIG_SPEC.setConfig(configData);
+        COMMON_CONFIG_SPEC.setConfig(configData);
     }
 
     @SubscribeEvent

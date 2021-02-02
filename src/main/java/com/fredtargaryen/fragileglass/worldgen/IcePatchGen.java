@@ -3,18 +3,15 @@ package com.fredtargaryen.fragileglass.worldgen;
 import com.fredtargaryen.fragileglass.FragileGlassBase;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.Random;
-import java.util.stream.Stream;
 
 public class IcePatchGen extends Feature<IcePatchGenConfig> {
     private static final double TWOPI = 2 * Math.PI;
