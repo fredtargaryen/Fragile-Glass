@@ -31,7 +31,7 @@ public class ExportAllCommand {
                 try {
                     List<FragilityData> fdList = (List<FragilityData>) dm.getData(state);
                     fdList.forEach(fragilityData -> {
-                        sb.append(dm.stringifyBehaviour(state, null));
+                        sb.append(dm.stringifyBehaviours(state, null, false));
                         sb.append("\n");
                     });
                 } catch (NullPointerException npe) {
@@ -42,7 +42,7 @@ public class ExportAllCommand {
         else if(manager.equals("entities")) {
             dm.getKeys().forEach(type -> {
                 try {
-                    sb.append(dm.stringifyBehaviour(type, null));
+                    sb.append(dm.stringifyBehaviours(type, null, false));
                     sb.append("\n");
                 } catch (NullPointerException npe) {
                     source.sendFeedback(new StringTextComponent("No existing entity data for " + ((EntityType) type).getRegistryName()), false);
@@ -55,7 +55,7 @@ public class ExportAllCommand {
                 try {
                     List<FragilityData> fdList = (List<FragilityData>) dm.getData(type);
                     fdList.forEach(fragilityData -> {
-                        sb.append(dm.stringifyBehaviour(type, null));
+                        sb.append(dm.stringifyBehaviours(type, null, false));
                         sb.append("\n");
                     });
                 } catch (NullPointerException npe) {

@@ -9,9 +9,9 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 
-public class ModifyCommand {
+public class AddCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(CommandsBase.baseCommandThen("modify",
+        dispatcher.register(CommandsBase.baseCommandThen("add",
                 Commands.argument("configline", StringArgumentType.string())
                         .then(Commands.argument("behaviour_number", IntegerArgumentType.integer(1))
                                 .executes(e -> execute(
@@ -32,7 +32,7 @@ public class ModifyCommand {
             return 1;
         }
         try {
-            dm.parseConfigLine(configLine, false, changeIndex);
+            dm.parseConfigLine(configLine, true, changeIndex);
             return 0;
         }
         catch(ConfigLoader.ConfigLoadException cle) {

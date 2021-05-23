@@ -28,9 +28,13 @@ public class CommandsBase {
     private static final String[] BEHAVIOUR_SUGGESTIONS = new String[] {
             "break",
             "change",
+            "command",
+            "damage",
+            "explode",
             "fall",
             "mod",
-            "update"
+            "update",
+            "wait"
     };
 
     protected static final SuggestionProvider<CommandSource> BEHAVIOUR_SUGGESTER = (context, builder) -> {
@@ -51,6 +55,7 @@ public class CommandsBase {
     }
 
     public static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
+        AddCommand.register(dispatcher);
         ModifyCommand.register(dispatcher);
         RemoveCommand.register(dispatcher);
         ViewCommand.register(dispatcher);

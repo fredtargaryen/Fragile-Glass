@@ -29,7 +29,7 @@ public class ExportCommand {
         if(manager.equals("blocks")) {
             entry.getBlockStateSet().forEach(state -> {
                 try {
-                    sb.append(dm.stringifyBehaviour(state, null));
+                    sb.append(dm.stringifyBehaviours(state, null, false));
                     sb.append("\n");
                 } catch (NullPointerException npe) {
                     source.sendFeedback(new StringTextComponent("No existing block state data for " + KeyParser.cleanBlockStateString(state.toString())), false);
@@ -39,7 +39,7 @@ public class ExportCommand {
         else if(manager.equals("entities")) {
             entry.getEntityTypeSet().forEach(type -> {
                 try {
-                    sb.append(dm.stringifyBehaviour(type, null));
+                    sb.append(dm.stringifyBehaviours(type, null, false));
                     sb.append("\n");
                 } catch (NullPointerException npe) {
                     source.sendFeedback(new StringTextComponent("No existing entity data for " + type.getRegistryName()), false);
@@ -49,7 +49,7 @@ public class ExportCommand {
         else {
             //"tileentities"
             try {
-                sb.append(dm.stringifyBehaviour(entry.getTileEntityType(), null));
+                sb.append(dm.stringifyBehaviours(entry.getTileEntityType(), null, false));
                 sb.append("\n");
             }
             catch(NullPointerException npe) {

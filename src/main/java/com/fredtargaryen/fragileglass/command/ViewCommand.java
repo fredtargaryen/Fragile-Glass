@@ -36,7 +36,7 @@ public class ViewCommand {
         if(manager.equals("blocks")) {
             entry.getBlockStateSet().forEach(state -> {
                 try {
-                    source.sendFeedback(new StringTextComponent(dm.stringifyBehaviour(state, behaviour)), false);
+                    source.sendFeedback(new StringTextComponent(dm.stringifyBehaviours(state, behaviour, true)), false);
                 } catch (NullPointerException npe) {
                     source.sendFeedback(new StringTextComponent("No existing block state data for " + KeyParser.cleanBlockStateString(state.toString())), false);
                 }
@@ -45,7 +45,7 @@ public class ViewCommand {
         else if(manager.equals("entities")) {
             entry.getEntityTypeSet().forEach(type -> {
                 try {
-                    source.sendFeedback(new StringTextComponent(dm.stringifyBehaviour(type, null)), false);
+                    source.sendFeedback(new StringTextComponent(dm.stringifyBehaviours(type, null, false)), false);
                 } catch (NullPointerException npe) {
                     source.sendFeedback(new StringTextComponent("No existing entity data for " + type.getRegistryName()), false);
                 }
@@ -54,7 +54,7 @@ public class ViewCommand {
         else {
             //"tileentities"
             try {
-                source.sendFeedback(new StringTextComponent(dm.stringifyBehaviour(entry.getTileEntityType(), behaviour)), false);
+                source.sendFeedback(new StringTextComponent(dm.stringifyBehaviours(entry.getTileEntityType(), behaviour, true)), false);
             }
             catch(NullPointerException npe) {
                 source.sendFeedback(new StringTextComponent("No existing tile entity data for "+entry.getTileEntityType().getRegistryName()), false);

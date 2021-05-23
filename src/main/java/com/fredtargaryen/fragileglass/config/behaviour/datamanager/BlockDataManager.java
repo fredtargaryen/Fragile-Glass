@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Responsible for everything to do with block fragility data from fragileglassft_blocks.cfg.
@@ -37,9 +38,9 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
     protected void loadDefaultData() {
         super.loadDefaultData();
         try {
-            this.blockConfigLoader.parseArbitraryString("#fragileglassft:fragile_glass break 0.165");
-            this.blockConfigLoader.parseArbitraryString("fragileglassft:thinice break 0.0");
-            this.blockConfigLoader.parseArbitraryString("fragileglassft:weakstone update 0.0 20");
+            this.blockConfigLoader.parseArbitraryString("#fragileglassft:fragile_glass break 0.165", true, -1);
+            this.blockConfigLoader.parseArbitraryString("fragileglassft:thinice break 0.0", true, -1);
+            this.blockConfigLoader.parseArbitraryString("fragileglassft:weakstone update 0.0 20", true, -1);
         }
         catch(ConfigLoader.ConfigLoadException cle) {
             System.out.println("FredTargaryen is an idiot; please let him know you saw this");
@@ -47,8 +48,8 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
     }
 
     @Override
-    public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
-        this.blockConfigLoader.parseArbitraryString(configLine);
+    public void parseConfigLine(String configLine, boolean add, int changeIndex) throws ConfigLoader.ConfigLoadException {
+        this.blockConfigLoader.parseArbitraryString(configLine, add, changeIndex);
     }
 
     @Override
@@ -58,19 +59,31 @@ public class BlockDataManager extends DataManager<BlockState, ArrayList<Fragilit
         }
         else {
             ArrayList<FragilityData> list = this.data.get(key);
-            if (list != null) {
+            if(list == null) {
+                this.data.remove(key);
+            }
+            else {
                 list.removeIf(fd -> fd.getBehaviour() == behaviour);
+                if(list.isEmpty())
+                {
+                    this.data.remove(key);
+                }
             }
         }
     }
 
     @Override
-    public String stringifyBehaviour(BlockState key, @Nullable FragilityData.FragileBehaviour behaviour) {
+    public String stringifyBehaviours(BlockState key, @Nullable FragilityData.FragileBehaviour behaviour, boolean showNumbers) {
         StringBuilder sb = new StringBuilder();
-        Iterator<FragilityData> i = this.data.get(key).iterator();
-        while(i.hasNext()) {
-            FragilityData fd = i.next();
+        List<FragilityData> list = this.data.get(key);
+        for(int i = 0; i < list.size(); i++) {
+            FragilityData fd = list.get(i);
             if(behaviour == null || behaviour == fd.getBehaviour()) {
+                if(showNumbers) {
+                    sb.append('[');
+                    sb.append(i);
+                    sb.append("] ");
+                }
                 sb.append(KeyParser.cleanBlockStateString(key.toString()));
                 sb.append(" ");
                 sb.append(fd.toString());
