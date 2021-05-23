@@ -13,7 +13,7 @@ issueTrackerURL="https://github.com/fredtargaryen/Fragile-Glass/issues"
 # The modid of the mod
 modId="fragileglassft"
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="2.8.0" #mandatory
+version="2.8.1" #mandatory
  # A display name for the mod
 displayName="Fragile Glass and Thin Ice"
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -26,6 +26,7 @@ credits='''
     incrediblestrandofhair - EXPLODE and DAMAGE behaviour suggestions; example behaviour config files
     MajoraLuna - WAIT behaviour suggestion
     bluebird9281 - configurable amount of Fragile Glass blocks per Sugar Block suggestion
+    pravculear - flagged up a missing recipe
     and the numerous bug reporters
     '''
 # A text field displayed in the mod UI

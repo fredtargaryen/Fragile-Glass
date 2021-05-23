@@ -3,19 +3,15 @@
   "group": "stainedfragilepane",
   "pattern": [
     "###",
-    "#X#",
     "###"
   ],
   "key": {
     "#": {
-      "item": "fragileglassft:fragilepane"
-    },
-    "X": {
-      "item": "minecraft:light_gray_dye"
+      "item": "fragileglassft:lightgraystainedfragileglass"
     }
   },
   "result": {
     "item": "fragileglassft:lightgraystainedfragileglasspane",
-    "count": 8
+    "count": 16
   }
 }
