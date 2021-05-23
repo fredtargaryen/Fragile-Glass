@@ -126,7 +126,7 @@ public abstract class ConfigLoader {
             if(!this.line.equals("") && line.charAt(0) != '@') {
                 try {
                     //Line is supposed to be read
-                    this.parseLine();
+                    this.parseLine(true, -1);
                 }
                 catch(ConfigLoadException cle) {
                     errors.add(cle.getMessage());
@@ -148,18 +148,20 @@ public abstract class ConfigLoader {
         return errors.isEmpty();
     }
 
-    public void parseArbitraryString(String string) throws ConfigLoadException {
+    public void parseArbitraryString(String string, boolean add, int changeIndex) throws ConfigLoadException {
         this.line = string;
         this.lineNumber = -1;
         this.filename = "";
-        this.parseLine();
+        this.parseLine(add, changeIndex);
     }
 
     /**
      * Parse a single line of text (this.line).
+     * @param add Whether the parsed behaviours should add behaviour to the list (true), or modify exiting behaviours (false).
+     * @param changeIndex The index of the beahaviour to insert into/modify in the list. If -1, the behaviour will differ depending on the value of add.
      * @throws ConfigLoadException
      */
-    protected abstract void parseLine() throws ConfigLoadException;
+    protected abstract void parseLine(boolean add, int changeIndex) throws ConfigLoadException;
 
 
 

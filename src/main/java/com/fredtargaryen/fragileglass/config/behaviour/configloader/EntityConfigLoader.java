@@ -26,7 +26,7 @@ public class EntityConfigLoader extends ConfigLoader{
      * Parse one line of the file.
      */
     @Override
-    protected void parseLine() throws ConfigLoadException {
+    protected void parseLine(boolean add, int changeIndex) throws ConfigLoadException {
         String[] values = line.split(" ");
         //Validate number of values on row
         if(values.length < 3) {

@@ -14,7 +14,7 @@ logoFile="banner.png"
 # The modid of the mod
 modId="fragileglassft"
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="2.7.1" #mandatory
+version="2.8.0"
  # A display name for the mod
 displayName="Fragile Glass and Thin Ice"
 # A URL to query for updates for this mod. See the JSON update specification <here>

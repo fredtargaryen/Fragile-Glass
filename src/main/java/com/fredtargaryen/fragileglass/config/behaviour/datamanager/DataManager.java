@@ -98,7 +98,7 @@ public abstract class DataManager<E, D> {
         this.data.clear();
     }
 
-    public abstract void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException;
+    public abstract void parseConfigLine(String configLine, boolean add, int changeIndex) throws ConfigLoader.ConfigLoadException;
 
     /**
      * Remove a behaviour from a map entry, or if the behaviour is null, remove the whole key
@@ -127,5 +127,5 @@ public abstract class DataManager<E, D> {
         }
     }
 
-    public abstract String stringifyBehaviour(E key, @Nullable FragilityData.FragileBehaviour behaviour);
+    public abstract String stringifyBehaviours(E key, @Nullable FragilityData.FragileBehaviour behaviour, boolean showNumbers);
 }

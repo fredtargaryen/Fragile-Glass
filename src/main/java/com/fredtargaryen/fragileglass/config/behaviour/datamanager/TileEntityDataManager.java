@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntityType;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList<FragilityData>> {
     /**
@@ -29,8 +30,8 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
     }
 
     @Override
-    public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
-        this.tileEntityConfigLoader.parseArbitraryString(configLine);
+    public void parseConfigLine(String configLine, boolean add, int changeIndex) throws ConfigLoader.ConfigLoadException {
+        this.tileEntityConfigLoader.parseArbitraryString(configLine, add, changeIndex);
     }
 
     @Override
@@ -40,19 +41,31 @@ public class TileEntityDataManager extends DataManager<TileEntityType, ArrayList
         }
         else {
             ArrayList<FragilityData> list = this.data.get(key);
-            if (list != null) {
+            if(list == null) {
+                this.data.remove(key);
+            }
+            else {
                 list.removeIf(fd -> fd.getBehaviour() == behaviour);
+                if(list.isEmpty())
+                {
+                    this.data.remove(key);
+                }
             }
         }
     }
 
     @Override
-    public String stringifyBehaviour(TileEntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
+    public String stringifyBehaviours(TileEntityType key, @Nullable FragilityData.FragileBehaviour behaviour, boolean showNumbers) {
         StringBuilder sb = new StringBuilder();
-        Iterator<FragilityData> i = this.data.get(key).iterator();
-        while(i.hasNext()) {
-            FragilityData fd = i.next();
+        List<FragilityData> list = this.data.get(key);
+        for(int i = 0; i < list.size(); i++) {
+            FragilityData fd = list.get(i);
             if(behaviour == null || behaviour == fd.getBehaviour()) {
+                if(showNumbers) {
+                    sb.append('[');
+                    sb.append(i);
+                    sb.append("] ");
+                }
                 sb.append(key.getRegistryName());
                 sb.append(" ");
                 sb.append(fd.toString());

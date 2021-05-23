@@ -129,8 +129,8 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
     }
 
     @Override
-    public void parseConfigLine(String configLine) throws ConfigLoader.ConfigLoadException {
-        this.entityConfigLoader.parseArbitraryString(configLine);
+    public void parseConfigLine(String configLine, boolean add, int changeIndex) throws ConfigLoader.ConfigLoadException {
+        this.entityConfigLoader.parseArbitraryString(configLine, add, changeIndex);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class EntityDataManager extends DataManager<EntityType, BreakerData> {
     }
 
     @Override
-    public String stringifyBehaviour(EntityType key, @Nullable FragilityData.FragileBehaviour behaviour) {
+    public String stringifyBehaviours(EntityType key, @Nullable FragilityData.FragileBehaviour behaviour, boolean showNumbers) {
         return key.getRegistryName() + " " + this.data.get(key).toString();
     }
 
