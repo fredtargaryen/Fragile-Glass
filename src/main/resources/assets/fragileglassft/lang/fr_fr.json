@@ -6,7 +6,6 @@
   "block.fragileglassft.sugarblock": "Bloc de sucre",
   "block.fragileglassft.weakstone": "Pierre faible",
 
-  "": "STAINED FRAGILE GLASS",
   "block.fragileglassft.blackstainedfragileglass":       "Verre fragile noir",
   "block.fragileglassft.redstainedfragileglass":         "Verre fragile rouge",
   "block.fragileglassft.greenstainedfragileglass":       "Verre fragile vert",
@@ -24,8 +23,6 @@
   "block.fragileglassft.orangestainedfragileglass":      "Verre fragile orange",
   "block.fragileglassft.whitestainedfragileglass":       "Verre fragile blanc",
 
-
-  "": "STAINED FRAGILE GLASS PANE",
   "block.fragileglassft.blackstainedfragileglasspane":       "Vitre fragile noir",
   "block.fragileglassft.redstainedfragileglasspane":         "Vitre fragile rouge",
   "block.fragileglassft.greenstainedfragileglasspane":       "Vitre fragile vert",

@@ -6,7 +6,6 @@
   "block.fragileglassft.sugarblock":     "Sugar Block",
   "block.fragileglassft.weakstone":      "Weak Stone",
 
-"": "STAINED FRAGILE GLASS",
   "block.fragileglassft.blackstainedfragileglass":         "Black Stained Fragile Glass",
   "block.fragileglassft.redstainedfragileglass":           "Red Stained Fragile Glass",
   "block.fragileglassft.greenstainedfragileglass":         "Green Stained Fragile Glass",
@@ -24,7 +23,6 @@
   "block.fragileglassft.orangestainedfragileglass":        "Orange Stained Fragile Glass",
   "block.fragileglassft.whitestainedfragileglass":         "White Stained Fragile Glass",
 
-  "": "STAINED FRAGILE GLASS PANE",
   "block.fragileglassft.blackstainedfragileglasspane":    "Black Stained Fragile Glass Pane",
   "block.fragileglassft.redstainedfragileglasspane":      "Red Stained Fragile Glass Pane",
   "block.fragileglassft.greenstainedfragileglasspane":    "Green Stained Fragile Glass Pane",
